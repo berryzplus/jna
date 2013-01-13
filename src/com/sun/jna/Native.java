@@ -82,11 +82,13 @@ import com.sun.jna.Structure.FFIType;
  * @see Library
  * @author Todd Fast, todd.fast@sun.com
  * @author twall@users.sf.net
+ * @author berryzplus@gmail.com
  */
 public final class Native {
 
     private static final String VERSION = "3.5.2-SNAPSHOT";
-    private static final String VERSION_NATIVE = "3.5.0";
+// TODO: update *ALL* binaries before activate following code.
+//    private static final String VERSION_NATIVE = "3.5.0";
 
     // Used by tests, do not remove
     private static String nativeLibraryPath = null;
@@ -136,17 +138,17 @@ public final class Native {
         if (Boolean.getBoolean("jna.protected")) {
             setProtected(true);
         }
-        String version = getNativeVersion();
-        if (!VERSION_NATIVE.equals(version)) {
-            String LS = System.getProperty("line.separator");
-            throw new Error(LS + LS
-                            + "There is an incompatible JNA native library installed on this system." + LS
-                            + "To resolve this issue you may do one of the following:" + LS
-                            + " - remove or uninstall the offending library" + LS
-                            + " - set the system property jna.nosys=true" + LS
-                            + " - set jna.boot.library.path to include the path to the version of the " + LS + "   jnidispatch library included with the JNA jar file you are using" + LS);
-        }
-        setPreserveLastError("true".equalsIgnoreCase(System.getProperty("jna.preserve_last_error", "true")));
+//        String version = getNativeVersion();
+//        if (!VERSION_NATIVE.equals(version)) {
+//            String LS = System.getProperty("line.separator");
+//            throw new Error(LS + LS
+//                            + "There is an incompatible JNA native library installed on this system." + LS
+//                            + "To resolve this issue you may do one of the following:" + LS
+//                            + " - remove or uninstall the offending library" + LS
+//                            + " - set the system property jna.nosys=true" + LS
+//                            + " - set jna.boot.library.path to include the path to the version of the " + LS + "   jnidispatch library included with the JNA jar file you are using" + LS);
+//        }
+//        setPreserveLastError("true".equalsIgnoreCase(System.getProperty("jna.preserve_last_error", "true")));
     }
     
     /** Force a dispose when this class is GC'd. */
