@@ -88,7 +88,7 @@ public class NativeLibrary {
             synchronized(functions) {
                 final Function f = new Function(this, "GetLastError", Function.ALT_CONVENTION) {
                     Object invoke(final Object[] args, final Class returnType, final boolean b) {
-                        return new Integer(Native.getLastError());
+                        return Integer.valueOf(Native.getLastError());
                     }
                 };
                 functions.put(functionKey("GetLastError", callFlags), f);
@@ -259,7 +259,7 @@ public class NativeLibrary {
     public static final NativeLibrary getInstance(String libraryName, Map options) {
         options = new HashMap(options);
         if (options.get(Library.OPTION_CALLING_CONVENTION) == null) {
-            options.put(Library.OPTION_CALLING_CONVENTION, new Integer(Function.C_CONVENTION));
+            options.put(Library.OPTION_CALLING_CONVENTION, Integer.valueOf(Function.C_CONVENTION));
         }
 
         // Use current process to load libraries we know are already

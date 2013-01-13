@@ -34,7 +34,7 @@ public class VersionTest extends TestCase {
         assertTrue(size > 0);
 
         final Pointer buffer = Kernel32.INSTANCE.LocalAlloc(WinBase.LMEM_ZEROINIT, size);
-        assertTrue(!buffer.equals(Pointer.NULL));
+        assertTrue(!Pointer.NULL.equals(buffer));
 
         try
         {

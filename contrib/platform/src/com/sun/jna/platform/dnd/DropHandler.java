@@ -251,30 +251,30 @@ public abstract class DropHandler implements DropTargetListener {
         return mods != 0;
     }
 
-    private String lastAction;
+//    private String lastAction;
     private void describe(final String type, final DropTargetEvent e) {
-        if (false) {
-            String msg = "drop: " + type;
-            if (e instanceof DropTargetDragEvent) {
-                final DropTargetContext dtc = e.getDropTargetContext();
-                final DropTarget dt = dtc.getDropTarget();
-                final DropTargetDragEvent ev = (DropTargetDragEvent)e;
-                msg += ": src=" + DragHandler.actionString(ev.getSourceActions())
-                    + " tgt=" + DragHandler.actionString(dt.getDefaultActions())
-                    + " act=" + DragHandler.actionString(ev.getDropAction());
-            }
-            else if (e instanceof DropTargetDropEvent) {
-                final DropTargetContext dtc = e.getDropTargetContext();
-                final DropTarget dt = dtc.getDropTarget();
-                final DropTargetDropEvent ev = (DropTargetDropEvent)e;
-                msg += ": src=" + DragHandler.actionString(ev.getSourceActions())
-                + " tgt=" + DragHandler.actionString(dt.getDefaultActions())
-                + " act=" + DragHandler.actionString(ev.getDropAction());
-            }
-            if (!msg.equals(lastAction)) {
-                System.out.println(lastAction = msg);
-            }
-        }
+//        if (false) {
+//            String msg = "drop: " + type;
+//            if (e instanceof DropTargetDragEvent) {
+//                final DropTargetContext dtc = e.getDropTargetContext();
+//                final DropTarget dt = dtc.getDropTarget();
+//                final DropTargetDragEvent ev = (DropTargetDragEvent)e;
+//                msg += ": src=" + DragHandler.actionString(ev.getSourceActions())
+//                    + " tgt=" + DragHandler.actionString(dt.getDefaultActions())
+//                    + " act=" + DragHandler.actionString(ev.getDropAction());
+//            }
+//            else if (e instanceof DropTargetDropEvent) {
+//                final DropTargetContext dtc = e.getDropTargetContext();
+//                final DropTarget dt = dtc.getDropTarget();
+//                final DropTargetDropEvent ev = (DropTargetDropEvent)e;
+//                msg += ": src=" + DragHandler.actionString(ev.getSourceActions())
+//                + " tgt=" + DragHandler.actionString(dt.getDefaultActions())
+//                + " act=" + DragHandler.actionString(ev.getDropAction());
+//            }
+//            if (!msg.equals(lastAction)) {
+//                System.out.println(lastAction = msg);
+//            }
+//        }
     }
 
     /** Accept or reject the drag represented by the given event.  Returns

@@ -116,11 +116,11 @@ public class WindowUtilsTest extends TestCase {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             content = frame.getContentPane();
             w = frame;
-        } else {
-            final Frame frame = JOptionPane.getRootFrame();
-            final JWindow window = new JWindow(frame, gconfig);
-            content = window.getContentPane();
-            w = window;
+//        } else {
+//            final Frame frame = JOptionPane.getRootFrame();
+//            final JWindow window = new JWindow(frame, gconfig);
+//            content = window.getContentPane();
+//            w = window;
         }
         final Window f = w;
         WindowUtils.setWindowTransparent(f, true);
@@ -320,7 +320,7 @@ public class WindowUtilsTest extends TestCase {
         where.translate(W/8, H/8);
         Color sample = robot.getPixelColor(where.x, where.y);
         long start = System.currentTimeMillis();
-        while (!sample.equals(FOREGROUND)) {
+        while (!FOREGROUND.equals(sample)) {
             SwingUtilities.invokeAndWait(new Runnable() { public void run() {
                 front.toFront();
             }});
@@ -336,7 +336,7 @@ public class WindowUtilsTest extends TestCase {
         where.translate(W/2, H/2);
         sample = robot.getPixelColor(where.x, where.y);
         start = System.currentTimeMillis();
-        while (!sample.equals(BACKGROUND)) {
+        while (!BACKGROUND.equals(sample)) {
             Thread.sleep(10);
             if (System.currentTimeMillis() - start > 1000)
                 assertEquals("Background window should show through (center) "

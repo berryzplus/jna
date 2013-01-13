@@ -281,7 +281,7 @@ public class FilteredTextField extends JTextField {
           return;
         }
         
-        if (strBuf == null || strBuf.equals("")) {
+        if (strBuf == null || "".equals(strBuf)) {
           remove(0, getLength());
           super.insertString(0, "", null);
           if (balloon != null && BalloonTipManager.isShowing()) {

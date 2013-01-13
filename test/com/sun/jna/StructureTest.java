@@ -514,6 +514,10 @@ public class StructureTest extends TestCase {
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "i", "l" });
             }
+            public boolean equals(final Object o) {
+                return super.equals(o) && o instanceof TestStructure
+                        && l == ((TestStructure) o).l;
+            }
         }
         final TestStructure s = new TestStructure();
         if (NativeLong.SIZE == 8) {
@@ -542,13 +546,13 @@ public class StructureTest extends TestCase {
     }
 
     public void testDisallowFunctionPointerAsField() {
-        class BadFieldStructure extends Structure {
+        class BadFieldStructure2 extends Structure {
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "cb" });
             }
         }
         try {
-            new BadFieldStructure().size();
+            new BadFieldStructure2().size();
             fail("Function fields should not be allowed");
         }
         catch(final IllegalArgumentException e) {
@@ -563,7 +567,7 @@ public class StructureTest extends TestCase {
     }
     public void testUnsupportedField() {
         class BadNestedStructure extends Structure {
-            public BadFieldStructure badStruct = new BadFieldStructure();
+//            public BadFieldStructure badStruct = new BadFieldStructure();
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "badStruct" });
             }
@@ -921,7 +925,7 @@ public class StructureTest extends TestCase {
         assertEquals("Wrong type information for 'inner' field",
                      inner, els.getPointer(0));
         assertEquals("Wrong type information for integer field",
-                     Structure.getTypeInfo(new Integer(0)),
+                     Structure.getTypeInfo(Integer.valueOf(0)),
                      els.getPointer(Pointer.SIZE));
         assertNull("Type element list should be null-terminated",
                    els.getPointer(Pointer.SIZE*2));
@@ -981,6 +985,10 @@ public class StructureTest extends TestCase {
             public ByteByReference ref;
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "ref" });
+            }
+            public boolean equals(final Object o) {
+                return super.equals(o) && o instanceof TestStructure
+                        && ref == ((TestStructure) o).ref;
             }
     	}
     	final TestStructure s = new TestStructure();
@@ -1128,10 +1136,10 @@ public class StructureTest extends TestCase {
                 return Arrays.asList(new String[] { "f1", "f2" });
             }
         }
-        class TestStructure2 extends TestStructure {
+        class TestStructure6 extends TestStructure {
         }
         try {
-            new TestStructure2();
+            new TestStructure6();
             fail("Expected an error when structure fails to provide field order");
         }
         catch(final Error e) {
@@ -1290,6 +1298,10 @@ public class StructureTest extends TestCase {
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "first", "second", "third" });
             }
+            public boolean equals(final Object o) {
+                return super.equals(o) && o instanceof TestStructure
+                        && first == ((TestStructure) o).first;
+            }
         }
         final OtherStructure s0 = new OtherStructure();
         final TestStructure s1 = new TestStructure();
@@ -1316,6 +1328,10 @@ public class StructureTest extends TestCase {
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "first", "second", "third" });
             }
+            public boolean equals(final Object o) {
+                return super.equals(o) && o instanceof TestStructure
+                        && first == ((TestStructure) o).first;
+            }
         }
         class ByReference extends TestStructure implements Structure.ByReference { }
         class ByValue extends TestStructure implements Structure.ByValue { }
@@ -1339,6 +1355,10 @@ public class StructureTest extends TestCase {
             public int first;
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "first" });
+            }
+            public boolean equals(final Object o) {
+                return super.equals(o) && o instanceof TestStructure
+                        && first == ((TestStructure) o).first;
             }
         }
         final TestStructure s1 = new TestStructure();
@@ -1558,10 +1578,10 @@ public class StructureTest extends TestCase {
                 final TypeConverter tc = new TypeConverter() {
                     public Class nativeType() { return int.class; }
                     public Object fromNative(final Object nativeValue, final FromNativeContext c) {
-                        return new Boolean(nativeValue.equals(new Integer(0)));
+                        return Boolean.valueOf(nativeValue.equals(Integer.valueOf(0)));
                     }
                     public Object toNative(final Object value, final ToNativeContext c) {
-                        return new Integer(Boolean.TRUE.equals(value) ? -1 : 0);
+                        return Integer.valueOf(Boolean.TRUE.equals(value) ? -1 : 0);
                     }
                 };
                 addTypeConverter(boolean.class, tc);
@@ -1622,7 +1642,7 @@ public class StructureTest extends TestCase {
                             return byte.class;
                         }
                         public Object fromNative(final Object nativeValue, final FromNativeContext context) {
-                            return nativeValue.equals(new Byte((byte)0))
+                            return nativeValue.equals(Byte.valueOf((byte)0))
                                 ? Boolean.FALSE : Boolean.TRUE;
                         }
                     };
@@ -1633,7 +1653,7 @@ public class StructureTest extends TestCase {
                     || boolean.class.equals(javaType))
                     return new ToNativeConverter() {
                         public Object toNative(final Object value, final ToNativeContext context) {
-                            return new Byte(Boolean.TRUE.equals(value) ? (byte)1 : (byte)0);
+                            return Byte.valueOf(Boolean.TRUE.equals(value) ? (byte)1 : (byte)0);
                         }
                         public Class nativeType() {
                             return byte.class;

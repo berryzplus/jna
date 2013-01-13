@@ -111,7 +111,7 @@ public class PerformanceTest extends TestCase {
 
         ///////////////////////////////////////////
         // cos
-        Object[] args = { new Double(0) };
+        Object[] args = { Double.valueOf(0) };
         long start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
             mlib.cos(0d);
@@ -194,7 +194,7 @@ public class PerformanceTest extends TestCase {
         System.out.println("memset (JNA interface): " + delta + "ms");
 
         f = NativeLibrary.getInstance(cname).getFunction("memset");
-        args = new Object[] { null, new Integer(0), new Integer(0)};
+        args = new Object[] { null, Integer.valueOf(0), Integer.valueOf(0)};
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
             f.invokePointer(args);

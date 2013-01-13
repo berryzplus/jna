@@ -422,6 +422,8 @@ public class Kernel32Test extends TestCase {
         assertEquals(Integer.toString(value), Kernel32Util.getEnvironmentVariable("jna-setenvironment-test"));
     }
 
+    // FIXME: Date.getYear() is obsolete.
+    @Deprecated
     public void testGetSetFileTime() throws IOException {
         final File tmp = File.createTempFile("testGetSetFileTime", "jna");
         tmp.deleteOnExit();

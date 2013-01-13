@@ -162,7 +162,7 @@ public class NativeTest extends TestCase {
         TypeMapper TEST_MAPPER = new DefaultTypeMapper();
         Map TEST_OPTS = new HashMap() { {
             put(OPTION_TYPE_MAPPER, TEST_MAPPER);
-            put(OPTION_STRUCTURE_ALIGNMENT, new Integer(TEST_ALIGNMENT));
+            put(OPTION_STRUCTURE_ALIGNMENT, Integer.valueOf(TEST_ALIGNMENT));
         }};
         TestInterfaceWithInstance ARBITRARY = (TestInterfaceWithInstance)
             Native.loadLibrary("testlib", TestInterfaceWithInstance.class, TEST_OPTS);
@@ -184,7 +184,7 @@ public class NativeTest extends TestCase {
         TypeMapper TEST_MAPPER = new DefaultTypeMapper();
         Map OPTIONS = new HashMap() { {
             put(OPTION_TYPE_MAPPER, TEST_MAPPER);
-            put(OPTION_STRUCTURE_ALIGNMENT, new Integer(TEST_ALIGNMENT));
+            put(OPTION_STRUCTURE_ALIGNMENT, Integer.valueOf(TEST_ALIGNMENT));
         }};
     }
     public void testOptionsInferenceFromOptionsField() {

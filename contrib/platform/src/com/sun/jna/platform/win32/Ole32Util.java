@@ -32,7 +32,7 @@ public abstract class Ole32Util {
 	public static GUID getGUIDFromString(final String guidString) {
 		final GUID.ByReference lpiid = new GUID.ByReference();
     	final HRESULT hr = Ole32.INSTANCE.IIDFromString(guidString, lpiid);
-    	if (! hr.equals(WinError.S_OK))
+    	if (! WinError.S_OK.equals(hr))
             throw new RuntimeException(hr.toString());
     	return lpiid;
 	}
@@ -63,7 +63,7 @@ public abstract class Ole32Util {
 	public static GUID generateGUID() {
 		final GUID.ByReference pguid = new GUID.ByReference();
     	final HRESULT hr = Ole32.INSTANCE.CoCreateGuid(pguid);
-    	if (! hr.equals(WinError.S_OK))
+    	if (! WinError.S_OK.equals(hr))
             throw new RuntimeException(hr.toString());
     	return pguid;
 	}

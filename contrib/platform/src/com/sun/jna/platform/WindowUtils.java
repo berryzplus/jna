@@ -619,7 +619,7 @@ public class WindowUtils {
         private void storeAlpha(final Window w, final byte alpha) {
             if (w instanceof RootPaneContainer) {
                 final JRootPane root = ((RootPaneContainer)w).getRootPane();
-                final Byte b = alpha == (byte)0xFF ? null : new Byte(alpha);
+                final Byte b = alpha == (byte)0xFF ? null : Byte.valueOf(alpha);
                 root.putClientProperty(TRANSPARENT_ALPHA, b);
             }
         }
@@ -886,7 +886,7 @@ public class WindowUtils {
                     points.add(new POINT((int)coords[0], (int)coords[1]));
                 }
                 else if (type == PathIterator.SEG_CLOSE) {
-                    sizes.add(new Integer(size));
+                    sizes.add(Integer.valueOf(size));
                 }
                 else
                     throw new RuntimeException("Area is not polygonal: " + area);
@@ -1004,21 +1004,19 @@ public class WindowUtils {
         public void setWindowAlpha(final Window w, final float alpha) {
             if (w instanceof RootPaneContainer) {
                 final JRootPane p = ((RootPaneContainer)w).getRootPane();
-                p.putClientProperty("Window.alpha", new Float(alpha));
+                p.putClientProperty("Window.alpha", Float.valueOf(alpha));
                 fixWindowDragging(w, "setWindowAlpha");
             }
             whenDisplayable(w, new Runnable() {
-				public void run() {
+
+                @Deprecated
+                public void run() {
                     final Object peer = w.getPeer();
                     try {
-                        peer.getClass().getMethod("setAlpha", new Class[]{
-                                float.class
-                            }).invoke(peer, new Object[]{
-                                    new Float(alpha)
-                                });
+                        peer.getClass().getMethod("setAlpha", float.class)
+                                .invoke(peer, alpha);
                     }
-                    catch (final Exception e) {
-                    }
+                    catch (final Exception e) {}
                 }
             });
         }

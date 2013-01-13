@@ -801,7 +801,7 @@ public final class Native {
 
     private static final ThreadLocal lastError = new ThreadLocal() {
         protected synchronized Object initialValue() {
-            return new Integer(0);
+            return Integer.valueOf(0);
         }
     };
 
@@ -828,7 +828,7 @@ public final class Native {
     // This has to be called immediately after a native call to ensure that
     // subsequent VM operations don't overwrite the last error value
     static void updateLastError(final int e) {
-        lastError.set(new Integer(e));
+        lastError.set(Integer.valueOf(e));
     }
 
     /**

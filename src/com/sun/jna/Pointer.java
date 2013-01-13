@@ -377,25 +377,25 @@ public class Pointer {
             result = Function.valueOf(getInt(offset) != 0);
         }
         else if (type == byte.class || type == Byte.class) {
-            result = new Byte(getByte(offset));
+            result = Byte.valueOf(getByte(offset));
         }
         else if (type == short.class || type == Short.class) {
-            result = new Short(getShort(offset));
+            result = Short.valueOf(getShort(offset));
         }
         else if (type == char.class || type == Character.class) {
-            result = new Character(getChar(offset));
+            result = Character.valueOf(getChar(offset));
         }
         else if (type == int.class || type == Integer.class) {
-            result = new Integer(getInt(offset));
+            result = Integer.valueOf(getInt(offset));
         }
         else if (type == long.class || type == Long.class) {
-            result = new Long(getLong(offset));
+            result = Long.valueOf(getLong(offset));
         }
         else if (type == float.class || type == Float.class) {
-            result=new Float(getFloat(offset));
+            result=Float.valueOf(getFloat(offset));
         }
         else if (type == double.class || type == Double.class) {
-            result = new Double(getDouble(offset));
+            result = Double.valueOf(getDouble(offset));
         }
         else if (Pointer.class.isAssignableFrom(type)) {
             final Pointer p = getPointer(offset);

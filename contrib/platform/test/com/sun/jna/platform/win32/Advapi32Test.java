@@ -501,7 +501,7 @@ public class Advapi32Test extends TestCase {
     public void testOpenEventLog() {
     	final HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, "Application");
     	assertNotNull(h);
-    	assertFalse(h.equals(WinBase.INVALID_HANDLE_VALUE));
+    	assertFalse(WinBase.INVALID_HANDLE_VALUE.equals(h));
     	assertTrue(Advapi32.INSTANCE.CloseEventLog(h));
     }
 
@@ -531,14 +531,14 @@ public class Advapi32Test extends TestCase {
     	final IntByReference after = new IntByReference();
     	assertTrue(Advapi32.INSTANCE.GetNumberOfEventLogRecords(h, after));
     	assertTrue(before.getValue() < after.getValue());
-    	assertFalse(h.equals(WinBase.INVALID_HANDLE_VALUE));
+    	assertFalse(WinBase.INVALID_HANDLE_VALUE.equals(h));
     	assertTrue(Advapi32.INSTANCE.DeregisterEventSource(h));
     	Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, jnaEventSourceRegistryPath);
     }
 
     public void testGetNumberOfEventLogRecords() {
     	final HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, "Application");
-    	assertFalse(h.equals(WinBase.INVALID_HANDLE_VALUE));
+    	assertFalse(WinBase.INVALID_HANDLE_VALUE.equals(h));
     	final IntByReference n = new IntByReference();
     	assertTrue(Advapi32.INSTANCE.GetNumberOfEventLogRecords(h, n));
     	assertTrue(n.getValue() >= 0);
@@ -548,7 +548,7 @@ public class Advapi32Test extends TestCase {
     /*
     public void testClearEventLog() {
     	HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, "Application");
-    	assertFalse(h.equals(WinBase.INVALID_HANDLE_VALUE));
+    	assertFalse(WinBase.INVALID_HANDLE_VALUE.equals(h));
     	IntByReference before = new IntByReference();
     	assertTrue(Advapi32.INSTANCE.GetNumberOfEventLogRecords(h, before));
     	assertTrue(before.getValue() >= 0);

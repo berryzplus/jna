@@ -67,6 +67,27 @@ class CallbackReference extends WeakReference {
             return Arrays.asList(new String[] { "daemon", "detach", "name" });
         }
     }
+    /** Called from native code to initialize a callback thread. */
+    @SuppressWarnings("unused")
+    private static ThreadGroup initializeThread(Callback cb, AttachOptions args) {
+        CallbackThreadInitializer init = null;
+        if (cb instanceof DefaultCallbackProxy) {
+            cb = ((DefaultCallbackProxy)cb).getCallback();
+        }
+        synchronized(initializers) {
+            init = (CallbackThreadInitializer)initializers.get(cb);
+        }
+        ThreadGroup group = null;
+        if (init != null) {
+            group = init.getThreadGroup(cb);
+            args.name = init.getName(cb);
+            args.daemon = init.isDaemon(cb);
+            args.detach = init.detach(cb);
+            args.write();
+        }
+        return group;
+    }
+
     /** Return a Callback associated with the given function pointer.
      * If the pointer refers to a Java callback trampoline, return the original
      * Java Callback.  Otherwise, return a proxy to the native function pointer.
@@ -560,7 +581,7 @@ class CallbackReference extends WeakReference {
                 return str;
             }
             else if (Library.Handler.OBJECT_HASHCODE.equals(method))
-                return new Integer(hashCode());
+                return Integer.valueOf(hashCode());
             else if (Library.Handler.OBJECT_EQUALS.equals(method)) {
                 final Object o = args[0];
                 if (o != null && Proxy.isProxyClass(o.getClass()))

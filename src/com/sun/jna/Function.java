@@ -61,8 +61,8 @@ public class Function extends Pointer {
     /** Whether to throw an exception if last error is non-zero after call. */
     public static final int THROW_LAST_ERROR = 1<<2;
 
-    static final Integer INTEGER_TRUE = new Integer(-1);
-    static final Integer INTEGER_FALSE = new Integer(0);
+    static final Integer INTEGER_TRUE = Integer.valueOf(-1);
+    static final Integer INTEGER_FALSE = Integer.valueOf(0);
 
     /**
      * Obtain a <code>Function</code> representing a native
@@ -331,25 +331,25 @@ public class Function extends Pointer {
             result = valueOf(Native.invokeInt(peer, callFlags, args) != 0);
         }
         else if (returnType==byte.class || returnType==Byte.class) {
-            result = new Byte((byte)Native.invokeInt(peer, callFlags, args));
+            result = Byte.valueOf((byte)Native.invokeInt(peer, callFlags, args));
         }
         else if (returnType==short.class || returnType==Short.class) {
-            result = new Short((short)Native.invokeInt(peer, callFlags, args));
+            result = Short.valueOf((short)Native.invokeInt(peer, callFlags, args));
         }
         else if (returnType==char.class || returnType==Character.class) {
-            result = new Character((char)Native.invokeInt(peer, callFlags, args));
+            result = Character.valueOf((char)Native.invokeInt(peer, callFlags, args));
         }
         else if (returnType==int.class || returnType==Integer.class) {
-            result = new Integer(Native.invokeInt(peer, callFlags, args));
+            result = Integer.valueOf(Native.invokeInt(peer, callFlags, args));
         }
         else if (returnType==long.class || returnType==Long.class) {
-            result = new Long(Native.invokeLong(peer, callFlags, args));
+            result = Long.valueOf(Native.invokeLong(peer, callFlags, args));
         }
         else if (returnType==float.class || returnType==Float.class) {
-            result = new Float(Native.invokeFloat(peer, callFlags, args));
+            result = Float.valueOf(Native.invokeFloat(peer, callFlags, args));
         }
         else if (returnType==double.class || returnType==Double.class) {
-            result = new Double(Native.invokeDouble(peer, callFlags, args));
+            result = Double.valueOf(Native.invokeDouble(peer, callFlags, args));
         }
         else if (returnType==String.class) {
             result = invokeString(callFlags, args, false);

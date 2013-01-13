@@ -131,7 +131,7 @@ public class RasterRangesUtils {
                         curLine.add(new Rectangle(startCol, row, firstByteCol - startCol, 1));
                         startCol = -1;
                     }
-                } else if (byteColBits == 0xff) {
+                } else if (byteColBits == (byte) 0xff) {
                     // all 8 bits are ones
                     if (startCol < 0) {
                         // start of new region

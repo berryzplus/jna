@@ -57,7 +57,7 @@ public class W32APITypeMapper extends DefaultTypeMapper {
         }
         final TypeConverter booleanConverter = new TypeConverter() {
             public Object toNative(final Object value, final ToNativeContext context) {
-                return new Integer(Boolean.TRUE.equals(value) ? 1 : 0);
+                return Integer.valueOf(Boolean.TRUE.equals(value) ? 1 : 0);
             }
             public Object fromNative(final Object value, final FromNativeContext context) {
                 return ((Integer)value).intValue() != 0 ? Boolean.TRUE : Boolean.FALSE;

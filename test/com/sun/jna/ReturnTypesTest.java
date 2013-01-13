@@ -188,7 +188,7 @@ public class ReturnTypesTest extends TestCase {
             return Integer.class;
         }
         public Object toNative() {
-            return new Integer(value);
+            return Integer.valueOf(value);
         }
         public boolean equals(final Object o) {
             return o instanceof Custom && ((Custom)o).value == value;

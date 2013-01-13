@@ -187,7 +187,7 @@ public class CallbacksTest extends TestCase {
             return Integer.class;
         }
         public Object toNative() {
-            return new Integer(value);
+            return Integer.valueOf(value);
         }
         public boolean equals(final Object o) {
             return o instanceof Custom && ((Custom)o).value == value;
@@ -831,25 +831,25 @@ public class CallbacksTest extends TestCase {
                 // Convert java doubles into native integers and back
                 TypeConverter converter = new TypeConverter() {
                     public Object fromNative(final Object value, final FromNativeContext context) {
-                        return new Double(((Integer)value).intValue());
+                        return Double.valueOf(((Integer)value).intValue());
                     }
                     public Class nativeType() {
                         return Integer.class;
                     }
                     public Object toNative(final Object value, final ToNativeContext ctx) {
-                        return new Integer(((Double)value).intValue());
+                        return Integer.valueOf(((Double)value).intValue());
                     }
                 };
                 addTypeConverter(double.class, converter);
                 converter = new TypeConverter() {
                     public Object fromNative(final Object value, final FromNativeContext context) {
-                        return new Float(((Long)value).intValue());
+                        return Float.valueOf(((Long)value).intValue());
                     }
                     public Class nativeType() {
                         return Long.class;
                     }
                     public Object toNative(final Object value, final ToNativeContext ctx) {
-                        return new Long(((Float)value).longValue());
+                        return Long.valueOf(((Float)value).longValue());
                     }
                 };
                 addTypeConverter(float.class, converter);

@@ -134,7 +134,7 @@ public interface Library {
                 ? Function.ALT_CONVENTION : Function.C_CONVENTION;
             if (options.get(OPTION_CALLING_CONVENTION) == null) {
                 options.put(OPTION_CALLING_CONVENTION,
-                            new Integer(callingConvention));
+                            Integer.valueOf(callingConvention));
             }
             this.options = options;
             this.nativeLibrary = NativeLibrary.getInstance(libname, options);
@@ -172,7 +172,7 @@ public interface Library {
             if (OBJECT_TOSTRING.equals(method))
                 return "Proxy interface to " + nativeLibrary;
             else if (OBJECT_HASHCODE.equals(method))
-                return new Integer(hashCode());
+                return Integer.valueOf(hashCode());
             else if (OBJECT_EQUALS.equals(method)) {
                 final Object o = inArgs[0];
                 if (o != null && Proxy.isProxyClass(o.getClass()))

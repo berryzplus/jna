@@ -54,7 +54,7 @@ public class AnnotatedLibraryTest extends TestCase {
             public Object toNative(final Object value, final ToNativeContext ctx) {
                 final MethodParameterContext mcontext = (MethodParameterContext)ctx;
                 hasAnnotation[0] = mcontext.getMethod().getAnnotation(FooBoolean.class) != null;
-                return new Integer(Boolean.TRUE.equals(value) ? MAGIC : 0);
+                return Integer.valueOf(Boolean.TRUE.equals(value) ? MAGIC : 0);
             }
             public Object fromNative(final Object value, final FromNativeContext context) {
                 final MethodResultContext mcontext = (MethodResultContext)context;

@@ -222,7 +222,7 @@ public class NativeLibraryTest extends TestCase {
 
     public void testLoadLibraryWithOptions() {
         final Map options = new HashMap();
-        options.put(Library.OPTION_OPEN_FLAGS, new Integer(-1));
+        options.put(Library.OPTION_OPEN_FLAGS, Integer.valueOf(-1));
         Native.loadLibrary("testlib", TestLibrary.class, options);
     }
 

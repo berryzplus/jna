@@ -148,6 +148,9 @@ public abstract class Structure {
     // Keep track of java strings which have been converted to C strings
     private final Map nativeStrings = new HashMap();
     private TypeMapper typeMapper;
+    // This field is accessed by native code
+    private long typeInfo;
+
     private boolean autoRead = true;
     private boolean autoWrite = true;
     private Structure[] array;
@@ -627,8 +630,8 @@ public abstract class Structure {
             }
         }
 
-        if (fieldType.equals(String.class)
-            || fieldType.equals(WString.class)) {
+        if (String.class.equals(fieldType)
+            || WString.class.equals(fieldType)) {
             nativeStrings.put(structField.name + ".ptr", memory.getPointer(offset));
             nativeStrings.put(structField.name + ".val", result);
         }
@@ -801,7 +804,7 @@ public abstract class Structure {
     protected List getFieldList() {
         final List flist = new ArrayList();
         for (Class cls = getClass();
-             !cls.equals(Structure.class);
+             !Structure.class.equals(cls);
              cls = cls.getSuperclass()) {
             final List classFields = new ArrayList();
             final Field[] fields = cls.getDeclaredFields();
@@ -1526,11 +1529,17 @@ public abstract class Structure {
             private static Pointer ffi_type_void;
             private static Pointer ffi_type_float;
             private static Pointer ffi_type_double;
+            @SuppressWarnings("unused")
+            private static Pointer ffi_type_longdouble;
+            @SuppressWarnings("unused")
+            private static Pointer ffi_type_uint8;
             private static Pointer ffi_type_sint8;
             private static Pointer ffi_type_uint16;
             private static Pointer ffi_type_sint16;
             private static Pointer ffi_type_uint32;
             private static Pointer ffi_type_sint32;
+            @SuppressWarnings("unused")
+            private static Pointer ffi_type_uint64;
             private static Pointer ffi_type_sint64;
             private static Pointer ffi_type_pointer;
         }

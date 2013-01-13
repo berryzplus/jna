@@ -27,7 +27,7 @@ public class DirectTypeMapperTest extends TestCase {
             final DefaultTypeMapper mapper = new DefaultTypeMapper();
             mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
                 public Object toNative(final Object arg, final ToNativeContext ctx) {
-                    return new Integer(Boolean.TRUE.equals(arg) ? MAGIC : 0);
+                    return Integer.valueOf(Boolean.TRUE.equals(arg) ? MAGIC : 0);
                 }
                 public Class nativeType() {
                     return Integer.class;
@@ -78,7 +78,7 @@ public class DirectTypeMapperTest extends TestCase {
             final DefaultTypeMapper mapper = new DefaultTypeMapper();
             mapper.addToNativeConverter(Number.class, new ToNativeConverter() {
                 public Object toNative(final Object arg, final ToNativeContext ctx) {
-                    return new Integer(((Number)arg).intValue());
+                    return Integer.valueOf(((Number)arg).intValue());
                 }
                 public Class nativeType() {
                     return Integer.class;
@@ -114,7 +114,7 @@ public class DirectTypeMapperTest extends TestCase {
         final int MAGIC = 0x7BEDCF23;
         final DirectTestLibraryNumber lib = new DirectTestLibraryNumber();
         assertEquals("Failed to convert Double argument to Int", MAGIC,
-                     lib.returnInt32Argument(new Double(MAGIC)));
+                     lib.returnInt32Argument(Double.valueOf(MAGIC)));
     }
     public static class DirectBooleanTestLibrary {
         public native boolean returnInt32Argument(boolean b);
@@ -125,7 +125,7 @@ public class DirectTypeMapperTest extends TestCase {
             // Use opposite sense of default int<-->boolean conversions
             mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
                 public Object toNative(final Object value, final ToNativeContext ctx) {
-                    return new Integer(Boolean.TRUE.equals(value) ? 0 : MAGIC);
+                    return Integer.valueOf(Boolean.TRUE.equals(value) ? 0 : MAGIC);
                 }
                 public Class nativeType() {
                     return Integer.class;

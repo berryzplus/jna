@@ -39,7 +39,7 @@ public abstract class Shell32Util {
     	final HRESULT hr = Shell32.INSTANCE.SHGetFolderPath(hwnd,
     			nFolder, null, dwFlags,
     			pszPath);
-    	if (! hr.equals(WinError.S_OK))
+    	if (! WinError.S_OK.equals(hr))
             throw new Win32Exception(hr);
     	return Native.toString(pszPath);
 	}

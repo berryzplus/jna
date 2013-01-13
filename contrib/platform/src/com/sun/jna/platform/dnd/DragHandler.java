@@ -179,7 +179,7 @@ public abstract class DragHandler
     private final Component dragSource;
     private GhostedDragImage ghost;
     private Point imageOffset;
-	private Dimension maxGhostSize = MAX_GHOST_SIZE;
+//    private Dimension maxGhostSize = MAX_GHOST_SIZE;
     private float ghostAlpha = DEFAULT_GHOST_ALPHA;
 
     /** Enable drags from the given component, supporting the actions in
@@ -196,17 +196,17 @@ public abstract class DragHandler
                 }
                 catch(final NumberFormatException e) { }
             }
-            final String max = System.getProperty("DragHandler.maxDragImageSize");
-            if (max != null) {
-                final String[] size = max.split("x");
-                if (size.length == 2) {
-                    try {
-                        maxGhostSize = new Dimension(Integer.parseInt(size[0]),
-                                                     Integer.parseInt(size[1]));
-                    }
-                    catch(final NumberFormatException e) { }
-                }
-            }
+//            final String max = System.getProperty("DragHandler.maxDragImageSize");
+//            if (max != null) {
+//                final String[] size = max.split("x");
+//                if (size.length == 2) {
+//                    try {
+//                        maxGhostSize = new Dimension(Integer.parseInt(size[0]),
+//                                                     Integer.parseInt(size[1]));
+//                    }
+//                    catch(final NumberFormatException e) { }
+//                }
+//            }
         }
         catch(final SecurityException e) { }
         // Avoid having more than one gesture recognizer active
@@ -439,26 +439,26 @@ public abstract class DragHandler
         default: return "NONE";
         }
     }
-    private String lastAction;
+//    private String lastAction;
     private void describe(final String type, final DragSourceEvent e) {
-        if (false) {
-            final DragSourceContext ds = e.getDragSourceContext();
-            String msg = "drag: " + type;
-            if (e instanceof DragSourceDragEvent) {
-                final DragSourceDragEvent ev = (DragSourceDragEvent)e;
-                msg += ": src=" + actionString(ds.getSourceActions())
-                    + " usr=" + actionString(ev.getUserAction())
-                    + " tgt=" + actionString(ev.getTargetActions())
-                    + " act=" + actionString(ev.getDropAction())
-                    + " mods=" + ev.getGestureModifiersEx();
-            }
-            else {
-                msg += ": e=" + e;
-            }
-            if (!msg.equals(lastAction)) {
-                System.out.println(lastAction = msg);
-            }
-        }
+//        if (false) {
+//            final DragSourceContext ds = e.getDragSourceContext();
+//            String msg = "drag: " + type;
+//            if (e instanceof DragSourceDragEvent) {
+//                final DragSourceDragEvent ev = (DragSourceDragEvent)e;
+//                msg += ": src=" + actionString(ds.getSourceActions())
+//                    + " usr=" + actionString(ev.getUserAction())
+//                    + " tgt=" + actionString(ev.getTargetActions())
+//                    + " act=" + actionString(ev.getDropAction())
+//                    + " mods=" + ev.getGestureModifiersEx();
+//            }
+//            else {
+//                msg += ": e=" + e;
+//            }
+//            if (!msg.equals(lastAction)) {
+//                System.out.println(lastAction = msg);
+//            }
+//        }
     }
 
     public void dragDropEnd(final DragSourceDropEvent e) {

@@ -103,7 +103,9 @@ public class WeakIdentityHashMap implements Map {
     }
 
     public boolean equals(final Object o) {
-        return backingStore.equals(((WeakIdentityHashMap)o).backingStore);
+        if (!(o instanceof WeakIdentityHashMap))
+            return false;
+        return backingStore.equals(((WeakIdentityHashMap) o).backingStore);
     }
 
     public Object get(final Object key) {
@@ -165,10 +167,9 @@ public class WeakIdentityHashMap implements Map {
         public boolean equals(final Object o) {
             if (this == o)
                 return true;
-            final IdentityWeakReference ref = (IdentityWeakReference)o;
-            if (this.get() == ref.get())
-                return true;
-            return false;
+            if (!(o instanceof IdentityWeakReference))
+                return false;
+            return this.get() == ((IdentityWeakReference) o).get();
         }
     }
 }

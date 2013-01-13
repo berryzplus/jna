@@ -58,7 +58,7 @@ public class GhostedDragImageDemo {
         }
         public DataFlavor[] getTransferDataFlavors() { return FLAVORS; }
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(IMAGE_FLAVOR);
+            return IMAGE_FLAVOR.equals(flavor);
         }
     }
 

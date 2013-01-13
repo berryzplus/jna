@@ -43,19 +43,19 @@ public class VarArgsTest extends TestCase {
         final int arg1 = 1;
         final int arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
-                     lib.addInt32VarArgs("dd", new Integer(arg1), new Integer(arg2)));
+                     lib.addInt32VarArgs("dd", Integer.valueOf(arg1), Integer.valueOf(arg2)));
     }
     public void testShortVarArgs() {
         final short arg1 = 1;
         final short arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
-                     lib.addInt32VarArgs("dd", new Short(arg1), new Short(arg2)));
+                     lib.addInt32VarArgs("dd", Short.valueOf(arg1), Short.valueOf(arg2)));
     }
     public void testLongVarArgs() {
         final short arg1 = 1;
         final short arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
-                     lib.addInt32VarArgs("ll", new Long(arg1), new Long(arg2)));
+                     lib.addInt32VarArgs("ll", Long.valueOf(arg1), Long.valueOf(arg2)));
     }
     public void testStringVarArgs() {
         final Object[] args = new Object[] { "Test" };
@@ -64,7 +64,7 @@ public class VarArgsTest extends TestCase {
     }
 
     public void testAppendNullToVarargs() {
-        final Number[] args = new Number[] { new Integer(1) };
+        final Number[] args = new Number[] { Integer.valueOf(1) };
         assertEquals("No trailing NULL was appended to varargs list",
                      1, lib.addInt32VarArgs("dd", args));
     }

@@ -34,7 +34,7 @@ public class TypeMapperTest extends TestCase {
         final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
             public Object toNative(final Object arg, final ToNativeContext ctx) {
-                return new Integer(Boolean.TRUE.equals(arg) ? MAGIC : 0);
+                return Integer.valueOf(Boolean.TRUE.equals(arg) ? MAGIC : 0);
             }
             public Class nativeType() {
                 return Integer.class;
@@ -87,7 +87,7 @@ public class TypeMapperTest extends TestCase {
         final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Double.class, new ToNativeConverter() {
             public Object toNative(final Object arg, final ToNativeContext ctx) {
-                return new Integer(((Double)arg).intValue());
+                return Integer.valueOf(((Double)arg).intValue());
             }
             public Class nativeType() {
                 return Integer.class;
@@ -100,7 +100,7 @@ public class TypeMapperTest extends TestCase {
         final TestLibrary lib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, options);
         assertEquals("Failed to convert Double argument to Int", MAGIC,
-                     lib.returnInt32Argument(new Double(MAGIC)));
+                     lib.returnInt32Argument(Double.valueOf(MAGIC)));
     }
     public static interface BooleanTestLibrary extends Library {
         boolean returnInt32Argument(boolean b);
@@ -111,7 +111,7 @@ public class TypeMapperTest extends TestCase {
         final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
             public Object toNative(final Object value, final ToNativeContext ctx) {
-                return new Integer(Boolean.TRUE.equals(value) ? MAGIC : 0);
+                return Integer.valueOf(Boolean.TRUE.equals(value) ? MAGIC : 0);
             }
             public Class nativeType() {
                 return Integer.class;
@@ -148,10 +148,10 @@ public class TypeMapperTest extends TestCase {
         final DefaultTypeMapper mapper = new DefaultTypeMapper();
         final TypeConverter converter = new TypeConverter() {
             public Object toNative(final Object value, final ToNativeContext ctx) {
-                return new Integer(Boolean.TRUE.equals(value) ? 1 : 0);
+                return Integer.valueOf(Boolean.TRUE.equals(value) ? 1 : 0);
             }
             public Object fromNative(final Object value, final FromNativeContext context) {
-                return new Boolean(((Integer)value).intValue() == 1);
+                return Boolean.valueOf(((Integer)value).intValue() == 1);
             }
             public Class nativeType() {
                 return Integer.class;

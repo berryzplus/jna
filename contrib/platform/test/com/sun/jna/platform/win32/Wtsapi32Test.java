@@ -18,6 +18,7 @@ public class Wtsapi32Test extends TestCase {
 		junit.textui.TestRunner.run(Wtsapi32Test.class);
 	}
 
+	@Deprecated
 	public Wtsapi32Test() {
 		final Frame frame = new Frame();
 		frame.setVisible(true);
