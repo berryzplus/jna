@@ -1,10 +1,10 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU
@@ -21,20 +21,12 @@ import com.sun.jna.Structure;
 import com.sun.jna.Union;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTR;
-import com.sun.jna.platform.win32.WinDef.HBRUSH;
-import com.sun.jna.platform.win32.WinDef.HCURSOR;
-import com.sun.jna.platform.win32.WinDef.HICON;
-import com.sun.jna.platform.win32.WinDef.HINSTANCE;
-import com.sun.jna.platform.win32.WinDef.HWND;
-import com.sun.jna.platform.win32.WinDef.LPARAM;
-import com.sun.jna.platform.win32.WinDef.LRESULT;
-import com.sun.jna.platform.win32.WinDef.WPARAM;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.win32.StdCallLibrary;
 
 /**
  * Ported from WinUser.h Microsoft Windows SDK 6.0A.
- * 
+ *
  * @author dblock[at]dblock.org
  */
 public interface WinUser extends StdCallLibrary, WinDef {
@@ -47,15 +39,15 @@ public interface WinUser extends StdCallLibrary, WinDef {
 
 		}
 
-		public HDEVNOTIFY(Pointer p) {
+		public HDEVNOTIFY(final Pointer p) {
 			super(p);
 		}
 	}
-	
+
 	int FLASHW_STOP = 0;
 	int FLASHW_CAPTION = 1;
 	int FLASHW_TRAY = 2;
-	int FLASHW_ALL = (FLASHW_CAPTION | FLASHW_TRAY);
+	int FLASHW_ALL = FLASHW_CAPTION | FLASHW_TRAY;
 	int FLASHW_TIMER = 4;
 	int FLASHW_TIMERNOFG = 12;
 
@@ -149,7 +141,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public POINT() {
 		}
 
-		public POINT(int x, int y) {
+		public POINT(final int x, final int y) {
 			this.x = x;
 			this.y = y;
 		}
@@ -202,7 +194,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public SIZE() {
 		}
 
-		public SIZE(int w, int h) {
+		public SIZE(final int w, final int h) {
 			this.cx = w;
 			this.cy = h;
 		}
@@ -477,7 +469,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 	/**
 	 * The retrieved handle identifies the window of the same type that is
 	 * highest in the Z order.
-	 * 
+	 *
 	 * If the specified window is a topmost window, the handle identifies a
 	 * topmost window. If the specified window is a top-level window, the handle
 	 * identifies a top-level window. If the specified window is a child window,
@@ -488,7 +480,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 	/**
 	 * The retrieved handle identifies the window of the same type that is
 	 * lowest in the Z order.
-	 * 
+	 *
 	 * If the specified window is a topmost window, the handle identifies a
 	 * topmost window. If the specified window is a top-level window, the handle
 	 * identifies a top-level window. If the specified window is a child window,
@@ -499,7 +491,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 	/**
 	 * The retrieved handle identifies the window below the specified window in
 	 * the Z order.
-	 * 
+	 *
 	 * If the specified window is a topmost window, the handle identifies a
 	 * topmost window. If the specified window is a top-level window, the handle
 	 * identifies a top-level window. If the specified window is a child window,
@@ -510,7 +502,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 	/**
 	 * The retrieved handle identifies the window above the specified window in
 	 * the Z order.
-	 * 
+	 *
 	 * If the specified window is a topmost window, the handle identifies a
 	 * topmost window. If the specified window is a top-level window, the handle
 	 * identifies a top-level window. If the specified window is a child window,
@@ -566,7 +558,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			public ByReference() {
 			}
 
-			public ByReference(Pointer memory) {
+			public ByReference(final Pointer memory) {
 				super(memory);
 			}
 		}
@@ -574,7 +566,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public HARDWAREINPUT() {
 		}
 
-		public HARDWAREINPUT(Pointer memory) {
+		public HARDWAREINPUT(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -603,7 +595,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			public ByReference() {
 			}
 
-			public ByReference(Pointer memory) {
+			public ByReference(final Pointer memory) {
 				super(memory);
 			}
 		}
@@ -611,7 +603,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public INPUT() {
 		}
 
-		public INPUT(Pointer memory) {
+		public INPUT(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -628,7 +620,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			public INPUT_UNION() {
 			}
 
-			public INPUT_UNION(Pointer memory) {
+			public INPUT_UNION(final Pointer memory) {
 				super(memory);
 				read();
 			}
@@ -673,7 +665,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			public ByReference() {
 			}
 
-			public ByReference(Pointer memory) {
+			public ByReference(final Pointer memory) {
 				super(memory);
 			}
 		}
@@ -681,7 +673,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public KEYBDINPUT() {
 		}
 
-		public KEYBDINPUT(Pointer memory) {
+		public KEYBDINPUT(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -733,7 +725,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			public ByReference() {
 			}
 
-			public ByReference(Pointer memory) {
+			public ByReference(final Pointer memory) {
 				super(memory);
 			}
 		}
@@ -741,7 +733,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		public MOUSEINPUT() {
 		}
 
-		public MOUSEINPUT(Pointer memory) {
+		public MOUSEINPUT(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -772,11 +764,11 @@ public interface WinUser extends StdCallLibrary, WinDef {
 			return Arrays.asList(new String[] { "cbSize", "dwTime" });
 		}
 	}
-	
+
 	/**
 	 * Contains window class information. It is used with the RegisterClassEx
 	 * and GetClassInfoEx functions.
-	 * 
+	 *
 	 * The WNDCLASSEX structure is similar to the WNDCLASS structure. There are
 	 * two differences. WNDCLASSEX includes the cbSize member, which specifies
 	 * the size of the structure, and the hIconSm member, which contains a
@@ -799,11 +791,11 @@ public interface WinUser extends StdCallLibrary, WinDef {
 
 		/**
 		 * Instantiates a new wndclassex.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public WNDCLASSEX(Pointer memory) {
+		public WNDCLASSEX(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -846,7 +838,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		@Override
@@ -861,7 +853,7 @@ public interface WinUser extends StdCallLibrary, WinDef {
 	/**
 	 * An application-defined function that processes messages sent to a window.
 	 * The WNDPROC type defines a pointer to this callback function.
-	 * 
+	 *
 	 * WindowProc is a placeholder for the application-defined function name.
 	 */
 	public interface WindowProc extends Callback {
@@ -869,32 +861,32 @@ public interface WinUser extends StdCallLibrary, WinDef {
 		/**
 		 * @param hwnd
 		 *            [in] Type: HWND
-		 * 
+		 *
 		 *            A handle to the window.
-		 * 
+		 *
 		 * @param uMsg
 		 *            [in] Type: UINT
-		 * 
+		 *
 		 *            The message.
-		 * 
+		 *
 		 *            For lists of the system-provided messages, see
 		 *            System-Defined Messages.
-		 * 
+		 *
 		 * @param wParam
 		 *            [in] Type: WPARAM
-		 * 
+		 *
 		 *            Additional message information. The contents of this
 		 *            parameter depend on the value of the uMsg parameter.
-		 * 
+		 *
 		 * @param lParam
 		 *            [in] Type: LPARAM
-		 * 
+		 *
 		 *            Additional message information. The contents of this
 		 *            parameter depend on the value of the uMsg parameter.
-		 * 
+		 *
 		 * @return the lresult
 		 */
 		LRESULT callback(HWND hwnd, int uMsg, WPARAM wParam, LPARAM lParam);
-	}	
-	
+	}
+
 }

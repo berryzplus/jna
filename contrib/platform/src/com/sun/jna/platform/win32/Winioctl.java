@@ -36,7 +36,7 @@ public interface Winioctl extends StdCallLibrary {
             public ByReference() {
             }
 
-            public ByReference(Pointer memory) {
+            public ByReference(final Pointer memory) {
                 super(memory);
             }
         }
@@ -44,7 +44,7 @@ public interface Winioctl extends StdCallLibrary {
         public STORAGE_DEVICE_NUMBER() {
         }
 
-        public STORAGE_DEVICE_NUMBER(Pointer memory) {
+        public STORAGE_DEVICE_NUMBER(final Pointer memory) {
             super(memory);
             read();
         }
@@ -64,7 +64,7 @@ public interface Winioctl extends StdCallLibrary {
          * The partition number of the device, if the device can be partitioned. Otherwise, this member is -1.
          */
         public int PartitionNumber;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "DeviceType", "DeviceNumber", "PartitionNumber" });
         }

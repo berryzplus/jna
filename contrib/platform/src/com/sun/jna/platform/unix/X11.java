@@ -35,20 +35,20 @@ public interface X11 extends Library {
     class VisualID extends NativeLong {
 		private static final long serialVersionUID = 1L;
 		public VisualID() { }
-        public VisualID(long value) { super(value); }
+        public VisualID(final long value) { super(value); }
     }
 
     class XID extends NativeLong {
 		private static final long serialVersionUID = 1L;
 		public static final XID None = null;
         public XID() { this(0); }
-        public XID(long id) { super(id); }
-        protected boolean isNone(Object o) {
+        public XID(final long id) { super(id); }
+        protected boolean isNone(final Object o) {
             return o == null
-                || (o instanceof Number
-                    && ((Number)o).longValue() == X11.None);
+                || o instanceof Number
+                    && ((Number)o).longValue() == X11.None;
         }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new XID(((Number)nativeValue).longValue());
@@ -61,10 +61,10 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final Atom None = null;
         public Atom() { }
-        public Atom(long id) { super(id); }
+        public Atom(final long id) { super(id); }
         /** Return constants for predefined <code>Atom</code> values. */
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
-            long value = ((Number)nativeValue).longValue();
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
+            final long value = ((Number)nativeValue).longValue();
             if (value <= Integer.MAX_VALUE) {
                 switch((int)value) {
                 case 0: return None;
@@ -143,9 +143,9 @@ public interface X11 extends Library {
         }
     }
     class AtomByReference extends ByReference {
-        public AtomByReference() { super(XID.SIZE); }
+        public AtomByReference() { super(NativeLong.SIZE); }
         public Atom getValue() {
-            NativeLong value = getPointer().getNativeLong(0);
+            final NativeLong value = getPointer().getNativeLong(0);
             return (Atom)new Atom().fromNative(value, null);
         }
     }
@@ -153,8 +153,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final Colormap None = null;
         public Colormap() { }
-        public Colormap(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Colormap(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Colormap(((Number)nativeValue).longValue());
@@ -164,8 +164,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final Font None = null;
         public Font() { }
-        public Font(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Font(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Font(((Number)nativeValue).longValue());
@@ -175,8 +175,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final Cursor None = null;
         public Cursor() { }
-        public Cursor(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Cursor(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Cursor(((Number)nativeValue).longValue());
@@ -186,8 +186,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final KeySym None = null;
         public KeySym() { }
-        public KeySym(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public KeySym(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new KeySym(((Number)nativeValue).longValue());
@@ -197,8 +197,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
         public static final Drawable None = null;
         public Drawable() { }
-        public Drawable(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Drawable(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Drawable(((Number)nativeValue).longValue());
@@ -208,17 +208,17 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
 		public static final Window None = null;
         public Window() { }
-        public Window(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Window(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Window(((Number)nativeValue).longValue());
         }
     }
     class WindowByReference extends ByReference {
-        public WindowByReference() { super(XID.SIZE); }
+        public WindowByReference() { super(NativeLong.SIZE); }
         public Window getValue() {
-            NativeLong value = getPointer().getNativeLong(0);
+            final NativeLong value = getPointer().getNativeLong(0);
             return value.longValue() == X11.None
                 ? Window.None : new Window(value.longValue());
         }
@@ -227,8 +227,8 @@ public interface X11 extends Library {
 		private static final long serialVersionUID = 1L;
 		public static final Pixmap None = null;
         public Pixmap() { }
-        public Pixmap(long id) { super(id); }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Pixmap(final long id) { super(id); }
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
             return new Pixmap(((Number)nativeValue).longValue());
@@ -281,12 +281,12 @@ public interface X11 extends Library {
             public short blue, blueMask;
             public short alpha, alphaMask;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "red", "redMask", "green", "greenMask", "blue", "blueMask", "alpha", "alphaMask" }); 
+                return Arrays.asList(new String[] { "red", "redMask", "green", "greenMask", "blue", "blueMask", "alpha", "alphaMask" });
             }
         }
         class PictFormat extends NativeLong {
             private static final long serialVersionUID = 1L;
-            public PictFormat(long value) { super(value); }
+            public PictFormat(final long value) { super(value); }
             public PictFormat() { }
         }
         class XRenderPictFormat extends Structure {
@@ -296,7 +296,7 @@ public interface X11 extends Library {
             public XRenderDirectFormat direct;
             public Colormap colormap;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "id", "type", "depth", "direct", "colormap" }); 
+                return Arrays.asList(new String[] { "id", "type", "depth", "direct", "colormap" });
             }
         }
         int PictTypeIndexed = 0x0;
@@ -347,7 +347,7 @@ public interface X11 extends Library {
         public byte input_class;
         public byte event_type_base;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "input_class", "event_type_base" }); 
+            return Arrays.asList(new String[] { "input_class", "event_type_base" });
         }
     }
 
@@ -356,7 +356,7 @@ public interface X11 extends Library {
         public int num_classes;
         public XInputClassInfoByReference classes;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "device_id", "num_classes", "classes" }); 
+            return Arrays.asList(new String[] { "device_id", "num_classes", "classes" });
         }
     }
 
@@ -386,7 +386,7 @@ public interface X11 extends Library {
         public Pixmap icon_mask;
         public XID window_group;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "flags", "input", "initial_state", "icon_pixmap", "icon_window", "icon_x", "icon_y", "icon_mask", "window_group" }); 
+            return Arrays.asList(new String[] { "flags", "input", "initial_state", "icon_pixmap", "icon_window", "icon_x", "icon_y", "icon_mask", "window_group" });
         }
     }
 
@@ -404,7 +404,7 @@ public interface X11 extends Library {
         public int format;
         public NativeLong nitems;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "value", "encoding", "format", "nitems" }); 
+            return Arrays.asList(new String[] { "value", "encoding", "format", "nitems" });
         }
     }
 
@@ -496,7 +496,7 @@ public interface X11 extends Library {
         public boolean override_redirect;
         public Screen screen;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "x", "y", "width", "height", "border_width", "depth", "visual", "root", "c_class", "bit_gravity", "win_gravity", "backing_store", "backing_planes", "backing_pixel", "save_under", "colormap", "map_installed", "map_state", "all_event_masks", "your_event_mask", "do_not_propagate_mask", "override_redirect", "screen" }); 
+            return Arrays.asList(new String[] { "x", "y", "width", "height", "border_width", "depth", "visual", "root", "c_class", "bit_gravity", "win_gravity", "backing_store", "backing_planes", "backing_pixel", "save_under", "colormap", "map_installed", "map_state", "all_event_masks", "your_event_mask", "do_not_propagate_mask", "override_redirect", "screen" });
         }
     }
 
@@ -536,7 +536,7 @@ public interface X11 extends Library {
         public Colormap colormap;
         public Cursor cursor;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "background_pixmap", "background_pixel", "border_pixmap", "border_pixel", "bit_gravity", "win_gravity", "backing_store", "backing_planes", "backing_pixel", "save_under", "event_mask", "do_not_propagate_mask", "override_redirect", "colormap", "cursor" }); 
+            return Arrays.asList(new String[] { "background_pixmap", "background_pixel", "border_pixmap", "border_pixel", "bit_gravity", "win_gravity", "backing_store", "backing_planes", "backing_pixel", "save_under", "event_mask", "do_not_propagate_mask", "override_redirect", "colormap", "cursor" });
         }
     }
 
@@ -581,7 +581,7 @@ public interface X11 extends Library {
         public int colormap_size;
         public int bits_per_rgb;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "visual", "visualid", "screen", "depth", "c_class", "red_mask", "green_mask", "blue_mask", "colormap_size", "bits_per_rgb" }); 
+            return Arrays.asList(new String[] { "visual", "visualid", "screen", "depth", "c_class", "red_mask", "green_mask", "blue_mask", "colormap_size", "bits_per_rgb" });
         }
     }
     class XPoint extends Structure {
@@ -590,7 +590,7 @@ public interface X11 extends Library {
             return Arrays.asList(new String[] { "x", "y" });
         }
         public XPoint() { this((short)0, (short)0); }
-        public XPoint(short x, short y) {
+        public XPoint(final short x, final short y) {
             this.x = x;
             this.y = y;
         }
@@ -602,7 +602,7 @@ public interface X11 extends Library {
             return Arrays.asList(new String[] { "x", "y", "width", "height" });
         }
         public XRectangle() { this((short)0, (short)0, (short)0, (short)0); }
-        public XRectangle(short x, short y, short width, short height) {
+        public XRectangle(final short x, final short y, final short width, final short height) {
             this.x = x; this.y = y;
             this.width = width; this.height = height;
         }
@@ -746,7 +746,7 @@ public interface X11 extends Library {
         public int dash_offset;         /* patterned/dashed line information */
         public byte dashes;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "function", "plane_mask", "foreground", "background", "line_width", "line_style", "cap_style", "join_style", "fill_style", "fill_rule", "arc_mode", "tile", "stipple", "ts_x_origin", "ts_y_origin", "font", "subwindow_mode", "graphics_exposures", "clip_x_origin", "clip_y_origin", "clip_mask", "dash_offset", "dashes" }); 
+            return Arrays.asList(new String[] { "function", "plane_mask", "foreground", "background", "line_width", "line_style", "cap_style", "join_style", "fill_style", "fill_rule", "arc_mode", "tile", "stipple", "ts_x_origin", "ts_y_origin", "font", "subwindow_mode", "graphics_exposures", "clip_x_origin", "clip_y_origin", "clip_mask", "dash_offset", "dashes" });
         }
     }
     GC XCreateGC(Display display, Drawable drawable, NativeLong mask, XGCValues values);
@@ -779,11 +779,11 @@ public interface X11 extends Library {
     int XGetWindowAttributes(Display display, Window window, XWindowAttributes attributes);
     int XChangeWindowAttributes(Display display, Window window, NativeLong valuemask, XSetWindowAttributes attributes);
     // Status XGetGeometry(Display *display, Drawable d, Window *root_return, int *x_return, int *y_return, unsigned int *width_return,
-    //                     unsigned int *height_return, unsigned int *border_width_return, unsigned int *depth_return); 
+    //                     unsigned int *height_return, unsigned int *border_width_return, unsigned int *depth_return);
     int XGetGeometry(Display display, Drawable d, WindowByReference w, IntByReference x, IntByReference y, IntByReference width,
                      IntByReference heigth, IntByReference border_width, IntByReference depth);
     // Bool XTranslateCoordinates(Display *display, Window src_w, dest_w, int src_x, int src_y,
-    //                            int *dest_x_return, int *dest_y_return, Window *child_return); 
+    //                            int *dest_x_return, int *dest_y_return, Window *child_return);
     boolean XTranslateCoordinates(Display display, Window src_w, Window dest_w, int src_x, int src_y,
                                   IntByReference dest_x_return, IntByReference dest_y_return, WindowByReference child_return);
 
@@ -814,31 +814,31 @@ public interface X11 extends Library {
     /* Input Event Masks. Used as event-mask window attribute and as arguments
        to Grab requests.  Not to be confused with event names.  */
     int NoEventMask = 0;
-    int KeyPressMask = (1<<0);
-    int KeyReleaseMask = (1<<1);
-    int ButtonPressMask = (1<<2);
-    int ButtonReleaseMask = (1<<3);
-    int EnterWindowMask = (1<<4);
-    int LeaveWindowMask = (1<<5);
-    int PointerMotionMask = (1<<6);
-    int PointerMotionHintMask = (1<<7);
-    int Button1MotionMask = (1<<8);
-    int Button2MotionMask = (1<<9);
-    int Button3MotionMask = (1<<10);
-    int Button4MotionMask = (1<<11);
-    int Button5MotionMask = (1<<12);
-    int ButtonMotionMask = (1<<13);
-    int KeymapStateMask = (1<<14);
-    int ExposureMask = (1<<15);
-    int VisibilityChangeMask = (1<<16);
-    int StructureNotifyMask = (1<<17);
-    int ResizeRedirectMask = (1<<18);
-    int SubstructureNotifyMask = (1<<19);
-    int SubstructureRedirectMask = (1<<20);
-    int FocusChangeMask = (1<<21);
-    int PropertyChangeMask = (1<<22);
-    int ColormapChangeMask = (1<<23);
-    int OwnerGrabButtonMask = (1<<24);
+    int KeyPressMask = 1<<0;
+    int KeyReleaseMask = 1<<1;
+    int ButtonPressMask = 1<<2;
+    int ButtonReleaseMask = 1<<3;
+    int EnterWindowMask = 1<<4;
+    int LeaveWindowMask = 1<<5;
+    int PointerMotionMask = 1<<6;
+    int PointerMotionHintMask = 1<<7;
+    int Button1MotionMask = 1<<8;
+    int Button2MotionMask = 1<<9;
+    int Button3MotionMask = 1<<10;
+    int Button4MotionMask = 1<<11;
+    int Button5MotionMask = 1<<12;
+    int ButtonMotionMask = 1<<13;
+    int KeymapStateMask = 1<<14;
+    int ExposureMask = 1<<15;
+    int VisibilityChangeMask = 1<<16;
+    int StructureNotifyMask = 1<<17;
+    int ResizeRedirectMask = 1<<18;
+    int SubstructureNotifyMask = 1<<19;
+    int SubstructureRedirectMask = 1<<20;
+    int FocusChangeMask = 1<<21;
+    int PropertyChangeMask = 1<<22;
+    int ColormapChangeMask = 1<<23;
+    int OwnerGrabButtonMask = 1<<24;
 
     /* Event names.  Used in "type" field in XEvent structures.  Not to be
        confused with event masks above.  They start from 2 because 0 and 1
@@ -880,14 +880,14 @@ public interface X11 extends Library {
 
     /* Key masks. Used as modifiers to GrabButton and GrabKey, results of QueryPointer,
        state in various key-, mouse-, and button-related events. */
-    int ShiftMask = (1 << 0);
-    int LockMask = (1 << 1);
-    int ControlMask = (1 << 2);
-    int Mod1Mask = (1 << 3);
-    int Mod2Mask = (1 << 4);
-    int Mod3Mask = (1 << 5);
-    int Mod4Mask = (1 << 6);
-    int Mod5Mask = (1 << 7);
+    int ShiftMask = 1 << 0;
+    int LockMask = 1 << 1;
+    int ControlMask = 1 << 2;
+    int Mod1Mask = 1 << 3;
+    int Mod2Mask = 1 << 4;
+    int Mod3Mask = 1 << 5;
+    int Mod4Mask = 1 << 6;
+    int Mod5Mask = 1 << 7;
 
     /* modifier names.  Used to build a SetModifierMapping request or
        to read a GetModifierMapping request.  These correspond to the
@@ -903,13 +903,13 @@ public interface X11 extends Library {
 
     /* button masks.  Used in same manner as Key masks above. Not to be confused
        with button names below. */
-    int Button1Mask = (1 << 8);
-    int Button2Mask = (1 << 9);
-    int Button3Mask = (1 << 10);
-    int Button4Mask = (1 << 11);
-    int Button5Mask = (1 << 12);
+    int Button1Mask = 1 << 8;
+    int Button2Mask = 1 << 9;
+    int Button3Mask = 1 << 10;
+    int Button4Mask = 1 << 11;
+    int Button5Mask = 1 << 12;
 
-    int AnyModifier = (1 << 15);  /* used in GrabButton, GrabKey */
+    int AnyModifier = 1 << 15;  /* used in GrabButton, GrabKey */
 
     /* button names. Used as arguments to GrabButton and as detail in ButtonPress
        and ButtonRelease events.  Not to be confused with button masks above.
@@ -1034,30 +1034,30 @@ public interface X11 extends Library {
     int InputOnly = 2;
 
     /* Window attributes for CreateWindow and ChangeWindowAttributes */
-    int CWBackPixmap = (1<<0);
-    int CWBackPixel = (1<<1);
-    int CWBorderPixmap = (1<<2);
-    int CWBorderPixel = (1<<3);
-    int CWBitGravity = (1<<4);
-    int CWWinGravity = (1<<5);
-    int CWBackingStore = (1<<6);
-    int CWBackingPlanes = (1<<7);
-    int CWBackingPixel = (1<<8);
-    int CWOverrideRedirect = (1<<9);
-    int CWSaveUnder = (1<<10);
-    int CWEventMask = (1<<11);
-    int CWDontPropagate = (1<<12);
-    int CWColormap = (1<<13);
-    int CWCursor = (1<<14);
+    int CWBackPixmap = 1<<0;
+    int CWBackPixel = 1<<1;
+    int CWBorderPixmap = 1<<2;
+    int CWBorderPixel = 1<<3;
+    int CWBitGravity = 1<<4;
+    int CWWinGravity = 1<<5;
+    int CWBackingStore = 1<<6;
+    int CWBackingPlanes = 1<<7;
+    int CWBackingPixel = 1<<8;
+    int CWOverrideRedirect = 1<<9;
+    int CWSaveUnder = 1<<10;
+    int CWEventMask = 1<<11;
+    int CWDontPropagate = 1<<12;
+    int CWColormap = 1<<13;
+    int CWCursor = 1<<14;
 
     /* ConfigureWindow structure */
-    int CWX = (1<<0);
-    int CWY = (1<<1);
-    int CWWidth = (1<<2);
-    int CWHeight = (1<<3);
-    int CWBorderWidth = (1<<4);
-    int CWSibling = (1<<5);
-    int CWStackMode = (1<<6);
+    int CWX = 1<<0;
+    int CWY = 1<<1;
+    int CWWidth = 1<<2;
+    int CWHeight = 1<<3;
+    int CWBorderWidth = 1<<4;
+    int CWSibling = 1<<5;
+    int CWStackMode = 1<<6;
 
 
     /* Bit Gravity */
@@ -1184,29 +1184,29 @@ public interface X11 extends Library {
 
     /* GC components: masks used in CreateGC, CopyGC, ChangeGC, OR'ed into
        GC.stateChanges */
-    int GCFunction = (1<<0);
-    int GCPlaneMask = (1<<1);
-    int GCForeground = (1<<2);
-    int GCBackground = (1<<3);
-    int GCLineWidth = (1<<4);
-    int GCLineStyle = (1<<5);
-    int GCCapStyle = (1<<6);
-    int GCJoinStyle = (1<<7);
-    int GCFillStyle = (1<<8);
-    int GCFillRule = (1<<9);
-    int GCTile = (1<<10);
-    int GCStipple = (1<<11);
-    int GCTileStipXOrigin = (1<<12);
-    int GCTileStipYOrigin = (1<<13);
-    int GCFont = (1<<14);
-    int GCSubwindowMode = (1<<15);
-    int GCGraphicsExposures = (1<<16);
-    int GCClipXOrigin = (1<<17);
-    int GCClipYOrigin = (1<<18);
-    int GCClipMask = (1<<19);
-    int GCDashOffset = (1<<20);
-    int GCDashList = (1<<21);
-    int GCArcMode = (1<<22);
+    int GCFunction = 1<<0;
+    int GCPlaneMask = 1<<1;
+    int GCForeground = 1<<2;
+    int GCBackground = 1<<3;
+    int GCLineWidth = 1<<4;
+    int GCLineStyle = 1<<5;
+    int GCCapStyle = 1<<6;
+    int GCJoinStyle = 1<<7;
+    int GCFillStyle = 1<<8;
+    int GCFillRule = 1<<9;
+    int GCTile = 1<<10;
+    int GCStipple = 1<<11;
+    int GCTileStipXOrigin = 1<<12;
+    int GCTileStipYOrigin = 1<<13;
+    int GCFont = 1<<14;
+    int GCSubwindowMode = 1<<15;
+    int GCGraphicsExposures = 1<<16;
+    int GCClipXOrigin = 1<<17;
+    int GCClipYOrigin = 1<<18;
+    int GCClipMask = 1<<19;
+    int GCDashOffset = 1<<20;
+    int GCDashList = 1<<21;
+    int GCArcMode = 1<<22;
 
     int GCLastBit = 22;
     /*****************************************************************
@@ -1238,9 +1238,9 @@ public interface X11 extends Library {
 
 
     /* Flags used in StoreNamedColor, StoreColors */
-    int DoRed = (1<<0);
-    int DoGreen = (1<<1);
-    int DoBlue = (1<<2);
+    int DoRed = 1<<0;
+    int DoGreen = 1<<1;
+    int DoBlue = 1<<2;
 
     /*****************************************************************
      * CURSOR STUFF
@@ -1263,14 +1263,14 @@ public interface X11 extends Library {
     int LedModeOn = 1;
 
     /* masks for ChangeKeyboardControl */
-    int KBKeyClickPercent = (1<<0);
-    int KBBellPercent = (1<<1);
-    int KBBellPitch = (1<<2);
-    int KBBellDuration = (1<<3);
-    int KBLed = (1<<4);
-    int KBLedMode = (1<<5);
-    int KBKey = (1<<6);
-    int KBAutoRepeatMode = (1<<7);
+    int KBKeyClickPercent = 1<<0;
+    int KBBellPercent = 1<<1;
+    int KBBellPitch = 1<<2;
+    int KBBellDuration = 1<<3;
+    int KBLed = 1<<4;
+    int KBLedMode = 1<<5;
+    int KBKey = 1<<6;
+    int KBAutoRepeatMode = 1<<7;
 
     int MappingSuccess = 0;
     int MappingBusy = 1;
@@ -1374,7 +1374,7 @@ public interface X11 extends Library {
         public Display display;     // Display the event was read from
         public Window window;       // window on which event was requested in event mask
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window" });
         }
     }
 
@@ -1393,7 +1393,7 @@ public interface X11 extends Library {
         public int keycode;         // detail
         public int same_screen;     // same screen flag
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "keycode", "same_screen" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "keycode", "same_screen" });
         }
     }
 
@@ -1412,7 +1412,7 @@ public interface X11 extends Library {
         public int button;          // detail
         public int same_screen;     // same screen flag
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "button", "same_screen" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "button", "same_screen" });
         }
     }
 
@@ -1432,7 +1432,7 @@ public interface X11 extends Library {
         public int format;
         public Data data;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "message_type", "format", "data" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "message_type", "format", "data" });
         }
 
         public static class Data extends Union {
@@ -1457,7 +1457,7 @@ public interface X11 extends Library {
         public byte is_hint;        // detail
         public int same_screen;     // same screen flag
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "is_hint", "same_screen" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "is_hint", "same_screen" });
         }
     }
 
@@ -1485,7 +1485,7 @@ public interface X11 extends Library {
         public int focus;           // boolean focus
         public int state;           // key or button mask
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "mode", "detail", "same_screen", "focus", "state" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "mode", "detail", "same_screen", "focus", "state" });
         }
     }
 
@@ -1509,7 +1509,7 @@ public interface X11 extends Library {
         * NotifyPointerRoot, NotifyDetailNone
         */
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "mode", "detail" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "mode", "detail" });
         }
     }
 
@@ -1529,7 +1529,7 @@ public interface X11 extends Library {
         public int width, height;
         public int count;           // if non-zero, at least this many more
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "count" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "count" });
         }
     }
 
@@ -1545,7 +1545,7 @@ public interface X11 extends Library {
         public int major_code;      // core is CopyArea or CopyPlane
         public int minor_code;      // not defined in the core
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "drawable", "x", "y", "width", "height", "count", "major_code", "minor_code" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "drawable", "x", "y", "width", "height", "count", "major_code", "minor_code" });
         }
     }
 
@@ -1558,7 +1558,7 @@ public interface X11 extends Library {
         public int major_code;      // core is CopyArea or CopyPlane
         public int minor_code;      // not defined in the core
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "drawable", "major_code", "minor_code" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "drawable", "major_code", "minor_code" });
         }
     }
 
@@ -1570,7 +1570,7 @@ public interface X11 extends Library {
         public Window window;
         public int state;           // Visibility state
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "state" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "state" });
         }
     }
 
@@ -1586,7 +1586,7 @@ public interface X11 extends Library {
         public int border_width;    // border width
         public int override_redirect; // creation should be overridden
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "parent", "window", "x", "y", "width", "height", "border_width", "override_redirect" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "parent", "window", "x", "y", "width", "height", "border_width", "override_redirect" });
         }
     }
 
@@ -1610,7 +1610,7 @@ public interface X11 extends Library {
         public Window window;
         public int from_configure;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "from_configure" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "from_configure" });
         }
     }
 
@@ -1623,7 +1623,7 @@ public interface X11 extends Library {
         public Window window;
         public int override_redirect; // boolean, is override set...
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "override_redirect" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "override_redirect" });
         }
     }
 
@@ -1635,7 +1635,7 @@ public interface X11 extends Library {
         public Window parent;
         public Window window;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window" });
         }
     }
 
@@ -1650,7 +1650,7 @@ public interface X11 extends Library {
         public int x, y;
         public int override_redirect;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "override_redirect" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "override_redirect" });
         }
     }
 
@@ -1667,7 +1667,7 @@ public interface X11 extends Library {
         public Window above;
         public int override_redirect;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "border_width", "above", "override_redirect" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "border_width", "above", "override_redirect" });
         }
     }
 
@@ -1680,7 +1680,7 @@ public interface X11 extends Library {
         public Window window;
         public int x, y;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y" });
         }
     }
 
@@ -1692,7 +1692,7 @@ public interface X11 extends Library {
         public Window window;
         public int width, height;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "width", "height" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "width", "height" });
         }
     }
 
@@ -1710,7 +1710,7 @@ public interface X11 extends Library {
         public int detail;          // Above, Below, TopIf, BottomIf, Opposite
         public NativeLong value_mask;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "above", "detail", "value_mask" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "above", "detail", "value_mask" });
         }
     }
 
@@ -1723,7 +1723,7 @@ public interface X11 extends Library {
         public Window window;
         public int place;           // PlaceOnTop, PlaceOnBottom
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "event", "window", "place" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "event", "window", "place" });
         }
     }
 
@@ -1736,7 +1736,7 @@ public interface X11 extends Library {
         public Window window;
         public int place;           // PlaceOnTop, PlaceOnBottom
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "parent", "window", "place" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "parent", "window", "place" });
         }
     }
 
@@ -1750,7 +1750,7 @@ public interface X11 extends Library {
         public NativeLong time;
         public int state;           // NewValue, Deleted
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "atom", "time", "state" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "atom", "time", "state" });
         }
     }
 
@@ -1763,7 +1763,7 @@ public interface X11 extends Library {
         public Atom selection;
         public NativeLong time;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "selection", "time" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "selection", "time" });
         }
     }
 
@@ -1779,7 +1779,7 @@ public interface X11 extends Library {
         public Atom property;
         public NativeLong time;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "owner", "requestor", "selection", "target", "property", "time" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "owner", "requestor", "selection", "target", "property", "time" });
         }
     }
 
@@ -1794,7 +1794,7 @@ public interface X11 extends Library {
         public Atom property;       // ATOM or None
         public NativeLong time;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "requestor", "selection", "target", "property", "time" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "requestor", "selection", "target", "property", "time" });
         }
     }
 
@@ -1808,7 +1808,7 @@ public interface X11 extends Library {
         public int c_new;           // C++
         public int state;           // ColormapInstalled, ColormapUninstalled
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "colormap", "c_new", "state" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "colormap", "c_new", "state" });
         }
     }
 
@@ -1822,7 +1822,7 @@ public interface X11 extends Library {
         public int first_keycode;   // first keycode
         public int count;           // defines range of change w. first_keycode*/
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "request", "first_keycode", "count" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "request", "first_keycode", "count" });
         }
     }
 
@@ -1835,7 +1835,7 @@ public interface X11 extends Library {
         public byte minor_code;     // Minor op-code of failed request
         public XID resourceid;      // resource id
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "display", "serial", "error_code", "request_code", "minor_code", "resourceid" }); 
+            return Arrays.asList(new String[] { "type", "display", "serial", "error_code", "request_code", "minor_code", "resourceid" });
         }
     }
 
@@ -1848,7 +1848,7 @@ public interface X11 extends Library {
         public Window window;
         public byte key_vector[] = new byte[32];
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "key_vector" }); 
+            return Arrays.asList(new String[] { "type", "serial", "send_event", "display", "window", "key_vector" });
         }
     }
 
@@ -1920,7 +1920,7 @@ public interface X11 extends Library {
     /*****************************************************************
      * KeySyms, Keycodes, Keymaps
      *****************************************************************/
-    
+
     String XKeysymToString(KeySym keysym);
     KeySym XStringToKeysym(String string);
     byte XKeysymToKeycode(Display display, KeySym keysym);
@@ -1995,10 +1995,10 @@ public interface X11 extends Library {
         public int max_keypermod;   /* The server's max # of keys per modifier */
         public Pointer modifiermap;   /* An 8 by max_keypermod array of modifiers */
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "max_keypermod", "modifiermap" }); 
+            return Arrays.asList(new String[] { "max_keypermod", "modifiermap" });
         }
     }
-    
+
     class XKeyboardControlRef extends Structure implements Structure.ByReference {
         /** Volume for key clicks between 0 (off) and 100 (loud) inclusive, if possible. A setting of -1 restores the default. */
         public int key_click_percent;
@@ -2018,7 +2018,7 @@ public interface X11 extends Library {
         public int auto_repeat_mode;
 
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led", "led_mode", "key", "auto_repeat_mode" }); 
+            return Arrays.asList(new String[] { "key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led", "led_mode", "key", "auto_repeat_mode" });
         }
 
         public String toString() {
@@ -2052,7 +2052,7 @@ public interface X11 extends Library {
         public byte auto_repeats[] = new byte[32];
 
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led_mask", "global_auto_repeat", "auto_repeats" }); 
+            return Arrays.asList(new String[] { "key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led_mask", "global_auto_repeat", "auto_repeats" });
         }
 
         public String toString() {

@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 /** General structure by value functionality tests. */
 public class StructureByValueTest extends TestCase {
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(StructureByValueTest.class);
     }
 
@@ -86,35 +86,35 @@ public class StructureByValueTest extends TestCase {
     }
     final long MAGIC = 0x0123456789ABCDEFL;
     public void testStructureArgByValue8() {
-        ByValue8 data = new ByValue8();
+        final ByValue8 data = new ByValue8();
         final byte DATA = (byte)MAGIC;
         data.data = DATA;
         assertEquals("Failed to pass 8-bit struct by value",
                      DATA, lib.testStructureByValueArgument8(data));
     }
     public void testStructureArgByValue16() {
-        ByValue16 data = new ByValue16();
+        final ByValue16 data = new ByValue16();
         final short DATA = (short)MAGIC;
         data.data = DATA;
         assertEquals("Failed to pass 16-bit struct by value",
                      DATA, lib.testStructureByValueArgument16(data));
     }
     public void testStructureArgByValue32() {
-        ByValue32 data = new ByValue32();
+        final ByValue32 data = new ByValue32();
         final int DATA = (int)MAGIC;
         data.data = DATA;
         assertEquals("Failed to pass 32-bit struct by value",
                      DATA, lib.testStructureByValueArgument32(data));
     }
     public void testStructureArgByValue64() {
-        ByValue64 data = new ByValue64();
+        final ByValue64 data = new ByValue64();
         final long DATA = MAGIC;
         data.data = DATA;
         assertEquals("Failed to pass 64-bit struct by value",
                      DATA, lib.testStructureByValueArgument64(data));
     }
     public void testStructureArgByValue128() {
-        ByValue128 data = new ByValue128();
+        final ByValue128 data = new ByValue128();
         final long DATA = MAGIC;
         data.data = DATA;
         data.data1 = DATA;

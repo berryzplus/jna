@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -29,45 +29,45 @@ import com.sun.jna.win32.StdCallLibrary;
  * @author dblock[at]dblock.org
  */
 public interface NTSecApi extends StdCallLibrary {
-	
+
     /**
-     * The LSA_UNICODE_STRING structure is used by various Local Security Authority (LSA) 
+     * The LSA_UNICODE_STRING structure is used by various Local Security Authority (LSA)
      * functions to specify a Unicode string.
      */
     public static class LSA_UNICODE_STRING extends Structure {
         public static class ByReference extends LSA_UNICODE_STRING implements Structure.ByReference {
 
         }
-	
+
         /**
-         * Specifies the length, in bytes, of the string pointed to by the Buffer member, 
+         * Specifies the length, in bytes, of the string pointed to by the Buffer member,
          * not including the terminating null character, if any.
          */
         public short Length;
         /**
-         * Specifies the total size, in bytes, of the memory allocated for Buffer. Up to 
+         * Specifies the total size, in bytes, of the memory allocated for Buffer. Up to
          * MaximumLength bytes can be written into the buffer without trampling memory.
          */
         public short MaximumLength;
         /**
-         * Pointer to a wide character string. Note that the strings returned by the 
+         * Pointer to a wide character string. Note that the strings returned by the
          * various LSA functions might not be null terminated.
          */
         public Pointer Buffer;
-		
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Length", "MaximumLength", "Buffer" });
         }
-        
+
         /**
          * String representation of the buffer.
          * @return
          *  Unicode string.
          */
         public String getString() {
-            byte[] data = Buffer.getByteArray(0, Length);
+            final byte[] data = Buffer.getByteArray(0, Length);
             if (data.length < 2 || data[data.length - 1] != 0) {
-                Memory newdata = new Memory(data.length + 2);
+                final Memory newdata = new Memory(data.length + 2);
                 newdata.write(0, data, 0, data.length);
                 return newdata.getString(0, true);
             }
@@ -79,14 +79,14 @@ public interface NTSecApi extends StdCallLibrary {
      * Pointer to an LSA_UNICODE_STRING.
      */
     public static class PLSA_UNICODE_STRING {
-        public static class ByReference extends PLSA_UNICODE_STRING 
+        public static class ByReference extends PLSA_UNICODE_STRING
             implements Structure.ByReference {
 
         }
-		
+
         public LSA_UNICODE_STRING.ByReference s;
     }
-	
+
     /**
      * Record contains an included top-level name.
      */
@@ -104,12 +104,12 @@ public interface NTSecApi extends StdCallLibrary {
         public PSID.ByReference Sid;
         public LSA_UNICODE_STRING DnsName;
         public LSA_UNICODE_STRING NetbiosName;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Sid", "DnsName", "NetbiosName" });
         }
     }
-	
+
     public static class LSA_FOREST_TRUST_BINARY_DATA extends Structure {
         public int Length;
         public Pointer Buffer;
@@ -117,9 +117,9 @@ public interface NTSecApi extends StdCallLibrary {
             return Arrays.asList(new String[] { "Length", "Buffer" });
         }
     }
-	
-    public static class LSA_FOREST_TRUST_RECORD extends Structure {    
-		
+
+    public static class LSA_FOREST_TRUST_RECORD extends Structure {
+
         public static class ByReference extends LSA_FOREST_TRUST_RECORD  implements Structure.ByReference {
 
         }
@@ -128,19 +128,19 @@ public interface NTSecApi extends StdCallLibrary {
             public static class ByReference extends UNION  implements Structure.ByReference {
 
             }
-			
+
             public LSA_UNICODE_STRING TopLevelName;
             public LSA_FOREST_TRUST_DOMAIN_INFO DomainInfo;
             public LSA_FOREST_TRUST_BINARY_DATA Data;
         }
-		
+
         /**
          * Flags that control the behavior of the operation.
          */
         public int Flags;
-		
+
         /**
-         * LSA_FOREST_TRUST_RECORD_TYPE enumeration that indicates the type of the record. 
+         * LSA_FOREST_TRUST_RECORD_TYPE enumeration that indicates the type of the record.
          * The following table shows the possible values.
          * ForestTrustTopLevelName
          *  Record contains an included top-level name.
@@ -153,19 +153,19 @@ public interface NTSecApi extends StdCallLibrary {
          */
         public int ForestTrustType;
         public LARGE_INTEGER Time;
-		
+
         /**
-         * Data type depending on ForestTrustType. 
+         * Data type depending on ForestTrustType.
          */
         public UNION u;
-		
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Flags", "ForestTrustType", "Time", "u" });
         }
-        
+
         public void read() {
             super.read();
-			
+
             switch(ForestTrustType) {
             case NTSecApi.ForestTrustTopLevelName:
             case NTSecApi.ForestTrustTopLevelNameEx:
@@ -178,36 +178,36 @@ public interface NTSecApi extends StdCallLibrary {
                 u.setType(LSA_FOREST_TRUST_BINARY_DATA.class);
                 break;
             }
-			
+
             u.read();
         }
     }
-	
+
     public static class PLSA_FOREST_TRUST_RECORD extends Structure {
         public static class ByReference extends PLSA_FOREST_TRUST_RECORD implements Structure.ByReference {
-			
+
         }
-		
+
         public LSA_FOREST_TRUST_RECORD.ByReference tr;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "tr" });
         }
     }
-	
+
     public static class LSA_FOREST_TRUST_INFORMATION extends Structure {
-		
+
         public static class ByReference extends LSA_FOREST_TRUST_INFORMATION implements Structure.ByReference {
-			
+
         }
-		
+
         /**
-         * Number of LSA_FOREST_TRUST_RECORD structures in the array pointed to by the 
+         * Number of LSA_FOREST_TRUST_RECORD structures in the array pointed to by the
          * Entries member.
          */
         public int RecordCount;
         /**
-         * Pointer to a pointer to an array of LSA_FOREST_TRUST_RECORD structures, 
+         * Pointer to a pointer to an array of LSA_FOREST_TRUST_RECORD structures,
          * each of which contains one piece of forest trust information.
          */
         public PLSA_FOREST_TRUST_RECORD.ByReference Entries;
@@ -215,7 +215,7 @@ public interface NTSecApi extends StdCallLibrary {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "RecordCount", "Entries" });
         }
-        
+
         /**
          * Get an array of LSA_FOREST_TRUST_RECORD entries.
          * @return
@@ -226,17 +226,17 @@ public interface NTSecApi extends StdCallLibrary {
         }
     }
     /**
-     * The LSA_FOREST_TRUST_INFORMATION structure contains Local Security Authority 
+     * The LSA_FOREST_TRUST_INFORMATION structure contains Local Security Authority
      * forest trust information.
      */
     public static class PLSA_FOREST_TRUST_INFORMATION extends Structure {
-		
+
         public static class ByReference extends PLSA_FOREST_TRUST_INFORMATION implements Structure.ByReference {
-			
+
         }
 
         public LSA_FOREST_TRUST_INFORMATION.ByReference fti;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "fti" });
         }

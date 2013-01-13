@@ -8,18 +8,11 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
-
-import com.sun.jna.ReturnTypesTest.TestLibrary.SimpleStructure;
-import com.sun.jna.ReturnTypesTest.TestLibrary.TestStructure;
-import com.sun.jna.ReturnTypesTest.TestLibrary.TestSmallStructure;
 
 /** Exercise a range of native methods.
  *
@@ -28,11 +21,11 @@ import com.sun.jna.ReturnTypesTest.TestLibrary.TestSmallStructure;
 public class DirectReturnTypesTest extends ReturnTypesTest {
 
     public static class DirectTestLibrary implements TestLibrary {
-        
-        public Object returnObjectArgument(Object s) {
+
+        public Object returnObjectArgument(final Object s) {
             throw new IllegalArgumentException(s.getClass().getName());
         }
-        public TestObject returnObjectArgument(TestObject s) {
+        public TestObject returnObjectArgument(final TestObject s) {
             throw new IllegalArgumentException(s.getClass().getName());
         }
         public native boolean returnFalse();
@@ -54,9 +47,9 @@ public class DirectReturnTypesTest extends ReturnTypesTest {
         public native TestSmallStructure.ByValue returnSmallStructureByValue();
         public native TestStructure.ByValue returnStructureByValue();
 
-        public Pointer[] returnPointerArgument(Pointer[] arg) {throw new UnsupportedOperationException();}
-        public String[] returnPointerArgument(String[] arg) {throw new UnsupportedOperationException();}
-        public WString[] returnPointerArgument(WString[] arg) {throw new UnsupportedOperationException();}
+        public Pointer[] returnPointerArgument(final Pointer[] arg) {throw new UnsupportedOperationException();}
+        public String[] returnPointerArgument(final String[] arg) {throw new UnsupportedOperationException();}
+        public WString[] returnPointerArgument(final WString[] arg) {throw new UnsupportedOperationException();}
 
         static {
             Native.register("testlib");
@@ -66,9 +59,9 @@ public class DirectReturnTypesTest extends ReturnTypesTest {
     protected void setUp() {
         lib = new DirectTestLibrary();
     }
-    
+
     public static class DirectObjectTestLibrary extends DirectTestLibrary {
-        public DirectObjectTestLibrary(Map options) {
+        public DirectObjectTestLibrary(final Map options) {
             Native.register(getClass(), NativeLibrary.getInstance("testlib", options));
         }
     }
@@ -89,7 +82,7 @@ public class DirectReturnTypesTest extends ReturnTypesTest {
     public void testReturnStringArray() { }
     public void testReturnWStringArray() { }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(DirectReturnTypesTest.class);
     }
 }

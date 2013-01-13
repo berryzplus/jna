@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
@@ -17,16 +17,16 @@ public class IntByReference extends ByReference {
     public IntByReference() {
         this(0);
     }
-    
-    public IntByReference(int value) {
+
+    public IntByReference(final int value) {
         super(4);
         setValue(value);
     }
-    
-    public void setValue(int value) {
+
+    public void setValue(final int value) {
         getPointer().setInt(0, value);
     }
-    
+
     public int getValue() {
         return getPointer().getInt(0);
     }

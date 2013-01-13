@@ -6,16 +6,16 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
 import java.nio.CharBuffer;
 
 
-/** Provides a temporary allocation of an immutable C string 
- * (<code>const char*</code> or <code>const wchar_t*</code>) for use when 
- * converting a Java String into a native memory function argument.  
+/** Provides a temporary allocation of an immutable C string
+ * (<code>const char*</code> or <code>const wchar_t*</code>) for use when
+ * converting a Java String into a native memory function argument.
  *
  * @author  Todd Fast, todd.fast@sun.com
  * @author twall@users.sf.net
@@ -23,42 +23,41 @@ import java.nio.CharBuffer;
 class NativeString implements CharSequence, Comparable {
 
     private Pointer pointer;
-    private boolean wide;
+    private final boolean wide;
 
     /** Create a native string (NUL-terminated array of <code>char</code>).<p>
      * If the system property <code>jna.encoding</code> is set, its value will
      * be used to encode the native string.  If not set or if the encoding
-     * is unavailable, the default platform encoding will be used. 
+     * is unavailable, the default platform encoding will be used.
      */
-    public NativeString(String string) {
+    public NativeString(final String string) {
         this(string, false);
     }
 
     /** Create a native string as a NUL-terminated array of <code>wchar_t</code>
      * (if <code>wide</code> is true) or <code>char</code>.<p>
      * If the system property <code>jna.encoding</code> is set, its value will
-     * be used to encode the native <code>char</code>string.  
-     * If not set or if the encoding is unavailable, the default platform 
-     * encoding will be used. 
-     * 
+     * be used to encode the native <code>char</code>string.
+     * If not set or if the encoding is unavailable, the default platform
+     * encoding will be used.
+     *
      * @param string value to write to native memory
      * @param wide whether to store the String as <code>wchar_t</code>
      */
-    public NativeString(String string, boolean wide) {
-        if (string == null) {
+    public NativeString(final String string, final boolean wide) {
+        if (string == null)
             throw new NullPointerException("String must not be null");
-        }
         // Allocate the memory to hold the string.  Note, we have to
-        // make this 1 element longer in order to accommodate the terminating 
+        // make this 1 element longer in order to accommodate the terminating
         // NUL (which is generated in Pointer.setString()).
         this.wide = wide;
         if (wide) {
-            int len = (string.length() + 1 ) * Native.WCHAR_SIZE;
+            final int len = (string.length() + 1 ) * Native.WCHAR_SIZE;
             pointer = new Memory(len);
             pointer.setString(0, string, true);
         }
         else {
-            byte[] data = Native.getBytes(string);
+            final byte[] data = Native.getBytes(string);
             pointer = new Memory(data.length + 1);
             pointer.write(0, data, 0, data.length);
             pointer.setByte(data.length, (byte)0);
@@ -69,11 +68,10 @@ class NativeString implements CharSequence, Comparable {
         return toString().hashCode();
     }
 
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
 
-        if (other instanceof CharSequence) {
+        if (other instanceof CharSequence)
             return compareTo(other) == 0;
-        }
         return false;
     }
 
@@ -87,7 +85,7 @@ class NativeString implements CharSequence, Comparable {
         return pointer;
     }
 
-    public char charAt(int index) {
+    public char charAt(final int index) {
         return toString().charAt(index);
     }
 
@@ -95,11 +93,11 @@ class NativeString implements CharSequence, Comparable {
         return toString().length();
     }
 
-    public CharSequence subSequence(int start, int end) {
+    public CharSequence subSequence(final int start, final int end) {
         return CharBuffer.wrap(toString()).subSequence(start, end);
     }
 
-    public int compareTo(Object other) {
+    public int compareTo(final Object other) {
 
         if (other == null)
             return 1;

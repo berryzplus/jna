@@ -13,13 +13,7 @@
 package com.sun.jna;
 
 import junit.framework.*;
-import com.sun.jna.*;
-import com.sun.jna.ptr.PointerByReference;
-import java.lang.ref.*;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -32,9 +26,9 @@ public class PerformanceTest extends TestCase {
 
     public void testEmpty() { }
 
-    private static final String BUILDDIR = 
+    private static final String BUILDDIR =
         System.getProperty("jna.builddir",
-                           "build" + (Platform.is64Bit() ? "-d64" : "")); 
+                           "build" + (Platform.is64Bit() ? "-d64" : ""));
 
     private static class JNI {
         static {
@@ -47,18 +41,18 @@ public class PerformanceTest extends TestCase {
             }
             System.load(path);
         }
-        
+
         private static native double cos(double x);
     }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         checkPerformance();
     }
 
     static class MathLibrary {
 
         public static native double cos(double x);
-        
+
         static {
             Native.register(Platform.MATH_LIBRARY_NAME);
         }
@@ -73,7 +67,7 @@ public class PerformanceTest extends TestCase {
             public size_t() {
                 super(Native.POINTER_SIZE);
             }
-            public size_t(long value) {
+            public size_t(final long value) {
                 super(Native.POINTER_SIZE, value);
             }
         }
@@ -87,7 +81,7 @@ public class PerformanceTest extends TestCase {
         public static native int strlen(Pointer p);
         public static native int strlen(byte[] b);
         public static native int strlen(Buffer b);
-        
+
         static {
             Native.register(Platform.C_LIBRARY_NAME);
         }
@@ -105,42 +99,41 @@ public class PerformanceTest extends TestCase {
         final int COUNT = 100000;
         System.out.println("Checking performance of different access methods (" + COUNT + " iterations)");
         final int SIZE = 8*1024;
-        ByteBuffer b = ByteBuffer.allocateDirect(SIZE);
+        final ByteBuffer b = ByteBuffer.allocateDirect(SIZE);
         // Native order is faster
         b.order(ByteOrder.nativeOrder());
-        Pointer pb = Native.getDirectBufferPointer(b);
+        final Pointer pb = Native.getDirectBufferPointer(b);
 
-        String mname = Platform.MATH_LIBRARY_NAME;
-        MathInterface mlib = (MathInterface)
+        final String mname = Platform.MATH_LIBRARY_NAME;
+        final MathInterface mlib = (MathInterface)
             Native.loadLibrary(mname, MathInterface.class);
         Function f = NativeLibrary.getInstance(mname).getFunction("cos");
 
         ///////////////////////////////////////////
         // cos
         Object[] args = { new Double(0) };
-        double dresult;
         long start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            dresult = mlib.cos(0d);
+            mlib.cos(0d);
         }
         long delta = System.currentTimeMillis() - start;
         System.out.println("cos (JNA interface): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            dresult = f.invokeDouble(args);
+            f.invokeDouble(args);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("cos (JNA function): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            dresult = MathLibrary.cos(0d);
+            MathLibrary.cos(0d);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("cos (JNA direct): " + delta + "ms");
 
-        long types = pb.peer;
+        final long types = pb.peer;
         long cif;
         long resp;
         long argv;
@@ -149,13 +142,13 @@ public class PerformanceTest extends TestCase {
             cif = Native.ffi_prep_cif(0, 1, Structure.FFIType.get(double.class).peer, types);
             resp = pb.peer + 4;
             argv = pb.peer + 12;
-            double INPUT = 42;
+            final double INPUT = 42;
             start = System.currentTimeMillis();
             for (int i=0;i < COUNT;i++) {
                 b.putInt(12, (int)pb.peer + 16);
                 b.putDouble(16, INPUT);
                 Native.ffi_call(cif, f.peer, resp, argv);
-                dresult = b.getDouble(4);
+                b.getDouble(4);
             }
             delta = System.currentTimeMillis() - start;
         }
@@ -164,13 +157,13 @@ public class PerformanceTest extends TestCase {
             cif = Native.ffi_prep_cif(0, 1, Structure.FFIType.get(double.class).peer, types);
             resp = pb.peer + 8;
             argv = pb.peer + 16;
-            double INPUT = 42;
+            final double INPUT = 42;
             start = System.currentTimeMillis();
             for (int i=0;i < COUNT;i++) {
                 b.putLong(16, pb.peer + 24);
                 b.putDouble(24, INPUT);
                 Native.ffi_call(cif, f.peer, resp, argv);
-                dresult = b.getDouble(8);
+                b.getDouble(8);
             }
             delta = System.currentTimeMillis() - start;
         }
@@ -178,27 +171,24 @@ public class PerformanceTest extends TestCase {
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            dresult = JNI.cos(0d);
+            JNI.cos(0d);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("cos (JNI): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            dresult = Math.cos(0d);
+            Math.cos(0d);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("cos (pure java): " + delta + "ms");
 
-        ///////////////////////////////////////////
-        // memset
-        Pointer presult;
-        String cname = Platform.C_LIBRARY_NAME;
-        CInterface clib = (CInterface)
+        final String cname = Platform.C_LIBRARY_NAME;
+        final CInterface clib = (CInterface)
             Native.loadLibrary(cname, CInterface.class);
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            presult = clib.memset(null, 0, 0);
+            clib.memset(null, 0, 0);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("memset (JNA interface): " + delta + "ms");
@@ -207,41 +197,39 @@ public class PerformanceTest extends TestCase {
         args = new Object[] { null, new Integer(0), new Integer(0)};
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            presult = f.invokePointer(args);
+            f.invokePointer(args);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("memset (JNA function): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            presult = CLibrary.memset((Pointer)null, 0, new CLibrary.size_t(0));
+            CLibrary.memset((Pointer)null, 0, new CLibrary.size_t(0));
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("memset (JNA direct Pointer/size_t): " + delta + "ms");
         start = System.currentTimeMillis();
         if (Native.POINTER_SIZE == 4) {
             for (int i=0;i < COUNT;i++) {
-                presult = CLibrary.memset((Pointer)null, 0, 0);
+                CLibrary.memset((Pointer)null, 0, 0);
             }
         }
         else {
             for (int i=0;i < COUNT;i++) {
-                presult = CLibrary.memset((Pointer)null, 0, 0L);
+                CLibrary.memset((Pointer)null, 0, 0L);
             }
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("memset (JNA direct Pointer/primitive): " + delta + "ms");
-        int iresult;
-        long jresult;
         start = System.currentTimeMillis();
         if (Native.POINTER_SIZE == 4) {
             for (int i=0;i < COUNT;i++) {
-                iresult = CLibrary.memset(0, 0, 0);
+                CLibrary.memset(0, 0, 0);
             }
         }
         else {
             for (int i=0;i < COUNT;i++) {
-                jresult = CLibrary.memset(0L, 0, 0L);
+                CLibrary.memset(0L, 0, 0L);
             }
         }
         delta = System.currentTimeMillis() - start;
@@ -298,10 +286,10 @@ public class PerformanceTest extends TestCase {
 
         ///////////////////////////////////////////
         // strlen
-        String str = "performance test";
+        final String str = "performance test";
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            iresult = clib.strlen(str);
+            clib.strlen(str);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA interface): " + delta + "ms");
@@ -310,39 +298,39 @@ public class PerformanceTest extends TestCase {
         args = new Object[] { str };
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            iresult = f.invokeInt(args);
+            f.invokeInt(args);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA function): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            iresult = CLibrary.strlen(str);
+            CLibrary.strlen(str);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA direct - String): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            iresult = CLibrary.strlen(new NativeString(str).getPointer());
+            CLibrary.strlen(new NativeString(str).getPointer());
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA direct - Pointer): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            iresult = CLibrary.strlen(Native.toByteArray(str));
+            CLibrary.strlen(Native.toByteArray(str));
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA direct - byte[]): " + delta + "ms");
 
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
-            byte[] bytes = str.getBytes();
+            final byte[] bytes = str.getBytes();
             b.position(0);
             b.put(bytes);
             b.put((byte)0);
-            iresult = CLibrary.strlen(b);
+            CLibrary.strlen(b);
         }
         delta = System.currentTimeMillis() - start;
         System.out.println("strlen (JNA direct - Buffer): " + delta + "ms");
@@ -361,7 +349,7 @@ public class PerformanceTest extends TestCase {
                 b.put(str.getBytes());
                 b.put((byte)0);
                 Native.ffi_call(cif, f.peer, resp, argv);
-                iresult = b.getInt(4);
+                b.getInt(4);
             }
             delta = System.currentTimeMillis() - start;
         }
@@ -379,7 +367,7 @@ public class PerformanceTest extends TestCase {
                 b.put(str.getBytes());
                 b.put((byte)0);
                 Native.ffi_call(cif, f.peer, resp, argv);
-                jresult = b.getLong(8);
+                b.getLong(8);
             }
             delta = System.currentTimeMillis() - start;
         }
@@ -387,7 +375,7 @@ public class PerformanceTest extends TestCase {
 
         ///////////////////////////////////////////
         // Direct buffer vs. Pointer methods
-        byte[] bulk = new byte[SIZE];
+        final byte[] bulk = new byte[SIZE];
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
             b.putInt(0, 0);
@@ -403,7 +391,7 @@ public class PerformanceTest extends TestCase {
         delta = System.currentTimeMillis() - start;
         System.out.println("direct Buffer write (bulk): " + delta + "ms");
 
-        Pointer p = new Memory(SIZE);
+        final Pointer p = new Memory(SIZE);
         start = System.currentTimeMillis();
         for (int i=0;i < COUNT;i++) {
             p.setInt(0, 0);
@@ -422,8 +410,8 @@ public class PerformanceTest extends TestCase {
         // Callbacks
         TestInterface tlib = (TestInterface)Native.loadLibrary("testlib", TestInterface.class);
         start = System.currentTimeMillis();
-        TestInterface.Int32Callback cb = new TestInterface.Int32Callback() {
-            public int invoke(int arg1, int arg2) {
+        final TestInterface.Int32Callback cb = new TestInterface.Int32Callback() {
+            public int invoke(final int arg1, final int arg2) {
                 return arg1 + arg2;
             }
         };
@@ -438,8 +426,8 @@ public class PerformanceTest extends TestCase {
         System.out.println("callback (JNA direct): " + delta + "ms");
 
         start = System.currentTimeMillis();
-        TestInterface.NativeLongCallback nlcb = new TestInterface.NativeLongCallback() {
-            public NativeLong invoke(NativeLong arg1, NativeLong arg2) {
+        final TestInterface.NativeLongCallback nlcb = new TestInterface.NativeLongCallback() {
+            public NativeLong invoke(final NativeLong arg1, final NativeLong arg2) {
                 return new NativeLong(arg1.longValue() + arg2.longValue());
             }
         };

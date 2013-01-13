@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -20,10 +20,10 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
  * @author dblock[at]dblock.org
  */
 public interface ShlObj {
-	
+
     DWORD SHGFP_TYPE_CURRENT = new DWORD(0); // current value for user, verify it exists
     DWORD SHGFP_TYPE_DEFAULT = new DWORD(1); // default value, may not exist
-	
+
     int CSIDL_DESKTOP = 0x0000; // <desktop>
     int CSIDL_INTERNET = 0x0001; // Internet Explorer (icon on desktop)
     int CSIDL_PROGRAMS = 0x0002; // Start Menu\Programs

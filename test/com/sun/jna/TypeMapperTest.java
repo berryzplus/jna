@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 
 package com.sun.jna;
@@ -30,10 +30,10 @@ public class TypeMapperTest extends TestCase {
 
     public void testBooleanToIntArgumentConversion() {
         final int MAGIC = 0xABEDCF23;
-        Map options = new HashMap();
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final Map options = new HashMap();
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
-            public Object toNative(Object arg, ToNativeContext ctx) {
+            public Object toNative(final Object arg, final ToNativeContext ctx) {
                 return new Integer(Boolean.TRUE.equals(arg) ? MAGIC : 0);
             }
             public Class nativeType() {
@@ -41,63 +41,63 @@ public class TypeMapperTest extends TestCase {
             }
         });
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
-        TestLibrary lib = (TestLibrary) 
+        final TestLibrary lib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, options);
         assertEquals("Failed to convert Boolean argument to Int", MAGIC,
                      lib.returnInt32Argument(true));
     }
     public void testStringToIntArgumentConversion() {
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(String.class, new ToNativeConverter() {
-            public Object toNative(Object arg, ToNativeContext ctx) {
+            public Object toNative(final Object arg, final ToNativeContext ctx) {
                 return Integer.valueOf((String) arg, 16);
             }
             public Class nativeType() {
                 return Integer.class;
             }
         });
-        Map options = new HashMap();
+        final Map options = new HashMap();
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
         final int MAGIC = 0x7BEDCF23;
-        TestLibrary lib = (TestLibrary) 
+        final TestLibrary lib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, options);
         assertEquals("Failed to convert String argument to Int", MAGIC,
                      lib.returnInt32Argument(Integer.toHexString(MAGIC)));
     }
     public void testCharSequenceToIntArgumentConversion() {
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(CharSequence.class, new ToNativeConverter() {
-            public Object toNative(Object arg, ToNativeContext ctx) {
+            public Object toNative(final Object arg, final ToNativeContext ctx) {
                 return Integer.valueOf(((CharSequence)arg).toString(), 16);
             }
             public Class nativeType() {
                 return Integer.class;
             }
         });
-        Map options = new HashMap();
+        final Map options = new HashMap();
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
-        
+
         final int MAGIC = 0x7BEDCF23;
-        TestLibrary lib = (TestLibrary) 
+        final TestLibrary lib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, options);
         assertEquals("Failed to convert String argument to Int", MAGIC,
                      lib.returnInt32Argument(Integer.toHexString(MAGIC)));
     }
     public void testNumberToIntArgumentConversion() {
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Double.class, new ToNativeConverter() {
-            public Object toNative(Object arg, ToNativeContext ctx) {
+            public Object toNative(final Object arg, final ToNativeContext ctx) {
                 return new Integer(((Double)arg).intValue());
             }
             public Class nativeType() {
                 return Integer.class;
             }
         });
-        Map options = new HashMap();
+        final Map options = new HashMap();
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
-        
+
         final int MAGIC = 0x7BEDCF23;
-        TestLibrary lib = (TestLibrary) 
+        final TestLibrary lib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, options);
         assertEquals("Failed to convert Double argument to Int", MAGIC,
                      lib.returnInt32Argument(new Double(MAGIC)));
@@ -107,10 +107,10 @@ public class TypeMapperTest extends TestCase {
     }
     public void testIntegerToBooleanResultConversion() throws Exception {
         final int MAGIC = 0xABEDCF23;
-        Map options = new HashMap();
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final Map options = new HashMap();
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
         mapper.addToNativeConverter(Boolean.class, new ToNativeConverter() {
-            public Object toNative(Object value, ToNativeContext ctx) {
+            public Object toNative(final Object value, final ToNativeContext ctx) {
                 return new Integer(Boolean.TRUE.equals(value) ? MAGIC : 0);
             }
             public Class nativeType() {
@@ -118,15 +118,15 @@ public class TypeMapperTest extends TestCase {
             }
         });
         mapper.addFromNativeConverter(Boolean.class, new FromNativeConverter() {
-            public Object fromNative(Object value, FromNativeContext context) {
+            public Object fromNative(final Object value, final FromNativeContext context) {
                 return Boolean.valueOf(((Integer) value).intValue() == MAGIC);
             }
-            public Class nativeType() { 
+            public Class nativeType() {
                 return Integer.class;
             }
         });
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
-        BooleanTestLibrary lib = (BooleanTestLibrary) 
+        final BooleanTestLibrary lib = (BooleanTestLibrary)
             Native.loadLibrary("testlib", BooleanTestLibrary.class, options);
         assertEquals("Failed to convert integer return to boolean TRUE", true,
                      lib.returnInt32Argument(true));
@@ -135,22 +135,22 @@ public class TypeMapperTest extends TestCase {
     }
     public static interface StructureTestLibrary extends Library {
         public static class TestStructure extends Structure {
-            public TestStructure(TypeMapper mapper) {
+            public TestStructure(final TypeMapper mapper) {
                 super(mapper);
             }
             public boolean data;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "data" }); 
+                return Arrays.asList(new String[] { "data" });
             }
         }
     }
     public void testStructureConversion() throws Exception {
-        DefaultTypeMapper mapper = new DefaultTypeMapper();
-        TypeConverter converter = new TypeConverter() {
-            public Object toNative(Object value, ToNativeContext ctx) {
+        final DefaultTypeMapper mapper = new DefaultTypeMapper();
+        final TypeConverter converter = new TypeConverter() {
+            public Object toNative(final Object value, final ToNativeContext ctx) {
                 return new Integer(Boolean.TRUE.equals(value) ? 1 : 0);
             }
-            public Object fromNative(Object value, FromNativeContext context) {
+            public Object fromNative(final Object value, final FromNativeContext context) {
                 return new Boolean(((Integer)value).intValue() == 1);
             }
             public Class nativeType() {
@@ -158,23 +158,22 @@ public class TypeMapperTest extends TestCase {
             }
         };
         mapper.addTypeConverter(Boolean.class, converter);
-        Map options = new HashMap();
+        final Map options = new HashMap();
         options.put(Library.OPTION_TYPE_MAPPER, mapper);
-		StructureTestLibrary lib = (StructureTestLibrary)
-            Native.loadLibrary("testlib", StructureTestLibrary.class, options);
-        StructureTestLibrary.TestStructure s = new StructureTestLibrary.TestStructure(mapper);
+		Native.loadLibrary("testlib", StructureTestLibrary.class, options);
+        final StructureTestLibrary.TestStructure s = new StructureTestLibrary.TestStructure(mapper);
         assertEquals("Wrong native size", 4, s.size());
-        
+
         s.data = true;
         s.write();
         assertEquals("Wrong value written", 1, s.getPointer().getInt(0));
-        
+
         s.getPointer().setInt(0, 0);
         s.read();
         assertFalse("Wrong value read", s.data);
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(TypeMapperTest.class);
     }
 }

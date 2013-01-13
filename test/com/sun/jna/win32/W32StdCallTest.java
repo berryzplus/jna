@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.win32;
 
@@ -34,7 +34,7 @@ public class W32StdCallTest extends TestCase {
         public static class Inner extends Structure {
             public double value;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "value" }); 
+                return Arrays.asList(new String[] { "value" });
             }
         }
         public static class TestStructure extends Structure {
@@ -45,7 +45,7 @@ public class W32StdCallTest extends TestCase {
             public long j;
             public Inner inner;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "c", "s", "i", "j", "inner" }); 
+                return Arrays.asList(new String[] { "c", "s", "i", "j", "inner" });
             }
         }
         int returnInt32ArgumentStdCall(int arg);
@@ -55,29 +55,29 @@ public class W32StdCallTest extends TestCase {
         }
         int callInt32StdCallCallback(Int32Callback c, int arg, int arg2);
     }
-    
-    public static void main(java.lang.String[] argList) {
+
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(W32StdCallTest.class);
     }
 
     private TestLibrary testlib;
-    
+
     protected void setUp() {
         testlib = (TestLibrary)
             Native.loadLibrary("testlib", TestLibrary.class, new HashMap() {
                 { put(Library.OPTION_FUNCTION_MAPPER, StdCallLibrary.FUNCTION_MAPPER); }
             });
     }
-    
+
     protected void tearDown() {
         testlib = null;
     }
 
     public void testFunctionMapper() throws Exception {
-        FunctionMapper mapper = StdCallLibrary.FUNCTION_MAPPER;
-        NativeLibrary lib = NativeLibrary.getInstance("testlib");
+        final FunctionMapper mapper = StdCallLibrary.FUNCTION_MAPPER;
+        final NativeLibrary lib = NativeLibrary.getInstance("testlib");
 
-        Method[] methods = {
+        final Method[] methods = {
             TestLibrary.class.getMethod("returnInt32ArgumentStdCall",
                                         new Class[] { int.class }),
             TestLibrary.class.getMethod("returnStructureByValueArgumentStdCall",
@@ -92,7 +92,7 @@ public class W32StdCallTest extends TestCase {
         };
 
         for (int i=0;i < methods.length;i++) {
-            String name = mapper.getFunctionName(lib, methods[i]);
+            final String name = mapper.getFunctionName(lib, methods[i]);
             assertTrue("Function name not decorated for method "
                        + methods[i].getName()
                        + ": " + name, name.indexOf("@") != -1);
@@ -100,23 +100,23 @@ public class W32StdCallTest extends TestCase {
                          name, lib.getFunction(name, StdCallLibrary.STDCALL_CONVENTION).getName());
         }
     }
-    
+
     public void testStdCallReturnInt32Argument() {
         final int MAGIC = 0x12345678;
         assertEquals("Expect zero return", 0, testlib.returnInt32ArgumentStdCall(0));
         assertEquals("Expect magic return", MAGIC, testlib.returnInt32ArgumentStdCall(MAGIC));
     }
-    
+
     public void testStdCallReturnStructureByValueArgument() {
-        TestLibrary.TestStructure.ByValue s = new TestLibrary.TestStructure.ByValue();
+        final TestLibrary.TestStructure.ByValue s = new TestLibrary.TestStructure.ByValue();
         assertEquals("Wrong value", s, testlib.returnStructureByValueArgumentStdCall(s));
     }
-    
+
     public void testStdCallCallback() {
         final int MAGIC = 0x11111111;
         final boolean[] called = { false };
-        TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
-            public int callback(int arg, int arg2) {
+        final TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
+            public int callback(final int arg, final int arg2) {
                 called[0] = true;
                 return arg + arg2;
             }
@@ -127,9 +127,9 @@ public class W32StdCallTest extends TestCase {
         if (value == -1) {
             fail("stdcall callback did not restore the stack pointer");
         }
-        assertEquals("Wrong stdcall callback value", Integer.toHexString(EXPECTED), 
+        assertEquals("Wrong stdcall callback value", Integer.toHexString(EXPECTED),
                      Integer.toHexString(value));
-        
+
         value = testlib.callInt32StdCallCallback(cb, -1, -2);
         if (value == -1) {
             fail("stdcall callback did not restore the stack pointer");

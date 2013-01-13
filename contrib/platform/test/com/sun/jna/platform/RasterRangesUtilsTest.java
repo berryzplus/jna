@@ -29,22 +29,22 @@ public class RasterRangesUtilsTest extends TestCase {
     Set<Rectangle> rects = new HashSet<Rectangle>();
 
     RangesOutput out = new RangesOutput() {
-        public boolean outputRange(int x, int y, int w, int h) {
+        public boolean outputRange(final int x, final int y, final int w, final int h) {
             rects.add(new Rectangle(x, y, w, h));
             return true;
         }
     };
 
-    private Raster createRaster(Shape mask) {
-        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
+    private Raster createRaster(final Shape mask) {
+        final BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = image.createGraphics();
         g.fill(mask);
         g.dispose();
         return image.getRaster();
     }
 
     public void testDecomposeRectangles() {
-        Set<Rectangle> EXPECTED = new HashSet<Rectangle>() {
+        final Set<Rectangle> EXPECTED = new HashSet<Rectangle>() {
             {
                 add(new Rectangle(0, 0, 100, 50));
                 add(new Rectangle(0, 50, 50, 50));
@@ -52,7 +52,7 @@ public class RasterRangesUtilsTest extends TestCase {
     		private static final long serialVersionUID = 1L;
         };
 
-        Area mask = new Area(new Rectangle(0, 0, 100, 100));
+        final Area mask = new Area(new Rectangle(0, 0, 100, 100));
         mask.subtract(new Area(new Rectangle(50, 50, 50, 50)));
         RasterRangesUtils.outputOccupiedRanges(createRaster(mask), out);
 
@@ -61,7 +61,7 @@ public class RasterRangesUtilsTest extends TestCase {
     }
 
     public void testDecomposeRectanglesWithHole() {
-        Set<Rectangle> EXPECTED = new HashSet<Rectangle>() {
+        final Set<Rectangle> EXPECTED = new HashSet<Rectangle>() {
             {
                 add(new Rectangle(0, 0, 100, 25));
                 add(new Rectangle(0, 25, 25, 50));
@@ -71,7 +71,7 @@ public class RasterRangesUtilsTest extends TestCase {
     		private static final long serialVersionUID = 1L;
         };
 
-        Area mask = new Area(new Rectangle(0, 0, 100, 100));
+        final Area mask = new Area(new Rectangle(0, 0, 100, 100));
         mask.subtract(new Area(new Rectangle(25, 25, 50, 50)));
         RasterRangesUtils.outputOccupiedRanges(createRaster(mask), out);
 
@@ -87,7 +87,7 @@ public class RasterRangesUtilsTest extends TestCase {
         */
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(RasterRangesUtilsTest.class);
     }
 }

@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 //@SuppressWarnings("unused")
 public class StructureBufferFieldTest extends TestCase {
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(StructureBufferFieldTest.class);
     }
 
@@ -34,25 +34,25 @@ public class StructureBufferFieldTest extends TestCase {
         public Buffer buffer;
         public DoubleBuffer dbuffer;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "buffer", "dbuffer" }); 
+            return Arrays.asList(new String[] { "buffer", "dbuffer" });
         }
     }
     public void testBufferFieldWriteNULL() {
         if (!Platform.HAS_BUFFERS) return;
-        BufferStructure bs = new BufferStructure();
+        final BufferStructure bs = new BufferStructure();
         bs.write();
     }
     public void testBufferFieldWriteNonNULL() {
         if (!Platform.HAS_BUFFERS) return;
-        BufferStructure bs = new BufferStructure();
+        final BufferStructure bs = new BufferStructure();
         bs.buffer = ByteBuffer.allocateDirect(16);
         bs.dbuffer = ((ByteBuffer)bs.buffer).asDoubleBuffer();
         bs.write();
     }
     public void testBufferFieldReadUnchanged() {
         if (!Platform.HAS_BUFFERS) return;
-        BufferStructure bs = new BufferStructure();
-        Buffer b = ByteBuffer.allocateDirect(16);
+        final BufferStructure bs = new BufferStructure();
+        final Buffer b = ByteBuffer.allocateDirect(16);
         bs.buffer = b;
         bs.dbuffer = ((ByteBuffer)bs.buffer).asDoubleBuffer();
         bs.write();
@@ -61,7 +61,7 @@ public class StructureBufferFieldTest extends TestCase {
     }
     public void testBufferFieldReadChanged() {
         if (!Platform.HAS_BUFFERS) return;
-        BufferStructure bs = new BufferStructure();
+        final BufferStructure bs = new BufferStructure();
         if (Pointer.SIZE == 4) {
             bs.getPointer().setInt(0, 0x1);
         }
@@ -72,19 +72,19 @@ public class StructureBufferFieldTest extends TestCase {
             bs.read();
             fail("Structure read should fail if Buffer pointer was set");
         }
-        catch(IllegalStateException e) {
+        catch(final IllegalStateException e) {
         }
         bs.buffer = ByteBuffer.allocateDirect(16);
         try {
             bs.read();
             fail("Structure read should fail if Buffer pointer has changed");
         }
-        catch(IllegalStateException e) {
+        catch(final IllegalStateException e) {
         }
     }
     public void testBufferFieldReadChangedToNULL() {
         if (!Platform.HAS_BUFFERS) return;
-        BufferStructure bs = new BufferStructure();
+        final BufferStructure bs = new BufferStructure();
         bs.buffer = ByteBuffer.allocateDirect(16);
         bs.dbuffer = ((ByteBuffer)bs.buffer).asDoubleBuffer();
         bs.read();

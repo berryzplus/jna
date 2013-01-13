@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import com.sun.jna.Callback.UncaughtExceptionHandler;
 import com.sun.jna.CallbacksTest.TestLibrary.CbCallback;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.DLLCallback;
 
 /** Exercise callback-related functionality.
  *
@@ -56,7 +57,7 @@ public class CallbacksTest extends TestCase {
         public long j;
         public SmallTestStructure inner;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "c", "s", "i", "j", "inner" }); 
+            return Arrays.asList(new String[] { "c", "s", "i", "j", "inner" });
         }
     }
     public static interface TestLibrary extends Library {
@@ -168,7 +169,7 @@ public class CallbacksTest extends TestCase {
     protected void setUp() {
         lib = (TestLibrary)Native.loadLibrary("testlib", TestLibrary.class);
     }
-    
+
     protected void tearDown() {
         lib = null;
     }
@@ -176,10 +177,10 @@ public class CallbacksTest extends TestCase {
     public static class Custom implements NativeMapped {
         private int value;
         public Custom() { }
-        public Custom(int value) {
+        public Custom(final int value) {
             this.value = value;
         }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             return new Custom(((Integer)nativeValue).intValue());
         }
         public Class nativeType() {
@@ -188,7 +189,7 @@ public class CallbacksTest extends TestCase {
         public Object toNative() {
             return new Integer(value);
         }
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             return o instanceof Custom && ((Custom)o).value == value;
         }
     }
@@ -200,7 +201,7 @@ public class CallbacksTest extends TestCase {
             CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(0));
             fail("Null pointer lookup should fail");
         }
-        catch(NullPointerException e) {
+        catch(final NullPointerException e) {
         }
     }
 
@@ -209,7 +210,7 @@ public class CallbacksTest extends TestCase {
             CallbackReference.getCallback(String.class, new Pointer(0));
             fail("Request for non-Callback class should fail");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
 
@@ -218,7 +219,7 @@ public class CallbacksTest extends TestCase {
             CallbackReference.getCallback(TestLibrary.NoMethodCallback.class, new Pointer(1));
             fail("Callback with no callback method should fail");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
 
@@ -231,7 +232,7 @@ public class CallbacksTest extends TestCase {
             CallbackReference.getCallback(TestLibrary.TooManyMethodsCallback.class, new Pointer(1));
             fail("Callback lookup with too many methods should fail");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
 
@@ -240,16 +241,16 @@ public class CallbacksTest extends TestCase {
     }
 
     public void testNativeFunctionPointerStringValue() {
-        Callback cb = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
-        Class cls = CallbackReference.findCallbackClass(cb.getClass());
+        final Callback cb = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
+        final Class cls = CallbackReference.findCallbackClass(cb.getClass());
         assertTrue("toString should include Java Callback type: " + cb + " ("
                    + cls + ")", cb.toString().indexOf(cls.getName()) != -1);
     }
 
     public void testLookupSameCallback() {
-        Callback cb = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
-        Callback cb2 = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
-        
+        final Callback cb = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
+        final Callback cb2 = CallbackReference.getCallback(TestLibrary.VoidCallback.class, new Pointer(1));
+
         assertEquals("Callback lookups for same pointer should return same Callback object", cb, cb2);
     }
 
@@ -263,13 +264,13 @@ public class CallbacksTest extends TestCase {
         };
         lib.callVoidCallback(cb);
         assertTrue("Callback not called", called[0]);
-        
+
         Map refs = new WeakHashMap(CallbackReference.callbackMap);
         assertTrue("Callback not cached", refs.containsKey(cb));
         CallbackReference ref = (CallbackReference)refs.get(cb);
         refs = CallbackReference.callbackMap;
-        Pointer cbstruct = ref.cbstruct;
-        
+        final Pointer cbstruct = ref.cbstruct;
+
         cb = null;
         System.gc();
         for (int i = 0; i < 100 && (ref.get() != null || refs.containsValue(ref)); ++i) {
@@ -280,7 +281,7 @@ public class CallbacksTest extends TestCase {
         }
         assertNull("Callback not GC'd", ref.get());
         assertFalse("Callback still in map", refs.containsValue(ref));
-        
+
         ref = null;
         System.gc();
         for (int i = 0; i < 100 && (cbstruct.peer != 0 || refs.size() > 0); ++i) {
@@ -293,10 +294,10 @@ public class CallbacksTest extends TestCase {
         }
         assertEquals("Callback trampoline not freed", 0, cbstruct.peer);
     }
-    
+
     public void testFindCallbackInterface() {
-        TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
-            public int callback(int arg, int arg2) {
+        final TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
+            public int callback(final int arg, final int arg2) {
                 return arg + arg2;
             }
         };
@@ -307,7 +308,7 @@ public class CallbacksTest extends TestCase {
 
     public void testCallVoidCallback() {
         final boolean[] called = { false };
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
                 called[0] = true;
             }
@@ -319,8 +320,8 @@ public class CallbacksTest extends TestCase {
     public void testCallInt32Callback() {
         final int MAGIC = 0x11111111;
         final boolean[] called = { false };
-        TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
-            public int callback(int arg, int arg2) {
+        final TestLibrary.Int32Callback cb = new TestLibrary.Int32Callback() {
+            public int callback(final int arg, final int arg2) {
                 called[0] = true;
                 return arg + arg2;
             }
@@ -328,18 +329,18 @@ public class CallbacksTest extends TestCase {
         final int EXPECTED = MAGIC*3;
         int value = lib.callInt32Callback(cb, MAGIC, MAGIC*2);
         assertTrue("Callback not called", called[0]);
-        assertEquals("Wrong callback value", Integer.toHexString(EXPECTED), 
+        assertEquals("Wrong callback value", Integer.toHexString(EXPECTED),
                      Integer.toHexString(value));
-        
+
         value = lib.callInt32Callback(cb, -1, -2);
         assertEquals("Wrong callback return", -3, value);
     }
-    
+
     public void testCallInt64Callback() {
         final long MAGIC = 0x1111111111111111L;
         final boolean[] called = { false };
-        TestLibrary.Int64Callback cb = new TestLibrary.Int64Callback() {
-            public long callback(long arg, long arg2) {
+        final TestLibrary.Int64Callback cb = new TestLibrary.Int64Callback() {
+            public long callback(final long arg, final long arg2) {
                 called[0] = true;
                 return arg + arg2;
             }
@@ -347,18 +348,18 @@ public class CallbacksTest extends TestCase {
         final long EXPECTED = MAGIC*3;
         long value = lib.callInt64Callback(cb, MAGIC, MAGIC*2);
         assertTrue("Callback not called", called[0]);
-        assertEquals("Wrong callback value", Long.toHexString(EXPECTED), 
+        assertEquals("Wrong callback value", Long.toHexString(EXPECTED),
                      Long.toHexString(value));
-        
+
         value = lib.callInt64Callback(cb, -1, -2);
         assertEquals("Wrong callback return", -3, value);
     }
-    
+
     public void testCallFloatCallback() {
         final boolean[] called = { false };
         final float[] args = { 0, 0 };
-        TestLibrary.FloatCallback cb = new TestLibrary.FloatCallback() {
-            public float callback(float arg, float arg2) {
+        final TestLibrary.FloatCallback cb = new TestLibrary.FloatCallback() {
+            public float callback(final float arg, final float arg2) {
                 called[0] = true;
                 args[0] = arg;
                 args[1] = arg2;
@@ -371,16 +372,16 @@ public class CallbacksTest extends TestCase {
         assertEquals("Wrong first argument", FLOAT_MAGIC, args[0], 0);
         assertEquals("Wrong second argument", FLOAT_MAGIC*2, args[1], 0);
         assertEquals("Wrong callback value", EXPECTED, value, 0);
-        
+
         value = lib.callFloatCallback(cb, -1f, -2f);
         assertEquals("Wrong callback return", -3f, value, 0);
     }
-    
+
     public void testCallDoubleCallback() {
         final boolean[] called = { false };
         final double[] args = { 0, 0 };
-        TestLibrary.DoubleCallback cb = new TestLibrary.DoubleCallback() {
-            public double callback(double arg, double arg2) {
+        final TestLibrary.DoubleCallback cb = new TestLibrary.DoubleCallback() {
+            public double callback(final double arg, final double arg2) {
                 called[0] = true;
                 args[0] = arg;
                 args[1] = arg2;
@@ -392,26 +393,26 @@ public class CallbacksTest extends TestCase {
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong first argument", DOUBLE_MAGIC, args[0], 0);
         assertEquals("Wrong second argument", DOUBLE_MAGIC*2, args[1], 0);
-        assertEquals("Wrong callback value", EXPECTED, value, 0); 
-        
+        assertEquals("Wrong callback value", EXPECTED, value, 0);
+
         value = lib.callDoubleCallback(cb, -1d, -2d);
         assertEquals("Wrong callback return", -3d, value, 0);
     }
-    
+
     public void testCallStructureCallback() {
         final boolean[] called = {false};
         final Pointer[] cbarg = { null };
         final SmallTestStructure s = new SmallTestStructure();
         final double MAGIC = 118.625;
-        TestLibrary.StructureCallback cb = new TestLibrary.StructureCallback() {
-            public SmallTestStructure callback(SmallTestStructure arg) {
+        final TestLibrary.StructureCallback cb = new TestLibrary.StructureCallback() {
+            public SmallTestStructure callback(final SmallTestStructure arg) {
                 called[0] = true;
                 cbarg[0] = arg.getPointer();
                 arg.value = MAGIC;
                 return arg;
             }
         };
-        SmallTestStructure value = lib.callStructureCallback(cb, s);
+        final SmallTestStructure value = lib.callStructureCallback(cb, s);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong argument passed to callback", s.getPointer(), cbarg[0]);
         assertEquals("Structure argument not synched on callback return",
@@ -420,78 +421,78 @@ public class CallbacksTest extends TestCase {
         assertEquals("Structure return not synched",
                      MAGIC, value.value, 0d);
     }
-    
+
     public void testCallStructureArrayCallback() {
         final SmallTestStructure s = new SmallTestStructure();
         final SmallTestStructure[] array = (SmallTestStructure[])s.toArray(2);
         final double MAGIC = 118.625;
-        TestLibrary.StructureCallback cb = new TestLibrary.StructureCallback() {
-            public SmallTestStructure callback(SmallTestStructure arg) {
-                SmallTestStructure[] array =
+        final TestLibrary.StructureCallback cb = new TestLibrary.StructureCallback() {
+            public SmallTestStructure callback(final SmallTestStructure arg) {
+                final SmallTestStructure[] array =
                     (SmallTestStructure[])arg.toArray(2);
                 array[0].value = MAGIC;
                 array[1].value = MAGIC*2;
                 return arg;
             }
         };
-        SmallTestStructure value = lib.callStructureCallback(cb, s);
+        lib.callStructureCallback(cb, s);
         assertEquals("Structure array element 0 not synched on callback return",
                      MAGIC, array[0].value, 0d);
         assertEquals("Structure array element 1 not synched on callback return",
                      MAGIC*2, array[1].value, 0d);
     }
-    
+
     public void testCallBooleanCallback() {
         final boolean[] called = {false};
         final boolean[] cbargs = { false, false };
-        TestLibrary.BooleanCallback cb = new TestLibrary.BooleanCallback() {
-            public boolean callback(boolean arg, boolean arg2) {
+        final TestLibrary.BooleanCallback cb = new TestLibrary.BooleanCallback() {
+            public boolean callback(final boolean arg, final boolean arg2) {
                 called[0] = true;
                 cbargs[0] = arg;
                 cbargs[1] = arg2;
                 return arg && arg2;
             }
         };
-        boolean value = lib.callBooleanCallback(cb, true, false);
+        final boolean value = lib.callBooleanCallback(cb, true, false);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", true, cbargs[0]);
         assertEquals("Wrong callback argument 2", false, cbargs[1]);
         assertFalse("Wrong boolean return", value);
     }
-    
+
     public void testCallInt8Callback() {
         final boolean[] called = {false};
         final byte[] cbargs = { 0, 0 };
-        TestLibrary.ByteCallback cb = new TestLibrary.ByteCallback() {
-            public byte callback(byte arg, byte arg2) {
+        final TestLibrary.ByteCallback cb = new TestLibrary.ByteCallback() {
+            public byte callback(final byte arg, final byte arg2) {
                 called[0] = true;
                 cbargs[0] = arg;
                 cbargs[1] = arg2;
                 return (byte)(arg + arg2);
             }
         };
-        final byte MAGIC = 0x11; 
+        final byte MAGIC = 0x11;
         byte value = lib.callInt8Callback(cb, MAGIC, (byte)(MAGIC*2));
         assertTrue("Callback not called", called[0]);
-        assertEquals("Wrong callback argument 1", 
-                     Integer.toHexString(MAGIC), 
+        assertEquals("Wrong callback argument 1",
+                     Integer.toHexString(MAGIC),
                      Integer.toHexString(cbargs[0]));
-        assertEquals("Wrong callback argument 2", 
-                     Integer.toHexString(MAGIC*2), 
+        assertEquals("Wrong callback argument 2",
+                     Integer.toHexString(MAGIC*2),
                      Integer.toHexString(cbargs[1]));
-        assertEquals("Wrong byte return", 
-                     Integer.toHexString(MAGIC*3), 
+        assertEquals("Wrong byte return",
+                     Integer.toHexString(MAGIC*3),
                      Integer.toHexString(value));
-        
+
         value = lib.callInt8Callback(cb, (byte)-1, (byte)-2);
         assertEquals("Wrong byte return (hi bit)", (byte)-3, value);
     }
-    
+
     public void testCallInt16Callback() {
         final boolean[] called = {false};
         final short[] cbargs = { 0, 0 };
-        TestLibrary.ShortCallback cb = new TestLibrary.ShortCallback() {
-            public short callback(short arg, short arg2) {
+        final TestLibrary.ShortCallback cb = new TestLibrary.ShortCallback() {
+            public short callback(final short arg, final short arg2) {
                 called[0] = true;
                 cbargs[0] = arg;
                 cbargs[1] = arg2;
@@ -501,88 +502,88 @@ public class CallbacksTest extends TestCase {
         final short MAGIC = 0x1111;
         short value = lib.callInt16Callback(cb, MAGIC, (short)(MAGIC*2));
         assertTrue("Callback not called", called[0]);
-        assertEquals("Wrong callback argument 1", 
-                     Integer.toHexString(MAGIC), 
+        assertEquals("Wrong callback argument 1",
+                     Integer.toHexString(MAGIC),
                      Integer.toHexString(cbargs[0]));
-        assertEquals("Wrong callback argument 2", 
-                     Integer.toHexString(MAGIC*2), 
+        assertEquals("Wrong callback argument 2",
+                     Integer.toHexString(MAGIC*2),
                      Integer.toHexString(cbargs[1]));
-        assertEquals("Wrong short return", 
-                     Integer.toHexString(MAGIC*3), 
+        assertEquals("Wrong short return",
+                     Integer.toHexString(MAGIC*3),
                      Integer.toHexString(value));
 
         value = lib.callInt16Callback(cb, (short)-1, (short)-2);
         assertEquals("Wrong short return (hi bit)", (short)-3, value);
     }
-    
+
     public void testCallNativeLongCallback() {
         final boolean[] called = {false};
         final NativeLong[] cbargs = { null, null};
-        TestLibrary.NativeLongCallback cb = new TestLibrary.NativeLongCallback() {
-            public NativeLong callback(NativeLong arg, NativeLong arg2) {
+        final TestLibrary.NativeLongCallback cb = new TestLibrary.NativeLongCallback() {
+            public NativeLong callback(final NativeLong arg, final NativeLong arg2) {
                 called[0] = true;
                 cbargs[0] = arg;
                 cbargs[1] = arg2;
                 return new NativeLong(arg.intValue() +  arg2.intValue());
             }
         };
-        NativeLong value = lib.callNativeLongCallback(cb, new NativeLong(1), new NativeLong(2));
+        final NativeLong value = lib.callNativeLongCallback(cb, new NativeLong(1), new NativeLong(2));
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", new NativeLong(1), cbargs[0]);
         assertEquals("Wrong callback argument 2", new NativeLong(2), cbargs[1]);
         assertEquals("Wrong boolean return", new NativeLong(3), value);
     }
-    
+
     public void testCallNativeMappedCallback() {
         final boolean[] called = {false};
         final Custom[] cbargs = { null, null};
-        TestLibrary.CustomCallback cb = new TestLibrary.CustomCallback() {
-            public Custom callback(Custom arg, Custom arg2) {
+        final TestLibrary.CustomCallback cb = new TestLibrary.CustomCallback() {
+            public Custom callback(final Custom arg, final Custom arg2) {
                 called[0] = true;
                 cbargs[0] = arg;
                 cbargs[1] = arg2;
                 return new Custom(arg.value + arg2.value);
             }
         };
-        int value = lib.callInt32Callback(cb, 1, 2);
+        final int value = lib.callInt32Callback(cb, 1, 2);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", new Custom(1), cbargs[0]);
         assertEquals("Wrong callback argument 2", new Custom(2), cbargs[1]);
         assertEquals("Wrong NativeMapped return", 3, value);
     }
-    
+
     public void testCallStringCallback() {
         final boolean[] called = {false};
         final String[] cbargs = { null };
-        TestLibrary.StringCallback cb = new TestLibrary.StringCallback() {
-            public String callback(String arg) {
+        final TestLibrary.StringCallback cb = new TestLibrary.StringCallback() {
+            public String callback(final String arg) {
                 called[0] = true;
                 cbargs[0] = arg;
                 return arg;
             }
         };
         final String VALUE = "value";
-        String value = lib.callStringCallback(cb, VALUE);
+        final String value = lib.callStringCallback(cb, VALUE);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", VALUE, cbargs[0]);
         assertEquals("Wrong String return", VALUE, value);
     }
-    
+
     public void testStringCallbackMemoryReclamation() throws InterruptedException {
-        TestLibrary.StringCallback cb = new TestLibrary.StringCallback() {
-            public String callback(String arg) {
+        final TestLibrary.StringCallback cb = new TestLibrary.StringCallback() {
+            public String callback(final String arg) {
                 return arg;
             }
         };
 
         // A little internal groping
-        Map m = CallbackReference.allocations;
+        final Map m = CallbackReference.allocations;
         m.clear();
 
         String arg = getName() + "1";
         String value = lib.callStringCallback(cb, arg);
-        WeakReference ref = new WeakReference(value);
-        
+        final WeakReference ref = new WeakReference(value);
+
         arg = null;
         value = null;
         System.gc();
@@ -599,61 +600,61 @@ public class CallbacksTest extends TestCase {
     public void testCallWideStringCallback() {
         final boolean[] called = {false};
         final WString[] cbargs = { null };
-        TestLibrary.WideStringCallback cb = new TestLibrary.WideStringCallback() {
-            public WString callback(WString arg) {
+        final TestLibrary.WideStringCallback cb = new TestLibrary.WideStringCallback() {
+            public WString callback(final WString arg) {
                 called[0] = true;
                 cbargs[0] = arg;
                 return arg;
             }
         };
         final WString VALUE = new WString("value");
-        WString value = lib.callWideStringCallback(cb, VALUE);
+        final WString value = lib.callWideStringCallback(cb, VALUE);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", VALUE, cbargs[0]);
         assertEquals("Wrong wide string return", VALUE, value);
     }
-    
+
     public void testCallStringArrayCallback() {
         final boolean[] called = {false};
         final String[][] cbargs = { null };
-        TestLibrary.StringArrayCallback cb = new TestLibrary.StringArrayCallback() {
-            public String[] callback(String[] arg) {
+        final TestLibrary.StringArrayCallback cb = new TestLibrary.StringArrayCallback() {
+            public String[] callback(final String[] arg) {
                 called[0] = true;
                 cbargs[0] = arg;
                 return arg;
             }
         };
         final String[] VALUE = { "value", null };
-        Pointer value = lib.callStringArrayCallback(cb, VALUE);
+        final Pointer value = lib.callStringArrayCallback(cb, VALUE);
         assertTrue("Callback not called", called[0]);
         assertEquals("Wrong callback argument 1", VALUE[0], cbargs[0][0]);
-        String[] result = value.getStringArray(0);
+        final String[] result = value.getStringArray(0);
         assertEquals("Wrong String return", VALUE[0], result[0]);
     }
-    
+
     public void testCallCallbackWithByReferenceArgument() {
     	final boolean[] called = {false};
-        TestLibrary.CopyArgToByReference cb = new TestLibrary.CopyArgToByReference() {
-            public int callback(int arg, IntByReference result) {
+        final TestLibrary.CopyArgToByReference cb = new TestLibrary.CopyArgToByReference() {
+            public int callback(final int arg, final IntByReference result) {
                 called[0] = true;
                 result.setValue(arg);
                 return result.getValue();
             }
         };
         final int VALUE = 0;
-        IntByReference ref = new IntByReference(~VALUE);
-        int value = lib.callCallbackWithByReferenceArgument(cb, VALUE, ref);
+        final IntByReference ref = new IntByReference(~VALUE);
+        final int value = lib.callCallbackWithByReferenceArgument(cb, VALUE, ref);
         assertEquals("Wrong value returned", VALUE, value);
         assertEquals("Wrong value in by reference memory", VALUE, ref.getValue());
     }
-    
+
     public void testCallCallbackWithStructByValue() {
         final TestStructure.ByValue s = new TestStructure.ByValue();
         final TestStructure innerResult = new TestStructure();
-        TestStructure.TestCallback cb = new TestStructure.TestCallback() {
-            public TestStructure.ByValue callback(TestStructure.ByValue s) {
+        final TestStructure.TestCallback cb = new TestStructure.TestCallback() {
+            public TestStructure.ByValue callback(final TestStructure.ByValue s) {
                 // Copy the argument value for later comparison
-                Pointer old = innerResult.getPointer();
+                final Pointer old = innerResult.getPointer();
                 innerResult.useMemory(s.getPointer());
                 innerResult.read();
                 innerResult.useMemory(old);
@@ -666,35 +667,35 @@ public class CallbacksTest extends TestCase {
         s.i = 0x33333333;
         s.j = 0x4444444444444444L;
         s.inner.value = 5;
-        
-        TestStructure result = lib.callCallbackWithStructByValue(cb, s);
+
+        final TestStructure result = lib.callCallbackWithStructByValue(cb, s);
         assertEquals("Wrong value passed to callback", s, innerResult);
         assertEquals("Wrong value for result", s, result);
     }
-    
+
     public void testCallCallbackWithCallbackArgumentAndResult() {
-        TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
-            public CbCallback callback(CbCallback arg) {
+        final TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
+            public CbCallback callback(final CbCallback arg) {
                 return arg;
             }
         };
-        TestLibrary.CbCallback cb2 = lib.callCallbackWithCallback(cb);
+        final TestLibrary.CbCallback cb2 = lib.callCallbackWithCallback(cb);
         assertEquals("Callback reference should be reused", cb, cb2);
     }
-    
+
     public void testDefaultCallbackExceptionHandler() {
         final RuntimeException ERROR = new RuntimeException(getName());
-        PrintStream ps = System.err;
-        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final PrintStream ps = System.err;
+        final ByteArrayOutputStream s = new ByteArrayOutputStream();
         System.setErr(new PrintStream(s));
         try {
-            TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
-                public CbCallback callback(CbCallback arg) {
+            final TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
+                public CbCallback callback(final CbCallback arg) {
                     throw ERROR;
                 }
             };
-            TestLibrary.CbCallback cb2 = lib.callCallbackWithCallback(cb);
-            String output = s.toString();
+            lib.callCallbackWithCallback(cb);
+            final String output = s.toString();
             assertTrue("Default handler not called", output.length() > 0);
         }
         finally {
@@ -708,21 +709,21 @@ public class CallbacksTest extends TestCase {
         final RuntimeException ERROR = new RuntimeException(getName());
         final Throwable CAUGHT[] = { null };
         final Callback CALLBACK[] = { null };
-        UncaughtExceptionHandler old = Native.getCallbackExceptionHandler();
-        UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
-            public void uncaughtException(Callback cb, Throwable e) {
+        final UncaughtExceptionHandler old = Native.getCallbackExceptionHandler();
+        final UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
+            public void uncaughtException(final Callback cb, final Throwable e) {
                 CALLBACK[0] = cb;
                 CAUGHT[0] = e;
             }
         };
         Native.setCallbackExceptionHandler(handler);
         try {
-            TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
-                public CbCallback callback(CbCallback arg) {
+            final TestLibrary.CbCallback cb = new TestLibrary.CbCallback() {
+                public CbCallback callback(final CbCallback arg) {
                     throw ERROR;
                 }
             };
-            TestLibrary.CbCallback cb2 = lib.callCallbackWithCallback(cb);
+            lib.callCallbackWithCallback(cb);
             assertNotNull("Exception handler not called", CALLBACK[0]);
             assertEquals("Wrong callback argument to handler", cb, CALLBACK[0]);
             assertEquals("Wrong exception passed to handler",
@@ -738,9 +739,9 @@ public class CallbacksTest extends TestCase {
         final RuntimeException ERROR = new RuntimeException(getName());
         final Throwable CAUGHT[] = { null };
         final Callback CALLBACK[] = { null };
-        UncaughtExceptionHandler old = Native.getCallbackExceptionHandler();
-        UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
-            public void uncaughtException(Callback cb, Throwable e) {
+        final UncaughtExceptionHandler old = Native.getCallbackExceptionHandler();
+        final UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
+            public void uncaughtException(final Callback cb, final Throwable e) {
                 CALLBACK[0] = cb;
                 CAUGHT[0] = e;
             }
@@ -748,10 +749,10 @@ public class CallbacksTest extends TestCase {
         Native.setCallbackExceptionHandler(handler);
         try {
             class TestProxy implements CallbackProxy, TestLibrary.CbCallback {
-                public CbCallback callback(CbCallback arg) {
+                public CbCallback callback(final CbCallback arg) {
                     throw new Error("Should never be called");
                 }
-                public Object callback(Object[] args) {
+                public Object callback(final Object[] args) {
                     throw ERROR;
                 }
                 public Class[] getParameterTypes() {
@@ -761,8 +762,8 @@ public class CallbacksTest extends TestCase {
                     return CbCallback.class;
                 }
             };
-            TestLibrary.CbCallback cb = new TestProxy();
-            TestLibrary.CbCallback cb2 = lib.callCallbackWithCallback(cb);
+            final TestLibrary.CbCallback cb = new TestProxy();
+            lib.callCallbackWithCallback(cb);
             assertNotNull("Exception handler not called", CALLBACK[0]);
             assertEquals("Wrong callback argument to handler", cb, CALLBACK[0]);
             assertEquals("Wrong exception passed to handler",
@@ -780,12 +781,12 @@ public class CallbacksTest extends TestCase {
     }
 
     public void testInvokeCallback() {
-        TestLibrary.Int32CallbackX cb = lib.returnCallback();
+        final TestLibrary.Int32CallbackX cb = lib.returnCallback();
         assertNotNull("Callback should not be null", cb);
         assertEquals("Callback should be callable", 1, cb.callback(1));
-        
-        TestLibrary.Int32CallbackX cb2 = new TestLibrary.Int32CallbackX() {
-            public int callback(int arg) {
+
+        final TestLibrary.Int32CallbackX cb2 = new TestLibrary.Int32CallbackX() {
+            public int callback(final int arg) {
                 return 0;
             }
         };
@@ -794,14 +795,11 @@ public class CallbacksTest extends TestCase {
         assertSame("Existing native function wrapper should be reused",
                    cb, lib.returnCallbackArgument(cb));
     }
-    
+
     public void testCallCallbackInStructure() {
         final boolean[] flag = {false};
         final TestLibrary.CbStruct s = new TestLibrary.CbStruct();
         s.cb = new Callback() {
-            public void callback() {
-                flag[0] = true;
-            }
         };
         lib.callCallbackInStruct(s);
         assertTrue("Callback not invoked", flag[0]);
@@ -809,7 +807,7 @@ public class CallbacksTest extends TestCase {
 
     public void testCustomCallbackMethodName() {
     	final boolean[] called = {false};
-        TestLibrary.VoidCallbackCustom cb = new TestLibrary.VoidCallbackCustom() {
+        final TestLibrary.VoidCallbackCustom cb = new TestLibrary.VoidCallbackCustom() {
             public void customMethodName() {
                 called[0] = true;
             }
@@ -822,8 +820,7 @@ public class CallbacksTest extends TestCase {
     }
 
     public void testCustomCallbackVariedInheritance() {
-    	final boolean[] called = {false};
-        TestLibrary.VoidCallbackCustom cb =
+    	final TestLibrary.VoidCallbackCustom cb =
             new TestLibrary.VoidCallbackCustomDerived();
         lib.callVoidCallback(cb);
     }
@@ -833,25 +830,25 @@ public class CallbacksTest extends TestCase {
             {
                 // Convert java doubles into native integers and back
                 TypeConverter converter = new TypeConverter() {
-                    public Object fromNative(Object value, FromNativeContext context) {
+                    public Object fromNative(final Object value, final FromNativeContext context) {
                         return new Double(((Integer)value).intValue());
                     }
                     public Class nativeType() {
                         return Integer.class;
                     }
-                    public Object toNative(Object value, ToNativeContext ctx) {
+                    public Object toNative(final Object value, final ToNativeContext ctx) {
                         return new Integer(((Double)value).intValue());
                     }
                 };
                 addTypeConverter(double.class, converter);
                 converter = new TypeConverter() {
-                    public Object fromNative(Object value, FromNativeContext context) {
+                    public Object fromNative(final Object value, final FromNativeContext context) {
                         return new Float(((Long)value).intValue());
                     }
                     public Class nativeType() {
                         return Long.class;
                     }
-                    public Object toNative(Object value, ToNativeContext ctx) {
+                    public Object toNative(final Object value, final ToNativeContext ctx) {
                         return new Long(((Float)value).longValue());
                     }
                 };
@@ -881,64 +878,64 @@ public class CallbacksTest extends TestCase {
     /** This test is here instead of NativeTest in order to facilitate running
         the exact same test on a direct-mapped library without the tests
         interfering with one another due to persistent/cached state in library
-        loading. 
+        loading.
     */
     public void testCallbackUsesTypeMapper() throws Exception {
-        CallbackTestLibrary lib = loadCallbackTestLibrary();
+        final CallbackTestLibrary lib = loadCallbackTestLibrary();
 
         final double[] ARGS = new double[2];
 
-        CallbackTestLibrary.DoubleCallback cb = new CallbackTestLibrary.DoubleCallback() {
-            public double callback(double arg, double arg2) {
+        final CallbackTestLibrary.DoubleCallback cb = new CallbackTestLibrary.DoubleCallback() {
+            public double callback(final double arg, final double arg2) {
                 ARGS[0] = arg;
                 ARGS[1] = arg2;
                 return arg + arg2;
             }
         };
-        assertEquals("Wrong type mapper for callback class", lib._MAPPER,
+        assertEquals("Wrong type mapper for callback class", CallbackTestLibrary._MAPPER,
                      Native.getTypeMapper(CallbackTestLibrary.DoubleCallback.class));
-        assertEquals("Wrong type mapper for callback object", lib._MAPPER,
+        assertEquals("Wrong type mapper for callback object", CallbackTestLibrary._MAPPER,
                      Native.getTypeMapper(cb.getClass()));
 
-        double result = lib.callInt32Callback(cb, -1, -1);
+        final double result = lib.callInt32Callback(cb, -1, -1);
         assertEquals("Wrong callback argument 1", -1, ARGS[0], 0);
         assertEquals("Wrong callback argument 2", -1, ARGS[1], 0);
         assertEquals("Incorrect result of callback invocation", -2, result, 0);
     }
 
     public void testCallbackUsesTypeMapperWithDifferentReturnTypeSize() throws Exception {
-        CallbackTestLibrary lib = loadCallbackTestLibrary();
+        final CallbackTestLibrary lib = loadCallbackTestLibrary();
 
         final float[] ARGS = new float[2];
 
-        CallbackTestLibrary.FloatCallback cb = new CallbackTestLibrary.FloatCallback() {
-            public float callback(float arg, float arg2) {
+        final CallbackTestLibrary.FloatCallback cb = new CallbackTestLibrary.FloatCallback() {
+            public float callback(final float arg, final float arg2) {
                 ARGS[0] = arg;
                 ARGS[1] = arg2;
                 return arg + arg2;
             }
         };
-        assertEquals("Wrong type mapper for callback class", lib._MAPPER,
+        assertEquals("Wrong type mapper for callback class", CallbackTestLibrary._MAPPER,
                      Native.getTypeMapper(CallbackTestLibrary.FloatCallback.class));
-        assertEquals("Wrong type mapper for callback object", lib._MAPPER,
+        assertEquals("Wrong type mapper for callback object", CallbackTestLibrary._MAPPER,
                      Native.getTypeMapper(cb.getClass()));
 
-        float result = lib.callInt64Callback(cb, -1, -1);
+        final float result = lib.callInt64Callback(cb, -1, -1);
         assertEquals("Wrong callback argument 1", -1, ARGS[0], 0);
         assertEquals("Wrong callback argument 2", -1, ARGS[1], 0);
         assertEquals("Incorrect result of callback invocation", -2, result, 0);
     }
 
-    protected void callThreadedCallback(TestLibrary.VoidCallback cb,
-                                        CallbackThreadInitializer cti,
-                                        int repeat, int sleepms,
-                                        int[] called) throws Exception {
+    protected void callThreadedCallback(final TestLibrary.VoidCallback cb,
+                                        final CallbackThreadInitializer cti,
+                                        final int repeat, final int sleepms,
+                                        final int[] called) throws Exception {
         if (cti != null) {
             Native.setCallbackThreadInitializer(cb, cti);
         }
         lib.callVoidCallbackThreaded(cb, repeat, sleepms);
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         while (called[0] < repeat) {
             Thread.sleep(10);
             if (System.currentTimeMillis() - start > 5000) {
@@ -954,10 +951,10 @@ public class CallbacksTest extends TestCase {
         final ThreadGroup[] group = { null };
         final Thread[] t = { null };
 
-        ThreadGroup testGroup = new ThreadGroup(getName());
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        new ThreadGroup(getName());
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
-                Thread thread = Thread.currentThread();
+                final Thread thread = Thread.currentThread();
                 daemon[0] = thread.isDaemon();
                 name[0] = thread.getName();
                 group[0] = thread.getThreadGroup();
@@ -980,11 +977,11 @@ public class CallbacksTest extends TestCase {
         final String tname = getName() + " thread";
         final boolean[] alive = {false};
 
-        ThreadGroup testGroup = new ThreadGroup(getName() + " thread group");
-        CallbackThreadInitializer init = new CallbackThreadInitializer(true, false, tname, testGroup);
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        final ThreadGroup testGroup = new ThreadGroup(getName() + " thread group");
+        final CallbackThreadInitializer init = new CallbackThreadInitializer(true, false, tname, testGroup);
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
-                Thread thread = Thread.currentThread();
+                final Thread thread = Thread.currentThread();
                 daemon[0] = thread.isDaemon();
                 name[0] = thread.getName();
                 group[0] = thread.getThreadGroup();
@@ -1006,9 +1003,8 @@ public class CallbacksTest extends TestCase {
         assertEquals("Wrong thread name", tname, name[0]);
         assertEquals("Wrong thread group", testGroup, group[0]);
         // NOTE: phoneME incorrectly reports thread "alive" status
-        if (!alive[0]) {
+        if (!alive[0])
             throw new Error("VM incorrectly reports Thread.isAlive() == false within callback");
-        }
         assertTrue("Thread should still be alive", t[0].isAlive());
     }
 
@@ -1019,12 +1015,12 @@ public class CallbacksTest extends TestCase {
         final Set threads = new HashSet();
 
         final int COUNT = 5;
-        CallbackThreadInitializer init = new CallbackThreadInitializer(true, false) {
-            public String getName(Callback cb) {
+        final CallbackThreadInitializer init = new CallbackThreadInitializer(true, false) {
+            public String getName(final Callback cb) {
                 return CallbacksTest.this.getName() + " thread " + called[0];
             }
         };
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
                 threads.add(Thread.currentThread());
                 ++called[0];
@@ -1040,7 +1036,7 @@ public class CallbacksTest extends TestCase {
     public void testAttachedThreadCleanupOnExit() throws Exception {
         final Set threads = new HashSet();
         final int[] called = { 0 };
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
                 threads.add(new WeakReference(Thread.currentThread()));
                 if (++called[0] == 1) {
@@ -1049,35 +1045,35 @@ public class CallbacksTest extends TestCase {
                 Native.detach(false);
             }
         };
-        CallbackThreadInitializer asDaemon = new CallbackThreadInitializer(true);
+        final CallbackThreadInitializer asDaemon = new CallbackThreadInitializer(true);
         callThreadedCallback(cb, asDaemon, 1, 0, called);
         while (threads.size() == 0) {
             Thread.sleep(10);
         }
-        long start = System.currentTimeMillis();
-        WeakReference ref = (WeakReference)threads.iterator().next();
+        final long start = System.currentTimeMillis();
+        final WeakReference ref = (WeakReference)threads.iterator().next();
         while (ref.get() != null) {
             System.gc();
             Thread.sleep(10);
             if (System.currentTimeMillis() - start > 10000) {
-                Thread t = (Thread)ref.get();
+                final Thread t = (Thread)ref.get();
                 fail("Timed out waiting for attached thread to be detached on exit and disposed: " + t + " alive: " + t.isAlive() + " daemon " + t.isDaemon());
             }
         }
     }
 
     // Callback indicates detach preference (instead of
-    // CallbackThreadInitializer); thread is non-daemon (default), 
+    // CallbackThreadInitializer); thread is non-daemon (default),
     // but callback explicitly detaches it on final invocation.
     public void testCallbackIndicatedThreadDetach() throws Exception {
     	final int[] called = {0};
         final Set threads = new HashSet();
         final int COUNT = 5;
-        TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
+        final TestLibrary.VoidCallback cb = new TestLibrary.VoidCallback() {
             public void callback() {
                 threads.add(Thread.currentThread());
                 // detach on final invocation
-                int count = called[0] + 1;
+                final int count = called[0] + 1;
                 if (count == 1) {
                     Native.detach(false);
                 }
@@ -1091,18 +1087,18 @@ public class CallbacksTest extends TestCase {
 
         assertEquals("Multiple callbacks in the same native thread should use the same Thread mapping: " + threads,
                      1, threads.size());
-        Thread thread = (Thread)threads.iterator().next();
-        long start = System.currentTimeMillis();
+        final Thread thread = (Thread)threads.iterator().next();
+        final long start = System.currentTimeMillis();
 
         while (thread.isAlive()) {
             System.gc();
             Thread.sleep(10);
             if (System.currentTimeMillis() - start > 5000) {
-                PrintStream ps = System.err;
-                ByteArrayOutputStream s = new ByteArrayOutputStream();
+                final PrintStream ps = System.err;
+                final ByteArrayOutputStream s = new ByteArrayOutputStream();
                 System.setErr(new PrintStream(s));
                 try {
-                    thread.dumpStack();
+                    Thread.dumpStack();
                 }
                 finally {
                     System.setErr(ps);
@@ -1113,9 +1109,8 @@ public class CallbacksTest extends TestCase {
     }
 
     public void testDLLCallback() throws Exception {
-        if (!Platform.HAS_DLL_CALLBACKS) {
+        if (!Platform.HAS_DLL_CALLBACKS)
             return;
-        }
 
         final boolean[] called = { false };
         class TestCallback implements TestLibrary.VoidCallback, com.sun.jna.win32.DLLCallback {
@@ -1133,8 +1128,8 @@ public class CallbacksTest extends TestCase {
         CallbackReference ref = (CallbackReference)refs.get(cb);
         refs = CallbackReference.callbackMap;
         Pointer cbstruct = ref.cbstruct;
-        Pointer first_fptr = cbstruct.getPointer(0);
-        
+        final Pointer first_fptr = cbstruct.getPointer(0);
+
         cb = null;
         System.gc();
         for (int i = 0; i < 100 && (ref.get() != null || refs.containsValue(ref)); ++i) {
@@ -1143,7 +1138,7 @@ public class CallbacksTest extends TestCase {
         }
         assertNull("Callback not GC'd", ref.get());
         assertFalse("Callback still in map", refs.containsValue(ref));
-        
+
         ref = null;
         System.gc();
         for (int i = 0; i < 100 && (cbstruct.peer != 0 || refs.size() > 0); ++i) {
@@ -1167,9 +1162,8 @@ public class CallbacksTest extends TestCase {
     }
 
     public void testThrowOutOfMemoryWhenDLLCallbacksExhausted() throws Exception {
-        if (!Platform.HAS_DLL_CALLBACKS) {
+        if (!Platform.HAS_DLL_CALLBACKS)
             return;
-        }
 
         final boolean[] called = { false };
         class TestCallback implements TestLibrary.VoidCallback, com.sun.jna.win32.DLLCallback {
@@ -1180,16 +1174,16 @@ public class CallbacksTest extends TestCase {
 
         // Exceeding allocations should result in OOM error
         try {
-            for (int i=0;i <= TestCallback.DLL_FPTRS;i++) {
+            for (int i=0;i <= DLLCallback.DLL_FPTRS;i++) {
                 lib.callVoidCallback(new TestCallback());
             }
             fail("Expected out of memory error when all DLL callbacks used");
         }
-        catch(OutOfMemoryError e) {
+        catch(final OutOfMemoryError e) {
         }
     }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(CallbacksTest.class);
     }
 }

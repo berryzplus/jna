@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
@@ -16,18 +16,18 @@ public class DoubleByReference extends ByReference {
     public DoubleByReference() {
         this(0d);
     }
-    
-    public DoubleByReference(double value) {
+
+    public DoubleByReference(final double value) {
         super(8);
         setValue(value);
     }
-    
-    public void setValue(double value) {
+
+    public void setValue(final double value) {
         getPointer().setDouble(0, value);
     }
-    
+
     public double getValue() {
         return getPointer().getDouble(0);
     }
-    
+
 }

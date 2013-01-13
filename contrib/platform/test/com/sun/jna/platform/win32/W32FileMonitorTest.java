@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -27,18 +27,18 @@ import com.sun.jna.platform.FileMonitor.FileListener;
 
 public class W32FileMonitorTest extends TestCase {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(W32FileMonitorTest.class);
     }
-	
+
     private Map<Integer, FileEvent> events;
     private FileMonitor monitor;
     private File tmpdir;
-    
+
     protected void setUp() throws Exception {
         events = new HashMap<Integer, FileEvent>();
         final FileListener listener = new FileListener() {
-            public void fileChanged(FileEvent e) {
+            public void fileChanged(final FileEvent e) {
                 events.put(new Integer(e.getType()), e);
             }
         };
@@ -46,35 +46,35 @@ public class W32FileMonitorTest extends TestCase {
         monitor.addFileListener(listener);
         tmpdir = new File(Kernel32Util.getTempPath());
     }
-    
+
     protected void tearDown() {
         if (monitor != null) {
             monitor.dispose();
         }
     }
-    
+
     public void testNotifyOnFileCreation() throws Exception {
         monitor.addWatch(tmpdir);
-        File file = File.createTempFile(getName(), ".tmp", tmpdir);
+        final File file = File.createTempFile(getName(), ".tmp", tmpdir);
         file.deleteOnExit();
         assertFileEventCreated(file);
     }
-    
+
     public void testNotifyOnFileDelete() throws Exception {
         monitor.addWatch(tmpdir);
-        File file = File.createTempFile(getName(), ".tmp", tmpdir);
+        final File file = File.createTempFile(getName(), ".tmp", tmpdir);
         file.delete();
 
         final FileEvent event = waitForFileEvent(FileMonitor.FILE_DELETED);
         assertNotNull("No delete event: " + events, event);
         assertEquals("Wrong target file for event", file, event.getFile());
     }
-    
+
     public void testNotifyOnFileDeleteViaAddWatchMask() throws Exception {
         if (!Platform.isWindows()) return;
 
         monitor.addWatch(tmpdir, FileMonitor.FILE_DELETED);
-        File file = File.createTempFile(getName(), ".tmp", tmpdir);
+        final File file = File.createTempFile(getName(), ".tmp", tmpdir);
         file.delete();
 
         final FileEvent event = waitForFileEvent(FileMonitor.FILE_DELETED);
@@ -84,8 +84,8 @@ public class W32FileMonitorTest extends TestCase {
 
     public void testNotifyOnFileRename() throws Exception {
         monitor.addWatch(tmpdir);
-        File file = File.createTempFile(getName(), ".tmp", tmpdir);
-        File newFile = new File(file.getParentFile(), "newfile");
+        final File file = File.createTempFile(getName(), ".tmp", tmpdir);
+        final File newFile = new File(file.getParentFile(), "newfile");
         newFile.deleteOnExit();
         file.deleteOnExit();
         file.renameTo(newFile);
@@ -102,7 +102,7 @@ public class W32FileMonitorTest extends TestCase {
         if (!Platform.isWindows()) return;
 
         monitor.addWatch(tmpdir);
-        File file = File.createTempFile(getName(), ".tmp", tmpdir);
+        final File file = File.createTempFile(getName(), ".tmp", tmpdir);
         file.deleteOnExit();
         final FileOutputStream os = new FileOutputStream(file);
         try {
@@ -114,25 +114,25 @@ public class W32FileMonitorTest extends TestCase {
         assertNotNull("No file modified event: " + events, event);
         assertEquals("Wrong target file for event (old)", file, event.getFile());
     }
-    
-    private void delete(File file) {
+
+    private void delete(final File file) {
         if (file.isDirectory()) {
-            File[] files = file.listFiles();
+            final File[] files = file.listFiles();
             for (int i=0;i < files.length;i++) {
                 delete(files[i]);
             }
         }
         file.delete();
     }
-    private File createSubdir(File dir, String name) throws IOException {
-        File f = File.createTempFile(name, ".tmp", dir);
+    private File createSubdir(final File dir, final String name) throws IOException {
+        final File f = File.createTempFile(name, ".tmp", dir);
         f.delete();
         f.mkdirs();
         return f;
     }
     public void testMultipleWatches() throws Exception {
-        File subdir1 = createSubdir(tmpdir, "sub1-");
-        File subdir2 = createSubdir(tmpdir, "sub2-");
+        final File subdir1 = createSubdir(tmpdir, "sub1-");
+        final File subdir2 = createSubdir(tmpdir, "sub2-");
         try {
             monitor.addWatch(subdir1);
             monitor.addWatch(subdir2);
@@ -153,8 +153,8 @@ public class W32FileMonitorTest extends TestCase {
     }
 
     public void testMultipleConsecutiveWatches() throws Exception {
-        File subdir1 = createSubdir(tmpdir, "sub1-");
-        File subdir2 = createSubdir(tmpdir, "sub2-");
+        final File subdir1 = createSubdir(tmpdir, "sub1-");
+        final File subdir2 = createSubdir(tmpdir, "sub2-");
         try {
             monitor.addWatch(subdir1);
             monitor.addWatch(subdir2);
@@ -192,11 +192,11 @@ public class W32FileMonitorTest extends TestCase {
 
         final Integer expectedFileEventInteger = new Integer(expectedFileEvent);
 
-        FileEvent actualEvent = (FileEvent)events.get(expectedFileEventInteger);
+        FileEvent actualEvent = events.get(expectedFileEventInteger);
         final long start = System.currentTimeMillis();
         while (System.currentTimeMillis() - start < 5000 && actualEvent == null) {
             Thread.sleep(10);
-            actualEvent = (FileEvent) events.get(expectedFileEventInteger);
+            actualEvent = events.get(expectedFileEventInteger);
         }
 
         assertTrue("No events sent", events.size() != 0);

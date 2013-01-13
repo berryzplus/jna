@@ -40,7 +40,7 @@ public final class Platform {
     private static final int osType;
 
     static {
-        String osName = System.getProperty("os.name");
+        final String osName = System.getProperty("os.name");
         if (osName.startsWith("Linux")) {
             if ("dalvik".equals(System.getProperty("java.vm.name").toLowerCase())) {
                 osType = ANDROID;
@@ -84,7 +84,7 @@ public final class Platform {
             Class.forName("java.awt.Component");
             hasAWT = true;
         }
-        catch(Throwable t) {
+        catch(final Throwable t) {
             // Don't care why
         }
         HAS_AWT = hasAWT;
@@ -93,7 +93,7 @@ public final class Platform {
             Class.forName("java.nio.Buffer");
             hasBuffers = true;
         }
-        catch(ClassNotFoundException e) {
+        catch(final ClassNotFoundException e) {
         }
         HAS_BUFFERS = hasBuffers;
         RO_FIELDS = osType != WINDOWSCE;
@@ -149,49 +149,45 @@ public final class Platform {
         return true;
     }
     public static final boolean is64Bit() {
-        String model = System.getProperty("sun.arch.data.model",
+        final String model = System.getProperty("sun.arch.data.model",
                                           System.getProperty("com.ibm.vm.bitmode"));
-        if (model != null) {
+        if (model != null)
             return "64".equals(model);
-        }
-        String arch = System.getProperty("os.arch").toLowerCase();
+        final String arch = System.getProperty("os.arch").toLowerCase();
         if ("x86_64".equals(arch)
             || "ia64".equals(arch)
             || "ppc64".equals(arch)
             || "sparcv9".equals(arch)
-            || "amd64".equals(arch)) {
+            || "amd64".equals(arch))
             return true;
-        }
         return Native.POINTER_SIZE == 8;
     }
 
     public static final boolean isIntel() {
-        String arch =
+        final String arch =
             System.getProperty("os.arch").toLowerCase().trim();
         if (arch.equals("i386")
             || arch.startsWith("i686")
             || arch.equals("x86")
             || arch.equals("x86_64")
-            || arch.equals("amd64")) {
+            || arch.equals("amd64"))
             return true;
-        } 
         return false;
     }
 
     public static final boolean isPPC() {
-        String arch =
+        final String arch =
             System.getProperty("os.arch").toLowerCase().trim();
         if (arch.equals("ppc")
             || arch.equals("ppc64")
             || arch.equals("powerpc")
-            || arch.equals("powerpc64")) {
+            || arch.equals("powerpc64"))
             return true;
-        } 
         return false;
     }
 
     public static final boolean isARM() {
-        String arch =
+        final String arch =
             System.getProperty("os.arch").toLowerCase().trim();
         return arch.startsWith("arm");
     }

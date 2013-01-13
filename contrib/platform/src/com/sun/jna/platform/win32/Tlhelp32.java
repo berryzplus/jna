@@ -54,8 +54,8 @@ public interface Tlhelp32 extends StdCallLibrary {
     /**
      * Includes all processes and threads in the system, plus the heaps and modules of the process specified in th32ProcessID.
      */
-    WinDef.DWORD TH32CS_SNAPALL      = new WinDef.DWORD((TH32CS_SNAPHEAPLIST.intValue() |
-            TH32CS_SNAPPROCESS.intValue() | TH32CS_SNAPTHREAD.intValue() | TH32CS_SNAPMODULE.intValue()));
+    WinDef.DWORD TH32CS_SNAPALL      = new WinDef.DWORD(TH32CS_SNAPHEAPLIST.intValue() |
+            TH32CS_SNAPPROCESS.intValue() | TH32CS_SNAPTHREAD.intValue() | TH32CS_SNAPMODULE.intValue());
 
     /**
      * Indicates that the snapshot handle is to be inheritable.
@@ -71,7 +71,7 @@ public interface Tlhelp32 extends StdCallLibrary {
             public ByReference() {
             }
 
-            public ByReference(Pointer memory) {
+            public ByReference(final Pointer memory) {
                 super(memory);
             }
         }
@@ -80,7 +80,7 @@ public interface Tlhelp32 extends StdCallLibrary {
             dwSize = new WinDef.DWORD(size());
         }
 
-        public PROCESSENTRY32(Pointer memory) {
+        public PROCESSENTRY32(final Pointer memory) {
             super(memory);
             read();
         }
@@ -138,7 +138,7 @@ public interface Tlhelp32 extends StdCallLibrary {
          * retrieve the full path of the executable file for a 64-bit process.
          */
         public char[] szExeFile = new char[WinDef.MAX_PATH];
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "dwSize", "cntUsage", "th32ProcessID", "th32DefaultHeapID", "th32ModuleID", "cntThreads", "th32ParentProcessID", "pcPriClassBase", "dwFlags", "szExeFile" });
         }

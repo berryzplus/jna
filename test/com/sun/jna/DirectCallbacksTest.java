@@ -8,11 +8,9 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
-
-import java.util.Map;
 
 import com.sun.jna.ptr.IntByReference;
 
@@ -35,7 +33,7 @@ public class DirectCallbacksTest extends CallbacksTest {
         public native SmallTestStructure callStructureCallback(StructureCallback c, SmallTestStructure arg);
         public native String callStringCallback(StringCallback c, String arg);
         public native WString callWideStringCallback(WideStringCallback c, WString arg);
-        public Pointer callStringArrayCallback(StringArrayCallback c, String[] arg) { throw new UnsupportedOperationException(); }
+        public Pointer callStringArrayCallback(final StringArrayCallback c, final String[] arg) { throw new UnsupportedOperationException(); }
         public native int callCallbackWithByReferenceArgument(CopyArgToByReference cb, int arg, IntByReference result);
         public native TestStructure.ByValue callCallbackWithStructByValue(TestStructure.TestCallback callback, TestStructure.ByValue cbstruct);
         public native CbCallback callCallbackWithCallback(CbCallback cb);
@@ -55,7 +53,7 @@ public class DirectCallbacksTest extends CallbacksTest {
     protected void setUp() {
         lib = new DirectTestLibrary();
     }
-    
+
     public static class DirectCallbackTestLibrary implements CallbackTestLibrary {
         public native double callInt32Callback(DoubleCallback c, double arg, double arg2);
         public native float callInt64Callback(FloatCallback c, float arg, float arg2);
@@ -72,7 +70,7 @@ public class DirectCallbacksTest extends CallbacksTest {
     public void testCallStringArrayCallback() { }
     public void testCallbackExceptionHandlerWithCallbackProxy() { }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(DirectCallbacksTest.class);
     }
 }

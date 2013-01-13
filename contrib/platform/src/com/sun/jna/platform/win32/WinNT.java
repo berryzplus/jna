@@ -1,14 +1,14 @@
 /* Copyright (c) 2007 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -30,7 +30,7 @@ import com.sun.jna.ptr.ByReference;
  * by NT, but exposed through the Win32 API. Ported from WinNT.h Microsoft
  * Windows SDK 6.0A. Avoid including any NIO Buffer mappings here; put them in a
  * DLL-derived interface (e.g. kernel32, user32, etc) instead.
- * 
+ *
  * @author dblock[at]dblock.org
  */
 @SuppressWarnings("serial")
@@ -251,11 +251,11 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Luid", "Attributes" });
         }
-        
+
         public LUID_AND_ATTRIBUTES() {
         }
 
-        public LUID_AND_ATTRIBUTES(LUID luid, DWORD attributes) {
+        public LUID_AND_ATTRIBUTES(final LUID luid, final DWORD attributes) {
             this.Luid = luid;
             this.Attributes = attributes;
         }
@@ -266,16 +266,16 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
      * and its attributes. SIDs are used to uniquely identify users or groups.
      */
     public static class SID_AND_ATTRIBUTES extends Structure {
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Sid", "Attributes" });
         }
-        
+
         public SID_AND_ATTRIBUTES() {
             super();
         }
 
-        public SID_AND_ATTRIBUTES(Pointer memory) {
+        public SID_AND_ATTRIBUTES(final Pointer memory) {
             super(memory);
         }
 
@@ -296,20 +296,20 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
      * (SID) that will be applied to newly created objects.
      */
     public static class TOKEN_OWNER extends Structure {
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Owner" });
         }
-        
+
         public TOKEN_OWNER() {
             super();
         }
 
-        public TOKEN_OWNER(int size) {
+        public TOKEN_OWNER(final int size) {
             super(new Memory(size));
         }
 
-        public TOKEN_OWNER(Pointer memory) {
+        public TOKEN_OWNER(final Pointer memory) {
             super(memory);
             read();
         }
@@ -324,32 +324,32 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
     public static class PSID extends Structure {
         public static class ByReference extends PSID implements Structure.ByReference { }
-        
-        protected List getFieldOrder() { 
-            return Arrays.asList(new String[] { "sid" }); 
+
+        protected List getFieldOrder() {
+            return Arrays.asList(new String[] { "sid" });
         }
 
         public PSID() {
             super();
         }
 
-        public PSID(byte[] data) {
+        public PSID(final byte[] data) {
             super(new Memory(data.length));
             getPointer().write(0, data, 0, data.length);
             read();
         }
 
-        public PSID(int size) {
+        public PSID(final int size) {
             super(new Memory(size));
         }
 
-        public PSID(Pointer memory) {
+        public PSID(final Pointer memory) {
             super(memory);
             read();
         }
 
         public byte[] getBytes() {
-            int len = Advapi32.INSTANCE.GetLengthSid(this);
+            final int len = Advapi32.INSTANCE.GetLengthSid(this);
             return getPointer().getByteArray(0, len);
         }
 
@@ -361,23 +361,21 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
             this(null);
         }
 
-        public PSIDByReference(PSID h) {
+        public PSIDByReference(final PSID h) {
             super(Pointer.SIZE);
             setValue(h);
         }
 
-        public void setValue(PSID h) {
+        public void setValue(final PSID h) {
             getPointer().setPointer(0, h != null ? h.getPointer() : null);
         }
 
         public PSID getValue() {
-            Pointer p = getPointer().getPointer(0);
-            if (p == null) {
+            final Pointer p = getPointer().getPointer(0);
+            if (p == null)
                 return null;
-            }
-            else {
+            else
                 return new PSID(p);
-            }
         }
     }
 
@@ -386,21 +384,21 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
      * token.
      */
     public static class TOKEN_USER extends Structure {
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "User" });
         }
-        
+
         public TOKEN_USER() {
             super();
         }
 
-        public TOKEN_USER(Pointer memory) {
+        public TOKEN_USER(final Pointer memory) {
             super(memory);
             read();
         }
 
-        public TOKEN_USER(int size) {
+        public TOKEN_USER(final int size) {
             super(new Memory(size));
         }
 
@@ -417,21 +415,21 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
      * identifiers (SIDs) in an access token.
      */
     public static class TOKEN_GROUPS extends Structure {
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "GroupCount", "Group0" });
         }
-        
+
         public TOKEN_GROUPS() {
             super();
         }
 
-        public TOKEN_GROUPS(Pointer memory) {
+        public TOKEN_GROUPS(final Pointer memory) {
             super(memory);
             read();
         }
 
-        public TOKEN_GROUPS(int size) {
+        public TOKEN_GROUPS(final int size) {
             super(new Memory(size));
         }
 
@@ -465,7 +463,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
          * contains the LUID and attributes of a privilege.
          */
         public LUID_AND_ATTRIBUTES Privileges[];
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "PrivilegeCount", "Privileges" });
         }
@@ -474,7 +472,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
          * @param nbOfPrivileges
          *            Desired size of the Privileges array
          */
-        public TOKEN_PRIVILEGES(int nbOfPrivileges) {
+        public TOKEN_PRIVILEGES(final int nbOfPrivileges) {
             PrivilegeCount = new DWORD(nbOfPrivileges);
             Privileges = new LUID_AND_ATTRIBUTES[nbOfPrivileges];
         }
@@ -666,7 +664,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
     /**
      * The FILE_NOTIFY_INFORMATION structure describes the changes found by the
      * ReadDirectoryChangesW function.
-     * 
+     *
      * This structure is non-trivial since it is a pattern stamped into a large
      * block of result memory rather than something that stands alone or is used
      * for input.
@@ -677,7 +675,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         public int FileNameLength;
         // filename is not nul-terminated, so we can't use a String/WString
         public char[] FileName = new char[1];
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "NextEntryOffset", "Action", "FileNameLength", "FileName" });
         }
@@ -685,11 +683,10 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         private FILE_NOTIFY_INFORMATION() {
         }
 
-        public FILE_NOTIFY_INFORMATION(int size) {
-            if (size < size()) {
+        public FILE_NOTIFY_INFORMATION(final int size) {
+            if (size < size())
                 throw new IllegalArgumentException("Size must greater than "
                         + size() + ", requested " + size);
-            }
             allocateMemory(size);
         }
 
@@ -709,10 +706,9 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         }
 
         public FILE_NOTIFY_INFORMATION next() {
-            if (NextEntryOffset == 0) {
+            if (NextEntryOffset == 0)
                 return null;
-            }
-            FILE_NOTIFY_INFORMATION next = new FILE_NOTIFY_INFORMATION();
+            final FILE_NOTIFY_INFORMATION next = new FILE_NOTIFY_INFORMATION();
             next.useMemory(getPointer(), NextEntryOffset);
             next.read();
             return next;
@@ -733,16 +729,16 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
     int KEY_WOW64_RES = 0x0300;
 
     int KEY_READ = STANDARD_RIGHTS_READ | KEY_QUERY_VALUE
-            | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY & (~SYNCHRONIZE);
+            | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY & ~SYNCHRONIZE;
 
     int KEY_WRITE = STANDARD_RIGHTS_WRITE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY
-            & (~SYNCHRONIZE);
+            & ~SYNCHRONIZE;
 
-    int KEY_EXECUTE = KEY_READ & (~SYNCHRONIZE);
+    int KEY_EXECUTE = KEY_READ & ~SYNCHRONIZE;
 
     int KEY_ALL_ACCESS = STANDARD_RIGHTS_ALL | KEY_QUERY_VALUE | KEY_SET_VALUE
             | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY
-            | KEY_CREATE_LINK & (~SYNCHRONIZE);
+            | KEY_CREATE_LINK & ~SYNCHRONIZE;
 
     //
     // Open/Create Options
@@ -933,7 +929,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
     int REG_FULL_RESOURCE_DESCRIPTOR = 9;
 
     /**
-     * 
+     *
      */
     int REG_RESOURCE_REQUIREMENTS_LIST = 10;
 
@@ -981,14 +977,14 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         }
 
         public UNION u;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "u" });
         }
 
         /**
          * Low DWORD.
-         * 
+         *
          * @return DWORD.
          */
         public DWORD getLow() {
@@ -997,7 +993,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
         /**
          * High DWORD.
-         * 
+         *
          * @return DWORD.
          */
         public DWORD getHigh() {
@@ -1006,7 +1002,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
         /**
          * 64-bit value.
-         * 
+         *
          * @return 64-bit value.
          */
         public long getValue() {
@@ -1023,24 +1019,22 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         public HANDLE() {
         }
 
-        public HANDLE(Pointer p) {
+        public HANDLE(final Pointer p) {
             setPointer(p);
             immutable = true;
         }
 
         /** Override to the appropriate object for INVALID_HANDLE_VALUE. */
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
-            Object o = super.fromNative(nativeValue, context);
-            if (WinBase.INVALID_HANDLE_VALUE.equals(o)) {
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
+            final Object o = super.fromNative(nativeValue, context);
+            if (WinBase.INVALID_HANDLE_VALUE.equals(o))
                 return WinBase.INVALID_HANDLE_VALUE;
-            }
             return o;
         }
 
-        public void setPointer(Pointer p) {
-            if (immutable) {
+        public void setPointer(final Pointer p) {
+            if (immutable)
                 throw new UnsupportedOperationException("immutable reference");
-            }
 
             super.setPointer(p);
         }
@@ -1054,24 +1048,22 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
             this(null);
         }
 
-        public HANDLEByReference(HANDLE h) {
+        public HANDLEByReference(final HANDLE h) {
             super(Pointer.SIZE);
             setValue(h);
         }
 
-        public void setValue(HANDLE h) {
+        public void setValue(final HANDLE h) {
             getPointer().setPointer(0, h != null ? h.getPointer() : null);
         }
 
         public HANDLE getValue() {
-            Pointer p = getPointer().getPointer(0);
-            if (p == null) {
+            final Pointer p = getPointer().getPointer(0);
+            if (p == null)
                 return null;
-            }
-            if (WinBase.INVALID_HANDLE_VALUE.getPointer().equals(p)) {
+            if (WinBase.INVALID_HANDLE_VALUE.getPointer().equals(p))
                 return WinBase.INVALID_HANDLE_VALUE;
-            }
-            HANDLE h = new HANDLE();
+            final HANDLE h = new HANDLE();
             h.setPointer(p);
             return h;
         }
@@ -1085,7 +1077,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         public HRESULT() {
         }
 
-        public HRESULT(int value) {
+        public HRESULT(final int value) {
             super(value);
         }
     }
@@ -1422,72 +1414,72 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         public static final int WinBuiltinTerminalServerLicenseServersSid = 60;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinBuiltinDCOMUsersSid = 61;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinBuiltinIUsersSid = 62;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinIUserSid = 63;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinBuiltinCryptoOperatorsSid = 64;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinUntrustedLabelSid = 65;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinLowLabelSid = 66;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinMediumLabelSid = 67;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinHighLabelSid = 68;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinSystemLabelSid = 69;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinWriteRestrictedCodeSid = 70;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinCreatorOwnerRightsSid = 71;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinCacheablePrincipalsGroupSid = 72;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinNonCacheablePrincipalsGroupSid = 73;
 
         /**
-	 * 
+	 *
 	 */
         public static final int WinEnterpriseReadonlyControllersSid = 74;
 
@@ -1559,13 +1551,13 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "dwOSVersionInfoSize", "dwMajorVersion", "dwMinorVersion", "dwBuildNumber", "dwPlatformId", "szCSDVersion" });
         }
-        
+
         public OSVERSIONINFO() {
             szCSDVersion = new char[128];
             dwOSVersionInfoSize = new DWORD(size()); // sizeof(OSVERSIONINFO)
         }
 
-        public OSVERSIONINFO(Pointer memory) {
+        public OSVERSIONINFO(final Pointer memory) {
             super(memory);
             read();
         }
@@ -1644,13 +1636,13 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "dwOSVersionInfoSize", "dwMajorVersion", "dwMinorVersion", "dwBuildNumber", "dwPlatformId", "szCSDVersion", "wServicePackMajor", "wServicePackMinor", "wSuiteMask", "wProductType", "wReserved"});
         }
-        
+
         public OSVERSIONINFOEX() {
             szCSDVersion = new char[128];
             dwOSVersionInfoSize = new DWORD(size()); // sizeof(OSVERSIONINFOEX)
         }
 
-        public OSVERSIONINFOEX(Pointer memory) {
+        public OSVERSIONINFOEX(final Pointer memory) {
             super(memory);
             read();
         }
@@ -1849,11 +1841,11 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Length", "Reserved", "RecordNumber", "TimeGenerated", "TimeWritten", "EventID", "EventType", "NumStrings", "EventCategory", "ReservedFlags", "ClosingRecordNumber", "StringOffset", "UserSidLength", "UserSidOffset", "DataLength", "DataOffset"});
         }
-        
+
         public EVENTLOGRECORD() {
         }
 
-        public EVENTLOGRECORD(Pointer p) {
+        public EVENTLOGRECORD(final Pointer p) {
             super(p);
             read();
         }
@@ -1935,40 +1927,40 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         public SECURITY_DESCRIPTOR() {
         }
 
-        public SECURITY_DESCRIPTOR(byte[] data) {
+        public SECURITY_DESCRIPTOR(final byte[] data) {
             super();
             this.data = data;
             useMemory(new Memory(data.length));
         }
 
-        public SECURITY_DESCRIPTOR(Pointer memory) {
+        public SECURITY_DESCRIPTOR(final Pointer memory) {
             super(memory);
             read();
         }
 
         public byte[] data;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "data" });
         }
     }
 
     public static class ACL extends Structure {
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "AclRevision", "Sbz1", "AclSize", "AceCount", "Sbz2" });
         }
-        
+
         public ACL() {
         }
 
-        public ACL(Pointer pointer) {
+        public ACL(final Pointer pointer) {
             super(pointer);
             read();
             ACEs = new ACCESS_ACEStructure[AceCount];
             int offset = size();
             for (int i = 0; i < AceCount; i++) {
-                Pointer share = pointer.share(offset);
+                final Pointer share = pointer.share(offset);
                 // ACE_HEADER.AceType
                 final byte aceType = share.getByte(0);
                 ACCESS_ACEStructure ace = null;
@@ -2017,19 +2009,19 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "Revision", "Sbz1", "Control", "Owner", "Group", "Sacl", "Dacl" });
         }
-        
+
         private ACL DACL;
 
         public SECURITY_DESCRIPTOR_RELATIVE() {
         }
 
-        public SECURITY_DESCRIPTOR_RELATIVE(byte[] data) {
+        public SECURITY_DESCRIPTOR_RELATIVE(final byte[] data) {
             super(new Memory(data.length));
             getPointer().write(0, data, 0, data.length);
             setDacl();
         }
 
-        public SECURITY_DESCRIPTOR_RELATIVE(Memory memory) {
+        public SECURITY_DESCRIPTOR_RELATIVE(final Memory memory) {
             super(memory);
             setDacl();
         }
@@ -2053,10 +2045,10 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
         PSID psid;
 
-        public ACEStructure(Pointer p) {
+        public ACEStructure(final Pointer p) {
             super(p);
         }
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "AceType", "AceFlags", "AceSize" });
         }
@@ -2072,7 +2064,7 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
     /* ACE header */
     public static class ACE_HEADER extends ACEStructure {
-        public ACE_HEADER(Pointer p) {
+        public ACE_HEADER(final Pointer p) {
             super(p);
             read();
         }
@@ -2083,19 +2075,19 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
      */
     public static abstract class ACCESS_ACEStructure extends ACEStructure {
         protected List getFieldOrder() {
-            List list = new ArrayList(super.getFieldOrder());
+            final List list = new ArrayList(super.getFieldOrder());
             list.addAll(Arrays.asList(new String[] { "Mask", "SidStart"}));
             return list;
         }
-        public ACCESS_ACEStructure(Pointer p) {
+        public ACCESS_ACEStructure(final Pointer p) {
             super(p);
             read();
             // AceSize - size of public members of the structure + size of DWORD
             // (SidStart)
-            int sizeOfSID = super.AceSize - size() + 4;
+            final int sizeOfSID = super.AceSize - size() + 4;
             // ACE_HEADER + size of int (Mask)
-            int offsetOfSID = 4 + 4;
-            byte[] data = p.getByteArray(offsetOfSID, sizeOfSID);
+            final int offsetOfSID = 4 + 4;
+            final byte[] data = p.getByteArray(offsetOfSID, sizeOfSID);
             psid = new PSID(data);
         }
 
@@ -2109,14 +2101,14 @@ public interface WinNT extends WinError, WinDef, WinBase, BaseTSD {
 
     /* Access allowed ACE */
     public static class ACCESS_ALLOWED_ACE extends ACCESS_ACEStructure {
-        public ACCESS_ALLOWED_ACE(Pointer p) {
+        public ACCESS_ALLOWED_ACE(final Pointer p) {
             super(p);
         }
     }
 
     /* Access denied ACE */
     public static class ACCESS_DENIED_ACE extends ACCESS_ACEStructure {
-        public ACCESS_DENIED_ACE(Pointer p) {
+        public ACCESS_DENIED_ACE(final Pointer p) {
             super(p);
         }
     }

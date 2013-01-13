@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -29,7 +29,7 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Protected data.
 	 */
-	public static byte[] cryptProtectData(byte[] data) {
+	public static byte[] cryptProtectData(final byte[] data) {
 		return cryptProtectData(data, 0);
 	}
 
@@ -42,10 +42,10 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Protected data.
 	 */
-	public static byte[] cryptProtectData(byte[] data, int flags) {
+	public static byte[] cryptProtectData(final byte[] data, final int flags) {
 		return cryptProtectData(data, null, flags, "", null);
 	}
-	
+
 	/**
 	 * Protect a blob of data.
 	 * @param data
@@ -61,16 +61,15 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Protected bytes.
 	 */
-	public static byte[] cryptProtectData(byte[] data, byte[] entropy, int flags, 
-			String description, CRYPTPROTECT_PROMPTSTRUCT prompt) {
-    	DATA_BLOB pDataIn = new DATA_BLOB(data);
-    	DATA_BLOB pDataProtected = new DATA_BLOB();
-    	DATA_BLOB pEntropy = (entropy == null) ? null : new DATA_BLOB(entropy);
+	public static byte[] cryptProtectData(final byte[] data, final byte[] entropy, final int flags,
+			final String description, final CRYPTPROTECT_PROMPTSTRUCT prompt) {
+    	final DATA_BLOB pDataIn = new DATA_BLOB(data);
+    	final DATA_BLOB pDataProtected = new DATA_BLOB();
+    	final DATA_BLOB pEntropy = entropy == null ? null : new DATA_BLOB(entropy);
     	try {
-	    	if (! Crypt32.INSTANCE.CryptProtectData(pDataIn, description, 
-	    			pEntropy, null, prompt, flags, pDataProtected)) {
-	    		throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-	    	}
+	    	if (! Crypt32.INSTANCE.CryptProtectData(pDataIn, description,
+	    			pEntropy, null, prompt, flags, pDataProtected))
+                throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 	    	return pDataProtected.getData();
     	} finally {
     		if (pDataProtected.pbData != null) {
@@ -78,7 +77,7 @@ public abstract class Crypt32Util {
     		}
     	}
 	}
-	
+
 	/**
 	 * Unprotect a blob of data.
 	 * @param data
@@ -86,7 +85,7 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Unprotected blob of data.
 	 */
-	public static byte[] cryptUnprotectData(byte[] data) {
+	public static byte[] cryptUnprotectData(final byte[] data) {
 		return cryptUnprotectData(data, 0);
 	}
 
@@ -99,10 +98,10 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Unprotected blob of data.
 	 */
-	public static byte[] cryptUnprotectData(byte[] data, int flags) {
+	public static byte[] cryptUnprotectData(final byte[] data, final int flags) {
 		return cryptUnprotectData(data, null, flags, null);
 	}
-	
+
 	/**
 	 * Unprotect a blob of data.
 	 * @param data
@@ -116,17 +115,16 @@ public abstract class Crypt32Util {
 	 * @return
 	 *  Unprotected blob of data.
 	 */
-	public static byte[] cryptUnprotectData(byte[] data, byte[] entropy, int flags, 
-			CRYPTPROTECT_PROMPTSTRUCT prompt) {
-    	DATA_BLOB pDataIn = new DATA_BLOB(data);
-    	DATA_BLOB pDataUnprotected = new DATA_BLOB();
-    	DATA_BLOB pEntropy = (entropy == null) ? null : new DATA_BLOB(entropy);
-    	PointerByReference pDescription = new PointerByReference();
+	public static byte[] cryptUnprotectData(final byte[] data, final byte[] entropy, final int flags,
+			final CRYPTPROTECT_PROMPTSTRUCT prompt) {
+    	final DATA_BLOB pDataIn = new DATA_BLOB(data);
+    	final DATA_BLOB pDataUnprotected = new DATA_BLOB();
+    	final DATA_BLOB pEntropy = entropy == null ? null : new DATA_BLOB(entropy);
+    	final PointerByReference pDescription = new PointerByReference();
     	try {
-	    	if (! Crypt32.INSTANCE.CryptUnprotectData(pDataIn, pDescription, 
-	    			pEntropy, null, prompt, flags, pDataUnprotected)) {
-	    		throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-	    	}
+	    	if (! Crypt32.INSTANCE.CryptUnprotectData(pDataIn, pDescription,
+	    			pEntropy, null, prompt, flags, pDataUnprotected))
+                throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 	    	return pDataUnprotected.getData();
     	} finally {
     		if (pDataUnprotected.pbData != null) {

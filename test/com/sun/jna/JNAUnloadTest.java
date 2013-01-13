@@ -1,14 +1,14 @@
 /* Copyright (c) 2007-2009 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -22,25 +22,25 @@ import java.net.URLClassLoader;
 import junit.framework.TestCase;
 
 public class JNAUnloadTest extends TestCase {
-    
+
     private static final String BUILDDIR =
         System.getProperty("jna.builddir", "build"
                            + (Platform.is64Bit() ? "-d64" : ""));
 
     private static class TestLoader extends URLClassLoader {
-        public TestLoader(boolean fromJar) throws MalformedURLException {
+        public TestLoader(final boolean fromJar) throws MalformedURLException {
             super(new URL[] {
-                    Platform.isWindowsCE() 
+                    Platform.isWindowsCE()
                     ? new File("/Storage Card/" + (fromJar ? "jna.jar" : "test.jar")).toURI().toURL()
                     : new File(BUILDDIR + (fromJar ? "/jna.jar" : "/classes")).toURI().toURL(),
             }, null);
         }
-        protected Class findClass(String name) throws ClassNotFoundException {
-            String boot = System.getProperty("jna.boot.library.path");
+        protected Class findClass(final String name) throws ClassNotFoundException {
+            final String boot = System.getProperty("jna.boot.library.path");
             if (boot != null) {
                 System.setProperty("jna.boot.library.path", "");
             }
-            Class cls = super.findClass(name);
+            final Class cls = super.findClass(name);
             if (boot != null) {
                 System.setProperty("jna.boot.library.path", boot);
             }
@@ -54,14 +54,14 @@ public class JNAUnloadTest extends TestCase {
 
     public void testAvoidJarUnpacking() throws Exception {
         System.setProperty("jna.nounpack", "true");
-        ClassLoader loader = new TestLoader(true);
+        final ClassLoader loader = new TestLoader(true);
         try {
-            Class cls = Class.forName("com.sun.jna.Native", true, loader);
+            final Class cls = Class.forName("com.sun.jna.Native", true, loader);
 
             fail("Class com.sun.jna.Native should not be loadable if jna.nounpack=true: "
                  + cls.getClassLoader());
         }
-        catch(UnsatisfiedLinkError e) {
+        catch(final UnsatisfiedLinkError e) {
         }
         finally {
             System.setProperty("jna.nounpack", "false");
@@ -70,10 +70,9 @@ public class JNAUnloadTest extends TestCase {
 
     // Fails under clover
     public void testUnloadFromJar() throws Exception {
-        File jar = new File((Platform.isWindowsCE() ? "/Storage Card" : BUILDDIR) + "/jna.jar");
-        if (!jar.exists()) {
+        final File jar = new File((Platform.isWindowsCE() ? "/Storage Card" : BUILDDIR) + "/jna.jar");
+        if (!jar.exists())
             throw new Error("Expected JNA jar file at " + jar + " is missing");
-        }
 
         ClassLoader loader = new TestLoader(true);
         Class cls = Class.forName("com.sun.jna.Native", true, loader);
@@ -81,13 +80,13 @@ public class JNAUnloadTest extends TestCase {
 
         Field field = cls.getDeclaredField("nativeLibraryPath");
         field.setAccessible(true);
-        String path = (String)field.get(null);
+        final String path = (String)field.get(null);
         assertNotNull("Native library path unavailable", path);
         assertTrue("Native library not unpacked from jar: " + path,
                    path.startsWith(System.getProperty("java.io.tmpdir")));
 
-        WeakReference ref = new WeakReference(cls);
-        WeakReference clref = new WeakReference(loader);
+        final WeakReference ref = new WeakReference(cls);
+        final WeakReference clref = new WeakReference(loader);
         loader = null;
         cls = null;
         field = null;
@@ -100,7 +99,7 @@ public class JNAUnloadTest extends TestCase {
         assertNull("ClassLoader not GC'd: " + clref.get(), clref.get());
 
         // Check for temporary file deletion
-        File f = new File(path);
+        final File f = new File(path);
         for (int i=0;i < 100 && f.exists();i++) {
             Thread.sleep(10);
             System.gc();
@@ -117,7 +116,7 @@ public class JNAUnloadTest extends TestCase {
             loader = new TestLoader(true);
             cls = Class.forName("com.sun.jna.Native", true, loader);
         }
-        catch(Throwable t) {
+        catch(final Throwable t) {
             fail("Couldn't load class again after discarding first load: " + t.getMessage());
         }
         finally {
@@ -135,11 +134,11 @@ public class JNAUnloadTest extends TestCase {
 
         Field field = cls.getDeclaredField("nativeLibraryPath");
         field.setAccessible(true);
-        String path = (String)field.get(null);
+        final String path = (String)field.get(null);
         assertNotNull("Native library not found", path);
 
-        WeakReference ref = new WeakReference(cls);
-        WeakReference clref = new WeakReference(loader);
+        final WeakReference ref = new WeakReference(cls);
+        final WeakReference clref = new WeakReference(loader);
         loader = null;
         cls = null;
         field = null;
@@ -162,7 +161,7 @@ public class JNAUnloadTest extends TestCase {
                 cls = Class.forName("com.sun.jna.Native", true, loader);
                 break;
             }
-            catch(Throwable t) {
+            catch(final Throwable t) {
                 loader = null;
                 throwable = t;
             }
@@ -179,7 +178,7 @@ public class JNAUnloadTest extends TestCase {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(JNAUnloadTest.class);
     }
 }

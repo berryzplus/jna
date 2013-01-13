@@ -4,12 +4,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /** Provide a method for overriding how a given function is invoked.
- * An instance of this interface may be provided to 
+ * An instance of this interface may be provided to
  * {@link Native#loadLibrary(String, Class, java.util.Map)} as an entry in
  * the options map with key {@link Library#OPTION_INVOCATION_MAPPER}.<p>
  * This is useful for implementing inlined functions, or functions which
  * are actually C preprocessor macros.  Given a native library and JNA
- * interface method, the mapper may provide a handler which implements the 
+ * interface method, the mapper may provide a handler which implements the
  * desired functionality (which may or may not actually make use of a
  * native method).
  * <p>
@@ -32,18 +32,18 @@ import java.lang.reflect.Method;
  *             };
  *         }
  *         return null;
- *     } 
- * } 
+ *     }
+ * }
  * </pre></code>
  * </blockquote>
  * Another situation is where a header provides a function-like macro or
- * inline function definition.  
+ * inline function definition.
  * <blockquote>
  * <code><pre>
  * // Original C code (macro and inline variations)
  * #define allocblock(x) malloc(x * 1024)
  * static inline void* allocblock(size_t x) { return malloc(x * 1024); }
- * 
+ *
  * // Invocation mapping
  * new InvocationMapper() {
  *     public InvocationHandler getInvocationHandler(NativeLibrary lib, Method m) {
@@ -57,8 +57,8 @@ import java.lang.reflect.Method;
  *             };
  *         }
  *         return null;
- *     } 
- * } 
+ *     }
+ * }
  * </pre></code>
  * </blockquote>
  * @author twall

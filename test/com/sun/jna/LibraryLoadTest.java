@@ -1,14 +1,14 @@
 /* Copyright (c) 2007-2009 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 public class LibraryLoadTest extends TestCase {
-    
+
     private static final String BUILDDIR =
         System.getProperty("jna.builddir", "build"
                            + (Platform.is64Bit() ? "-d64" : ""));
@@ -31,7 +31,7 @@ public class LibraryLoadTest extends TestCase {
     public void testLoadJNALibrary() {
         assertTrue("Pointer size should never be zero", Pointer.SIZE > 0);
     }
-    
+
     public void testLoadJAWT() {
         if (!Platform.HAS_AWT) return;
 
@@ -41,7 +41,7 @@ public class LibraryLoadTest extends TestCase {
         // AWT is unavailable
         AWT.loadJAWT(getName());
     }
-    
+
     public void testLoadAWTAfterJNA() {
         if (!Platform.HAS_AWT) return;
 
@@ -51,7 +51,7 @@ public class LibraryLoadTest extends TestCase {
             Toolkit.getDefaultToolkit();
         }
     }
-    
+
     public static interface CLibrary extends Library {
         int wcslen(WString wstr);
         int strlen(String str);
@@ -64,31 +64,31 @@ public class LibraryLoadTest extends TestCase {
     private Object load() {
         return Native.loadLibrary(Platform.C_LIBRARY_NAME, CLibrary.class);
     }
-    
+
     public void testLoadCLibrary() {
         load();
     }
-    
+
     private static final String UNICODE = "\u0444\u043b\u0441\u0432\u0443";
-    private void copy(File src, File dst) throws Exception {
-        FileInputStream is = new FileInputStream(src);
-        FileOutputStream os = new FileOutputStream(dst);
+    private void copy(final File src, final File dst) throws Exception {
+        final FileInputStream is = new FileInputStream(src);
+        final FileOutputStream os = new FileOutputStream(dst);
         int count;
-        byte[] buf = new byte[1024];
+        final byte[] buf = new byte[1024];
         try {
             while ((count = is.read(buf, 0, buf.length)) > 0) {
                 os.write(buf, 0, count);
             }
         }
         finally {
-            try { is.close(); } catch(IOException e) { }
-            try { os.close(); } catch(IOException e) { } 
+            try { is.close(); } catch(final IOException e) { }
+            try { os.close(); } catch(final IOException e) { }
         }
     }
 
     public void testLoadLibraryWithUnicodeName() throws Exception {
-        String tmp = System.getProperty("java.io.tmpdir");
-        String libName = System.mapLibraryName("jnidispatch");
+        final String tmp = System.getProperty("java.io.tmpdir");
+        final String libName = System.mapLibraryName("jnidispatch");
         File src = new File(BUILDDIR + "/native", libName);
         if (Platform.isWindowsCE()) {
             src = new File("/Storage Card", libName);
@@ -96,9 +96,10 @@ public class LibraryLoadTest extends TestCase {
         assertTrue("Expected JNA native library at " + src + " is missing", src.exists());
 
         String newLibName = UNICODE;
-        if (libName.startsWith("lib"))
+        if (libName.startsWith("lib")) {
             newLibName = "lib" + newLibName;
-        int dot = libName.lastIndexOf(".");
+        }
+        final int dot = libName.lastIndexOf(".");
         if (dot != -1) {
             if (Platform.isMac()) {
                 newLibName += ".dylib";
@@ -107,16 +108,16 @@ public class LibraryLoadTest extends TestCase {
                 newLibName += libName.substring(dot, libName.length());
             }
         }
-        File dst = new File(tmp, newLibName);
+        final File dst = new File(tmp, newLibName);
         dst.deleteOnExit();
         copy(src, dst);
         NativeLibrary.addSearchPath(UNICODE, tmp);
-        NativeLibrary nl = NativeLibrary.getInstance(UNICODE);
+        final NativeLibrary nl = NativeLibrary.getInstance(UNICODE);
         nl.dispose();
     }
-    
+
     public void testHandleObjectMethods() {
-        CLibrary lib = (CLibrary)load();
+        final CLibrary lib = (CLibrary)load();
         String method = "toString";
         try {
             lib.toString();
@@ -125,7 +126,7 @@ public class LibraryLoadTest extends TestCase {
             method = "equals";
             lib.equals(null);
         }
-        catch(UnsatisfiedLinkError e) {
+        catch(final UnsatisfiedLinkError e) {
             fail("Object method '" + method + "' not handled");
         }
     }
@@ -138,10 +139,10 @@ public class LibraryLoadTest extends TestCase {
     // dependent libraries in the same directory as the original
     public void testLoadDependentLibraryWithAlteredSearchPath() {
         try {
-            TestLib2 lib = (TestLib2)Native.loadLibrary("testlib2", TestLib2.class);
+            final TestLib2 lib = (TestLib2)Native.loadLibrary("testlib2", TestLib2.class);
             lib.dependentReturnFalse();
         }
-        catch(UnsatisfiedLinkError e) {
+        catch(final UnsatisfiedLinkError e) {
             // failure expected on anything but windows
             if (Platform.isWindows() && !Platform.isWindowsCE()) {
                 fail("Failed to load dependent libraries: " + e);
@@ -154,14 +155,14 @@ public class LibraryLoadTest extends TestCase {
     public void testLoadProperCLibraryVersion() {
         if (Platform.isWindows()) return;
 
-        CLibrary lib = (CLibrary)Native.loadLibrary("c", CLibrary.class);
+        final CLibrary lib = (CLibrary)Native.loadLibrary("c", CLibrary.class);
         assertNotNull("Couldn't get current user",
                       lib.getpwuid(lib.geteuid()));
     }
-    
+
     private static class AWT {
-        public static void loadJAWT(String name) {
-            Frame f = new Frame(name);
+        public static void loadJAWT(final String name) {
+            final Frame f = new Frame(name);
             f.pack();
             try {
                 // FIXME: this works as a test, but fails in ShapedWindowDemo
@@ -174,7 +175,7 @@ public class LibraryLoadTest extends TestCase {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(LibraryLoadTest.class);
     }
 }

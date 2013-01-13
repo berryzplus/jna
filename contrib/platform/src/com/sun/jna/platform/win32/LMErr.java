@@ -1,14 +1,14 @@
 /* Copyright (c) 2007 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -22,7 +22,7 @@ import com.sun.jna.win32.StdCallLibrary;
 public interface LMErr extends StdCallLibrary {
     int NERR_Success =  0;
     int NERR_BASE =  2100;
-    
+
     int NERR_NetNotStarted = NERR_BASE + 2;   /* The workstation driver is not installed. */
     int NERR_UnknownServer = NERR_BASE + 3;   /* The server could not be located. */
     int NERR_ShareMem = NERR_BASE + 4;   /* An internal error occurred.  The network cannot access a shared memory segment. */
@@ -549,7 +549,7 @@ public interface LMErr extends StdCallLibrary {
     int NERR_PasswordMustChange = NERR_BASE + 601;   /* Password must change at next logon */
     int NERR_AccountLockedOut = NERR_BASE + 602;   /* Account is locked out */
     int NERR_PasswordTooLong = NERR_BASE + 603;   /* Password is too long */
-    int NERR_PasswordNotComplexEnough = NERR_BASE + 604;   /* Password doesn't meet the complexity policy */ 
+    int NERR_PasswordNotComplexEnough = NERR_BASE + 604;   /* Password doesn't meet the complexity policy */
     int NERR_PasswordFilterError = NERR_BASE + 605;   /* Password doesn't meet the requirements of the filter dll's */
 
     /***********WARNING ****************
@@ -562,6 +562,6 @@ public interface LMErr extends StdCallLibrary {
      *reserved for Microsoft OEMs      *
      ***********************************/
 
-    int MAX_NERR = NERR_BASE + 899; /* This is the last error in NERR range. */    
+    int MAX_NERR = NERR_BASE + 899; /* This is the last error in NERR range. */
 }
 

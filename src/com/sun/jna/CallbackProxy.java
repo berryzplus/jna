@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -19,7 +19,7 @@ package com.sun.jna;
  */
 public interface CallbackProxy extends Callback {
 
-    /** This is the callback method invoked from native code. 
+    /** This is the callback method invoked from native code.
      * It must <em>not</em> throw any exceptions whatsoever.
      */
     Object callback(Object[] args);

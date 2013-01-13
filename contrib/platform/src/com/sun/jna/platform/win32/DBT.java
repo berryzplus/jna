@@ -15,7 +15,7 @@ import com.sun.jna.win32.StdCallLibrary;
 // TODO: Auto-generated Javadoc
 /**
  * Based on dbt.h (various types)
- * 
+ *
  * @author Tobias Wolf, wolf.tobias@gmx.net
  */
 @SuppressWarnings("serial")
@@ -96,28 +96,28 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast hdr.
-		 * 
+		 *
 		 * @param pointer
 		 *            the pointer
 		 */
-		public DEV_BROADCAST_HDR(long pointer) {
+		public DEV_BROADCAST_HDR(final long pointer) {
 			this(new Pointer(pointer));
 		}
 
 		/**
 		 * Instantiates a new dev broadcast hdr.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_HDR(Pointer memory) {
+		public DEV_BROADCAST_HDR(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -176,18 +176,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast oem.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_OEM(Pointer memory) {
+		public DEV_BROADCAST_OEM(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -222,18 +222,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast devnode.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_DEVNODE(Pointer memory) {
+		public DEV_BROADCAST_DEVNODE(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -271,18 +271,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast volume.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_VOLUME(Pointer memory) {
+		public DEV_BROADCAST_VOLUME(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -317,18 +317,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast port.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_PORT(Pointer memory) {
+		public DEV_BROADCAST_PORT(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -366,18 +366,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast net.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_NET(Pointer memory) {
+		public DEV_BROADCAST_NET(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -415,32 +415,32 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Dev broadcast hdr.
-		 * 
+		 *
 		 * @param pointer
 		 *            the pointer
 		 */
-		public DEV_BROADCAST_DEVICEINTERFACE(long pointer) {
+		public DEV_BROADCAST_DEVICEINTERFACE(final long pointer) {
 			this(new Pointer(pointer));
 		}
 
 		/**
 		 * Instantiates a new dev broadcast deviceinterface.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_DEVICEINTERFACE(Pointer memory) {
+		public DEV_BROADCAST_DEVICEINTERFACE(final Pointer memory) {
 			super(memory);
 			this.dbcc_size = (Integer) this.readField("dbcc_size");
 			// figure out how long dbcc_name should be based on the size
-			int len = 1 + this.dbcc_size - size();
+			final int len = 1 + this.dbcc_size - size();
 			this.dbcc_name = new char[len];
 			read();
 		}
 
 		/**
 		 * Gets the dbcc_name.
-		 * 
+		 *
 		 * @return the dbcc_name
 		 */
 		public String getDbcc_name() {
@@ -449,7 +449,7 @@ public interface DBT extends StdCallLibrary {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {
@@ -496,18 +496,18 @@ public interface DBT extends StdCallLibrary {
 
 		/**
 		 * Instantiates a new dev broadcast handle.
-		 * 
+		 *
 		 * @param memory
 		 *            the memory
 		 */
-		public DEV_BROADCAST_HANDLE(Pointer memory) {
+		public DEV_BROADCAST_HANDLE(final Pointer memory) {
 			super(memory);
 			read();
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.sun.jna.Structure#getFieldOrder()
 		 */
 		protected List getFieldOrder() {

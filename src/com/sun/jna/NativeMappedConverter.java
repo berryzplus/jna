@@ -24,9 +24,9 @@ public class NativeMappedConverter implements TypeConverter {
     private final Class nativeType;
     private final NativeMapped instance;
 
-    public static NativeMappedConverter getInstance(Class cls) {
+    public static NativeMappedConverter getInstance(final Class cls) {
         synchronized(converters) {
-            Reference r = (Reference)converters.get(cls);
+            final Reference r = (Reference)converters.get(cls);
             NativeMappedConverter nmc = r != null ? (NativeMappedConverter)r.get() : null;
             if (nmc == null) {
                 nmc = new NativeMappedConverter(cls);
@@ -36,7 +36,7 @@ public class NativeMappedConverter implements TypeConverter {
         }
     }
 
-    public NativeMappedConverter(Class type) {
+    public NativeMappedConverter(final Class type) {
         if (!NativeMapped.class.isAssignableFrom(type))
             throw new IllegalArgumentException("Type must derive from "
                                                + NativeMapped.class);
@@ -49,18 +49,18 @@ public class NativeMappedConverter implements TypeConverter {
         try {
             return (NativeMapped)type.newInstance();
         }
-        catch (InstantiationException e) {
-            String msg = "Can't create an instance of " + type
+        catch (final InstantiationException e) {
+            final String msg = "Can't create an instance of " + type
                 + ", requires a no-arg constructor: " + e;
             throw new IllegalArgumentException(msg);
         }
-        catch (IllegalAccessException e) {
-            String msg = "Not allowed to create an instance of " + type
+        catch (final IllegalAccessException e) {
+            final String msg = "Not allowed to create an instance of " + type
                 + ", requires a public, no-arg constructor: " + e;
             throw new IllegalArgumentException(msg);
         }
     }
-    public Object fromNative(Object nativeValue, FromNativeContext context) {
+    public Object fromNative(final Object nativeValue, final FromNativeContext context) {
         return instance.fromNative(nativeValue, context);
     }
 
@@ -68,11 +68,10 @@ public class NativeMappedConverter implements TypeConverter {
         return nativeType;
     }
 
-    public Object toNative(Object value, ToNativeContext context) {
+    public Object toNative(Object value, final ToNativeContext context) {
         if (value == null) {
-            if (Pointer.class.isAssignableFrom(nativeType)) {
+            if (Pointer.class.isAssignableFrom(nativeType))
                 return null;
-            }
             value = defaultValue();
         }
         return ((NativeMapped)value).toNative();

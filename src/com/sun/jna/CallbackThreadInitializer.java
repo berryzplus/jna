@@ -1,15 +1,15 @@
 package com.sun.jna;
 /* Copyright (c) 2011 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 /**  This class provides for customization of the mapping of native threads
  * onto attached Java threads.  Use
@@ -31,32 +31,32 @@ package com.sun.jna;
  * initializer settings depending on the callback.<p/>
  */
 public class CallbackThreadInitializer {
-    private boolean daemon;
-    private boolean detach;
-    private String name;
-    private ThreadGroup group;
+    private final boolean daemon;
+    private final boolean detach;
+    private final String name;
+    private final ThreadGroup group;
     /** The default initializer causes the callback thread to remain attached
         as a daemon thread, using the default thread name and group.
     */
     public CallbackThreadInitializer() {
         this(true);
     }
-    /** Keep the callback thread attached, with the given daemon state, 
+    /** Keep the callback thread attached, with the given daemon state,
         using the default thread name and group.
     */
-    public CallbackThreadInitializer(boolean daemon) {
+    public CallbackThreadInitializer(final boolean daemon) {
         this(daemon, false);
     }
     /** Uses the default thread name and group. */
-    public CallbackThreadInitializer(boolean daemon, boolean detach) {
+    public CallbackThreadInitializer(final boolean daemon, final boolean detach) {
         this(daemon, detach, null);
     }
     /** Uses the default thread group. */
-    public CallbackThreadInitializer(boolean daemon, boolean detach, String name) {
+    public CallbackThreadInitializer(final boolean daemon, final boolean detach, final String name) {
         this(daemon, detach, name, null);
     }
     /** Specify all aspects of how the callback thread should be initialized. */
-    public CallbackThreadInitializer(boolean daemon, boolean detach, String name, ThreadGroup group) {
+    public CallbackThreadInitializer(final boolean daemon, final boolean detach, final String name, final ThreadGroup group) {
         this.daemon = daemon;
         this.detach = detach;
         this.name = name;
@@ -64,13 +64,13 @@ public class CallbackThreadInitializer {
     }
 
     /** Returns the desired name for this thread, or null for the default. */
-    public String getName(Callback cb) { return name; }
+    public String getName(final Callback cb) { return name; }
     /** Returns the desired ThreadGroup for thread, or null for the default. */
-    public ThreadGroup getThreadGroup(Callback cb) { return group; }
+    public ThreadGroup getThreadGroup(final Callback cb) { return group; }
     /** Returns whether the callback thread should be a daemon thread. */
-    public boolean isDaemon(Callback cb) { return daemon; }
+    public boolean isDaemon(final Callback cb) { return daemon; }
     /** Returns whether the Thread should be detached from the VM after the
         callback exits, if the thread was not already attached to begin with.
     */
-    public boolean detach(Callback cb) { return detach; }
+    public boolean detach(final Callback cb) { return detach; }
 }

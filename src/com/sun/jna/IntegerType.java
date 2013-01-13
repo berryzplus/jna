@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 
 package com.sun.jna;
@@ -16,62 +16,68 @@ package com.sun.jna;
 /**
  * Represents a native integer value, which may have a platform-specific size
  * (e.g. <code>long</code> on unix-based platforms).
- * 
+ *
  * May optionally indicate an unsigned attribute, such that when a value is
  * extracted into a larger-sized container (e.g. <code>int</code> retrieved
  * via {@link Number#longValue}, the value will be unsigned.  Default behavior
  * is signed.
- * 
+ *
  * @author wmeissner@gmail.com
  * @author twalljava@java.net
  */
 public abstract class IntegerType extends Number implements NativeMapped {
 
-    private int size;
+    private final int size;
     private Number number;
-    private boolean unsigned;
+    private final boolean unsigned;
     // Used by native code
     private long value;
 
     /** Create a zero-valued signed IntegerType. */
-    public IntegerType(int size) {
+    public IntegerType(final int size) {
         this(size, 0, false);
     }
 
     /** Create a zero-valued optionally unsigned IntegerType. */
-    public IntegerType(int size, boolean unsigned) {
+    public IntegerType(final int size, final boolean unsigned) {
         this(size, 0, unsigned);
     }
 
     /** Create a signed IntegerType with the given value. */
-    public IntegerType(int size, long value) {
+    public IntegerType(final int size, final long value) {
         this(size, value, false);
     }
 
     /** Create an optionally signed IntegerType with the given value. */
-    public IntegerType(int size, long value, boolean unsigned) {
+    public IntegerType(final int size, final long value, final boolean unsigned) {
         this.size = size;
         this.unsigned = unsigned;
         setValue(value);
     }
 
     /** Change the value for this data. */
-    public void setValue(long value) {
+    public void setValue(final long value) {
         long truncated = value;
         this.value = value;
         switch (size) {
         case 1:
-            if (unsigned) this.value = value & 0xFFL;
+            if (unsigned) {
+                this.value = value & 0xFFL;
+            }
             truncated = (byte) value;
             this.number = new Byte((byte) value);
             break;
         case 2:
-            if (unsigned) this.value = value & 0xFFFFL;
+            if (unsigned) {
+                this.value = value & 0xFFFFL;
+            }
             truncated = (short) value;
             this.number = new Short((short) value);
             break;
         case 4:
-            if (unsigned) this.value = value & 0xFFFFFFFFL;
+            if (unsigned) {
+                this.value = value & 0xFFFFFFFFL;
+            }
             truncated = (int) value;
             this.number = new Integer((int) value);
             break;
@@ -82,13 +88,12 @@ public abstract class IntegerType extends Number implements NativeMapped {
             throw new IllegalArgumentException("Unsupported size: " + size);
         }
         if (size < 8) {
-            long mask = ~((1L << (size*8)) - 1);
-            if ((value < 0 && truncated != value)
-                || (value >= 0 && (mask & value) != 0)) {
+            final long mask = ~((1L << size*8) - 1);
+            if (value < 0 && truncated != value
+                || value >= 0 && (mask & value) != 0)
                 throw new IllegalArgumentException("Argument value 0x"
                         + Long.toHexString(value) + " exceeds native capacity ("
                         + size + " bytes) mask=0x" + Long.toHexString(mask));
-            }
         }
     }
 
@@ -96,20 +101,20 @@ public abstract class IntegerType extends Number implements NativeMapped {
         return number;
     }
 
-    public Object fromNative(Object nativeValue, FromNativeContext context) {
+    public Object fromNative(final Object nativeValue, final FromNativeContext context) {
         // be forgiving of null values read from memory
-        long value = nativeValue == null
+        final long value = nativeValue == null
             ? 0 : ((Number) nativeValue).longValue();
         try {
-            IntegerType number = (IntegerType) getClass().newInstance();
+            final IntegerType number = getClass().newInstance();
             number.setValue(value);
             return number;
         }
-        catch (InstantiationException e) {
+        catch (final InstantiationException e) {
             throw new IllegalArgumentException("Can't instantiate "
                     + getClass());
         }
-        catch (IllegalAccessException e) {
+        catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Not allowed to instantiate "
                     + getClass());
         }
@@ -135,7 +140,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
         return number.doubleValue();
     }
 
-    public boolean equals(Object rhs) {
+    public boolean equals(final Object rhs) {
         return rhs instanceof IntegerType
             && number.equals(((IntegerType)rhs).number);
     }

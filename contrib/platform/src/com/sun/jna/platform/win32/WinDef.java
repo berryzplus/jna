@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -27,7 +27,7 @@ import com.sun.jna.win32.StdCallLibrary;
 // TODO: Auto-generated Javadoc
 /**
  * Ported from Windef.h (various macros and types). Microsoft Windows SDK 6.0A.
- * 
+ *
  * @author dblock[at]dblock.org
  */
 @SuppressWarnings("serial")
@@ -40,7 +40,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 16-bit unsigned integer.
 	 */
 	public static class WORD extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new word.
 		 */
@@ -53,7 +53,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public WORD(long value) {
+		public WORD(final long value) {
 			super(2, value, true);
 		}
 	}
@@ -62,7 +62,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 32-bit unsigned integer.
 	 */
 	public static class DWORD extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new dword.
 		 */
@@ -75,13 +75,13 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public DWORD(long value) {
+		public DWORD(final long value) {
 			super(4, value, true);
 		}
 
 		/**
 		 * Low WORD.
-		 * 
+		 *
 		 * @return Low WORD.
 		 */
 		public WORD getLow() {
@@ -90,11 +90,11 @@ public interface WinDef extends StdCallLibrary {
 
 		/**
 		 * High WORD.
-		 * 
+		 *
 		 * @return High WORD.
 		 */
 		public WORD getHigh() {
-			return new WORD((longValue() >> 16) & 0xFF);
+			return new WORD(longValue() >> 16 & 0xFF);
 		}
 	}
 
@@ -102,7 +102,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 32-bit signed integer.
 	 */
 	public static class LONG extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new long.
 		 */
@@ -115,7 +115,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public LONG(long value) {
+		public LONG(final long value) {
 			super(Native.LONG_SIZE, value);
 		}
 	}
@@ -124,7 +124,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a device context (DC).
 	 */
 	public static class HDC extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hdc.
 		 */
@@ -137,7 +137,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HDC(Pointer p) {
+		public HDC(final Pointer p) {
 			super(p);
 		}
 	}
@@ -146,7 +146,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to an icon.
 	 */
 	public static class HICON extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hicon.
 		 */
@@ -159,7 +159,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HICON(Pointer p) {
+		public HICON(final Pointer p) {
 			super(p);
 		}
 	}
@@ -168,7 +168,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a cursor.
 	 */
 	public static class HCURSOR extends HICON {
-		
+
 		/**
 		 * Instantiates a new hcursor.
 		 */
@@ -181,7 +181,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HCURSOR(Pointer p) {
+		public HCURSOR(final Pointer p) {
 			super(p);
 		}
 	}
@@ -190,7 +190,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a cursor.
 	 */
 	public static class HMENU extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hmenu.
 		 */
@@ -203,7 +203,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HMENU(Pointer p) {
+		public HMENU(final Pointer p) {
 			super(p);
 		}
 	}
@@ -212,7 +212,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a pen.
 	 */
 	public static class HPEN extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hpen.
 		 */
@@ -225,7 +225,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HPEN(Pointer p) {
+		public HPEN(final Pointer p) {
 			super(p);
 		}
 	}
@@ -234,7 +234,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a resource.
 	 */
 	public static class HRSRC extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hrsrc.
 		 */
@@ -247,7 +247,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HRSRC(Pointer p) {
+		public HRSRC(final Pointer p) {
 			super(p);
 		}
 	}
@@ -256,7 +256,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a palette.
 	 */
 	public static class HPALETTE extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hpalette.
 		 */
@@ -269,7 +269,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HPALETTE(Pointer p) {
+		public HPALETTE(final Pointer p) {
 			super(p);
 		}
 	}
@@ -278,7 +278,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a bitmap.
 	 */
 	public static class HBITMAP extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hbitmap.
 		 */
@@ -291,7 +291,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HBITMAP(Pointer p) {
+		public HBITMAP(final Pointer p) {
 			super(p);
 		}
 	}
@@ -300,7 +300,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a region.
 	 */
 	public static class HRGN extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hrgn.
 		 */
@@ -313,7 +313,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HRGN(Pointer p) {
+		public HRGN(final Pointer p) {
 			super(p);
 		}
 	}
@@ -322,7 +322,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a window.
 	 */
 	public static class HWND extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hwnd.
 		 */
@@ -335,7 +335,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HWND(Pointer p) {
+		public HWND(final Pointer p) {
 			super(p);
 		}
 	}
@@ -358,7 +358,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a font.
 	 */
 	public static class HFONT extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hfont.
 		 */
@@ -371,7 +371,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HFONT(Pointer p) {
+		public HFONT(final Pointer p) {
 			super(p);
 		}
 	}
@@ -380,7 +380,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Message parameter.
 	 */
 	public static class LPARAM extends LONG_PTR {
-		
+
 		/**
 		 * Instantiates a new lparam.
 		 */
@@ -393,7 +393,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public LPARAM(long value) {
+		public LPARAM(final long value) {
 			super(value);
 		}
 	}
@@ -402,7 +402,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Signed result of message processing.
 	 */
 	public static class LRESULT extends LONG_PTR {
-		
+
 		/**
 		 * Instantiates a new lresult.
 		 */
@@ -415,14 +415,14 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public LRESULT(long value) {
+		public LRESULT(final long value) {
 			super(value);
 		}
 	}
 
 	/** Integer type big enough for a pointer. */
 	public static class INT_PTR extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new int ptr.
 		 */
@@ -435,7 +435,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public INT_PTR(long value) {
+		public INT_PTR(final long value) {
 			super(Pointer.SIZE, value);
 		}
 
@@ -453,7 +453,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Unsigned INT_PTR.
 	 */
 	public static class UINT_PTR extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new uint ptr.
 		 */
@@ -466,7 +466,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public UINT_PTR(long value) {
+		public UINT_PTR(final long value) {
 			super(Pointer.SIZE, value, true);
 		}
 
@@ -484,7 +484,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Message parameter.
 	 */
 	public static class WPARAM extends UINT_PTR {
-		
+
 		/**
 		 * Instantiates a new wparam.
 		 */
@@ -497,7 +497,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public WPARAM(long value) {
+		public WPARAM(final long value) {
 			super(value);
 		}
 	}
@@ -506,16 +506,16 @@ public interface WinDef extends StdCallLibrary {
 	 * The Class RECT.
 	 */
 	public class RECT extends Structure {
-		
+
 		/** The left. */
 		public int left;
-		
+
 		/** The top. */
 		public int top;
-		
+
 		/** The right. */
 		public int right;
-		
+
 		/** The bottom. */
 		public int bottom;
 
@@ -548,7 +548,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 32-bit unsigned integer.
 	 */
 	public static class ULONG extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new ulong.
 		 */
@@ -561,7 +561,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public ULONG(long value) {
+		public ULONG(final long value) {
 			super(Native.LONG_SIZE, value, true);
 		}
 
@@ -577,7 +577,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 64-bit unsigned integer.
 	 */
 	public static class ULONGLONG extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new ulonglong.
 		 */
@@ -590,7 +590,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public ULONGLONG(long value) {
+		public ULONGLONG(final long value) {
 			super(8, value, true);
 		}
 	}
@@ -599,7 +599,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 64-bit unsigned integer.
 	 */
 	public static class DWORDLONG extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new dwordlong.
 		 */
@@ -612,7 +612,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public DWORDLONG(long value) {
+		public DWORDLONG(final long value) {
 			super(8, value, true);
 		}
 	}
@@ -621,7 +621,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Handle to a bitmap.
 	 */
 	public static class HBRUSH extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new hbrush.
 		 */
@@ -634,7 +634,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public HBRUSH(Pointer p) {
+		public HBRUSH(final Pointer p) {
 			super(p);
 		}
 	}
@@ -643,7 +643,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 16-bit unsigned integer.
 	 */
 	public static class ATOM extends WORD {
-		
+
 		/**
 		 * Instantiates a new atom.
 		 */
@@ -656,7 +656,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public ATOM(long value) {
+		public ATOM(final long value) {
 			super(value);
 		}
 	}
@@ -665,7 +665,7 @@ public interface WinDef extends StdCallLibrary {
 	 * The Class PVOID.
 	 */
 	public static class PVOID extends HANDLE {
-		
+
 		/**
 		 * Instantiates a new pvoid.
 		 */
@@ -678,7 +678,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param p the p
 		 */
-		public PVOID(Pointer p) {
+		public PVOID(final Pointer p) {
 			super(p);
 		}
 	}
@@ -687,7 +687,7 @@ public interface WinDef extends StdCallLibrary {
 	 * Message parameter.
 	 */
 	public static class LPVOID extends LONG_PTR {
-		
+
 		/**
 		 * Instantiates a new lpvoid.
 		 */
@@ -700,7 +700,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public LPVOID(long value) {
+		public LPVOID(final long value) {
 			super(value);
 		}
 	}
@@ -728,7 +728,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param memory the memory
 		 */
-		public POINT(Pointer memory) {
+		public POINT(final Pointer memory) {
 			super(memory);
 			read();
 		}
@@ -742,7 +742,7 @@ public interface WinDef extends StdCallLibrary {
 		 * @param x the x
 		 * @param y the y
 		 */
-		public POINT(int x, int y) {
+		public POINT(final int x, final int y) {
 			this.x = x;
 			this.y = y;
 		}
@@ -759,7 +759,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 16-bit unsigned short.
 	 */
 	public static class USHORT extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new ushort.
 		 */
@@ -772,7 +772,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public USHORT(long value) {
+		public USHORT(final long value) {
 			super(2, value, true);
 		}
 	}
@@ -781,7 +781,7 @@ public interface WinDef extends StdCallLibrary {
 	 * 32-bit unsigned short.
 	 */
 	public static class UINT extends IntegerType {
-		
+
 		/**
 		 * Instantiates a new uint.
 		 */
@@ -794,7 +794,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public UINT(long value) {
+		public UINT(final long value) {
 			super(4, value, true);
 		}
 	}
@@ -803,7 +803,7 @@ public interface WinDef extends StdCallLibrary {
 	 * The Class SCODE.
 	 */
 	public static class SCODE extends ULONG {
-		
+
 		/**
 		 * Instantiates a new scode.
 		 */
@@ -816,7 +816,7 @@ public interface WinDef extends StdCallLibrary {
 		 *
 		 * @param value the value
 		 */
-		public SCODE(long value) {
+		public SCODE(final long value) {
 			super(value);
 		}
 

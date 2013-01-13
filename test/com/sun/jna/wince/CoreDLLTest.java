@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CoreDLLTest extends TestCase {
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(CoreDLLTest.class);
     }
 
@@ -72,16 +72,16 @@ public class CoreDLLTest extends TestCase {
             public static class ByReference extends PROCESS_INFORMATION implements Structure.ByReference {
                 public ByReference() {
                 }
-                
-                public ByReference(Pointer memory) {
+
+                public ByReference(final Pointer memory) {
                     super(memory);
                 }
             }
-            
+
             public PROCESS_INFORMATION() {
             }
-            
-            public PROCESS_INFORMATION(Pointer memory) {
+
+            public PROCESS_INFORMATION(final Pointer memory) {
                 super(memory);
             }
             protected List getFieldOrder() {
@@ -99,10 +99,10 @@ public class CoreDLLTest extends TestCase {
     }
 
     public void testCreateProcess() {
-        CoreDLL.PROCESS_INFORMATION processInformation = new CoreDLL.PROCESS_INFORMATION();
+        final CoreDLL.PROCESS_INFORMATION processInformation = new CoreDLL.PROCESS_INFORMATION();
         //String cmd = "/storage card/Program files/PHM Tools/regedit";
-        String cmd = null;
-        boolean status = CoreDLL.INSTANCE.CreateProcess(cmd, null, null, null,
+        final String cmd = null;
+        final boolean status = CoreDLL.INSTANCE.CreateProcess(cmd, null, null, null,
                                                         false, 0x10, Pointer.NULL,
                                                         null, null, processInformation);
         assertTrue("Process launch failed", status);

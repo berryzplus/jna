@@ -106,7 +106,7 @@ public abstract class Structure {
     static final boolean isARM;
 
     static {
-        String arch = System.getProperty("os.arch").toLowerCase();
+        final String arch = System.getProperty("os.arch").toLowerCase();
         isPPC = "ppc".equals(arch) || "powerpc".equals(arch);
         isSPARC = "sparc".equals(arch);
 	isARM = arch.startsWith("arm");
@@ -130,8 +130,8 @@ public abstract class Structure {
 
     static final int MAX_GNUC_ALIGNMENT =
         isSPARC
-        || ((isPPC || isARM)
-            && (Platform.isLinux() || Platform.isAndroid()))
+        || (isPPC || isARM)
+            && (Platform.isLinux() || Platform.isAndroid())
         || Platform.isAix()
         ? 8 : Native.LONG_SIZE;
     protected static final int CALCULATE_SIZE = -1;
@@ -148,9 +148,6 @@ public abstract class Structure {
     // Keep track of java strings which have been converted to C strings
     private final Map nativeStrings = new HashMap();
     private TypeMapper typeMapper;
-    // This field is accessed by native code
-    private long typeInfo;
-
     private boolean autoRead = true;
     private boolean autoWrite = true;
     private Structure[] array;
@@ -159,28 +156,28 @@ public abstract class Structure {
         this(ALIGN_DEFAULT);
     }
 
-    protected Structure(TypeMapper mapper) {
+    protected Structure(final TypeMapper mapper) {
         this(null, ALIGN_DEFAULT, mapper);
     }
 
-    protected Structure(int alignType) {
+    protected Structure(final int alignType) {
         this(null, alignType);
     }
 
-    protected Structure(int alignType, TypeMapper mapper) {
+    protected Structure(final int alignType, final TypeMapper mapper) {
         this(null, alignType, mapper);
     }
 
     /** Create a structure cast onto pre-allocated memory. */
-    protected Structure(Pointer p) {
+    protected Structure(final Pointer p) {
         this(p, ALIGN_DEFAULT);
     }
 
-    protected Structure(Pointer p, int alignType) {
+    protected Structure(final Pointer p, final int alignType) {
         this(p, alignType, null);
     }
 
-    protected Structure(Pointer p, int alignType, TypeMapper mapper) {
+    protected Structure(final Pointer p, final int alignType, final TypeMapper mapper) {
         setAlignType(alignType);
         initializeTypeMapper(mapper);
         validateFields();
@@ -215,17 +212,17 @@ public abstract class Structure {
      * @deprecated You should use one of {@link #Structure(TypeMapper)}
      * or {@link #Structure(Pointer,int,TypeMapper)} constructors instead.
      */
-    protected void setTypeMapper(TypeMapper mapper) {
+    protected void setTypeMapper(final TypeMapper mapper) {
         initializeTypeMapper(mapper);
     }
-    
-    /** Initialize the type mapper for this structure.  
+
+    /** Initialize the type mapper for this structure.
      * If <code>null</code>, the default mapper for the
      * defining class will be used.
      */
     private void initializeTypeMapper(TypeMapper mapper) {
         if (mapper == null) {
-            Class declaring = getClass().getDeclaringClass();
+            final Class declaring = getClass().getDeclaringClass();
             if (declaring != null) {
                 mapper = Native.getTypeMapper(declaring);
             }
@@ -255,21 +252,24 @@ public abstract class Structure {
     protected void setAlignType(int alignType) {
         this.alignType = alignType;
         if (alignType == ALIGN_DEFAULT) {
-            Class declaring = getClass().getDeclaringClass();
-            if (declaring != null)
+            final Class declaring = getClass().getDeclaringClass();
+            if (declaring != null) {
                 alignType = Native.getStructureAlignment(declaring);
+            }
             if (alignType == ALIGN_DEFAULT) {
-                if (Platform.isWindows())
+                if (Platform.isWindows()) {
                     alignType = ALIGN_MSVC;
-                else
+                }
+                else {
                     alignType = ALIGN_GNUC;
+                }
             }
         }
         this.actualAlignType = alignType;
         layoutChanged();
     }
 
-    protected Memory autoAllocate(int size) {
+    protected Memory autoAllocate(final int size) {
         return new AutoAllocated(size);
     }
 
@@ -278,7 +278,7 @@ public abstract class Structure {
      * overlaid on some other memory block and thus does not own its own
      * memory.
      */
-    protected void useMemory(Pointer m) {
+    protected void useMemory(final Pointer m) {
         useMemory(m, 0);
     }
 
@@ -287,7 +287,7 @@ public abstract class Structure {
      * nested within another, or otherwise overlaid on existing memory and
      * thus does not own its own memory allocation.
      */
-    protected void useMemory(Pointer m, int offset) {
+    protected void useMemory(final Pointer m, final int offset) {
         try {
             // Ensure our memory pointer is initialized, even if we can't
             // yet figure out a proper size/layout
@@ -300,7 +300,7 @@ public abstract class Structure {
             }
             this.array = null;
         }
-        catch(IndexOutOfBoundsException e) {
+        catch(final IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Structure exceeds provided memory bounds");
         }
     }
@@ -316,7 +316,7 @@ public abstract class Structure {
         @param avoidFFIType used when computing FFI type information
         to avoid recursion
     */
-    private void ensureAllocated(boolean avoidFFIType) {
+    private void ensureAllocated(final boolean avoidFFIType) {
         if (memory == null) {
             allocateMemory(avoidFFIType);
         }
@@ -327,7 +327,7 @@ public abstract class Structure {
                 try {
                     this.memory = this.memory.share(0, this.size);
                 }
-                catch(IndexOutOfBoundsException e) {
+                catch(final IndexOutOfBoundsException e) {
                     throw new IllegalArgumentException("Structure exceeds provided memory bounds");
                 }
             }
@@ -341,7 +341,7 @@ public abstract class Structure {
         allocateMemory(false);
     }
 
-    private void allocateMemory(boolean avoidFFIType) {
+    private void allocateMemory(final boolean avoidFFIType) {
         allocateMemory(calculateSize(true, avoidFFIType));
     }
 
@@ -356,9 +356,8 @@ public abstract class Structure {
             // Analyze the struct, but don't worry if we can't yet do it
             size = calculateSize(false);
         }
-        else if (size <= 0) {
+        else if (size <= 0)
             throw new IllegalArgumentException("Structure size must be greater than zero: " + size);
-        }
         // May need to defer size calculation if derived class not fully
         // initialized
         if (size != CALCULATE_SIZE) {
@@ -413,42 +412,41 @@ public abstract class Structure {
         class StructureSet extends AbstractCollection implements Set {
             private Structure[] elements;
             private int count;
-            private void ensureCapacity(int size) {
+            private void ensureCapacity(final int size) {
                 if (elements == null) {
                     elements = new Structure[size*3/2];
                 }
                 else if (elements.length < size) {
-                    Structure[] e = new Structure[size*3/2];
+                    final Structure[] e = new Structure[size*3/2];
                     System.arraycopy(elements, 0, e, 0, elements.length);
                     elements = e;
                 }
             }
             public int size() { return count; }
-            public boolean contains(Object o) {
+            public boolean contains(final Object o) {
                 return indexOf(o) != -1;
             }
-            public boolean add(Object o) {
+            public boolean add(final Object o) {
                 if (!contains(o)) {
                     ensureCapacity(count+1);
                     elements[count++] = (Structure)o;
                 }
                 return true;
             }
-            private int indexOf(Object o) {
-                Structure s1 = (Structure)o;
+            private int indexOf(final Object o) {
+                final Structure s1 = (Structure)o;
                 for (int i=0;i < count;i++) {
-                    Structure s2 = elements[i];
+                    final Structure s2 = elements[i];
                     if (s1 == s2
-                        || (s1.getClass() == s2.getClass()
+                        || s1.getClass() == s2.getClass()
                             && s1.size() == s2.size()
-                            && s1.getPointer().equals(s2.getPointer()))) {
+                            && s1.getPointer().equals(s2.getPointer()))
                         return i;
-                    }
                 }
                 return -1;
             }
-            public boolean remove(Object o) {
-                int idx = indexOf(o);
+            public boolean remove(final Object o) {
+                final int idx = indexOf(o);
                 if (idx != -1) {
                     if (--count > 0) {
                         elements[idx] = elements[count];
@@ -462,7 +460,7 @@ public abstract class Structure {
                 Provides an iterator over a snapshot of this Set.
             */
             public Iterator iterator() {
-                Structure[] e = new Structure[count];
+                final Structure[] e = new Structure[count];
                 if (count > 0) {
                     System.arraycopy(elements, 0, e, 0, count);
                 }
@@ -491,15 +489,14 @@ public abstract class Structure {
         ensureAllocated();
 
         // Avoid redundant reads
-        if (busy().contains(this)) {
+        if (busy().contains(this))
             return;
-        }
         busy().add(this);
         if (this instanceof Structure.ByReference) {
             reading().put(getPointer(), this);
         }
         try {
-            for (Iterator i=fields().values().iterator();i.hasNext();) {
+            for (final Iterator i=fields().values().iterator();i.hasNext();) {
                 readField((StructField)i.next());
             }
         }
@@ -512,9 +509,9 @@ public abstract class Structure {
     }
 
     /** Returns the calculated offset of the given field. */
-    protected int fieldOffset(String name) {
+    protected int fieldOffset(final String name) {
 	ensureAllocated();
-	StructField f = (StructField)fields().get(name);
+	final StructField f = (StructField)fields().get(name);
         if (f == null)
             throw new IllegalArgumentException("No such field: " + name);
 	return f.offset;
@@ -525,9 +522,9 @@ public abstract class Structure {
      * @return the new field value, after updating
      * @throws IllegalArgumentException if no field exists with the given name
      */
-    public Object readField(String name) {
+    public Object readField(final String name) {
         ensureAllocated();
-        StructField f = (StructField)fields().get(name);
+        final StructField f = (StructField)fields().get(name);
         if (f == null)
             throw new IllegalArgumentException("No such field: " + name);
         return readField(f);
@@ -536,34 +533,33 @@ public abstract class Structure {
     /** Obtain the value currently in the Java field.  Does not read from
      * memory.
      */
-    Object getFieldValue(Field field) {
+    Object getFieldValue(final Field field) {
         try {
             return field.get(this);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new Error("Exception reading field '"
                             + field.getName() + "' in " + getClass()
                             + ": " + e);
         }
     }
 
-    void setFieldValue(Field field, Object value) {
+    void setFieldValue(final Field field, final Object value) {
         setFieldValue(field, value, false);
     }
 
-    private void setFieldValue(Field field, Object value, boolean overrideFinal) {
+    private void setFieldValue(final Field field, final Object value, final boolean overrideFinal) {
 
         try {
             field.set(this, value);
         }
-        catch(IllegalAccessException e) {
-            int modifiers = field.getModifiers();
+        catch(final IllegalAccessException e) {
+            final int modifiers = field.getModifiers();
             if (Modifier.isFinal(modifiers)) {
-                if (overrideFinal) {
+                if (overrideFinal)
                     // WARNING: setAccessible(true) on J2ME does *not* allow
                     // overwriting of a final field.
                     throw new UnsupportedOperationException("This VM does not support Structures with final fields (field '" + field.getName() + "' within " + getClass() + ")");
-                }
                 throw new UnsupportedOperationException("Attempt to write to read-only field '" + field.getName() + "' within " + getClass());
             }
             throw new Error("Unexpectedly unable to write to field '"
@@ -579,13 +575,13 @@ public abstract class Structure {
      * @param address the native <code>struct *</code>
      * @return Updated <code>Structure.ByReference</code> object
      */
-    static Structure updateStructureByReference(Class type, Structure s, Pointer address) {
+    static Structure updateStructureByReference(final Class type, Structure s, final Pointer address) {
         if (address == null) {
             s = null;
         }
         else {
             if (s == null || !address.equals(s.getPointer())) {
-                Structure s1 = (Structure)reading().get(address);
+                final Structure s1 = (Structure)reading().get(address);
                 if (s1 != null && type.equals(s1.getClass())) {
                     s = s1;
                 }
@@ -603,24 +599,24 @@ public abstract class Structure {
      * updated from the contents of native memory.
      */
     // TODO: make overridable method with calculated native type, offset, etc
-    Object readField(StructField structField) {
+    Object readField(final StructField structField) {
 
         // Get the offset of the field
-        int offset = structField.offset;
+        final int offset = structField.offset;
 
         // Determine the type of the field
         Class fieldType = structField.type;
-        FromNativeConverter readConverter = structField.readConverter;
+        final FromNativeConverter readConverter = structField.readConverter;
         if (readConverter != null) {
             fieldType = readConverter.nativeType();
         }
         // Get the current value only for types which might need to be preserved
-        Object currentValue = (Structure.class.isAssignableFrom(fieldType)
+        final Object currentValue = Structure.class.isAssignableFrom(fieldType)
                                || Callback.class.isAssignableFrom(fieldType)
-                               || (Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(fieldType))
+                               || Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(fieldType)
                                || Pointer.class.isAssignableFrom(fieldType)
                                || NativeMapped.class.isAssignableFrom(fieldType)
-                               || fieldType.isArray())
+                               || fieldType.isArray()
             ? getFieldValue(structField.field) : null;
 
         Object result = memory.getValue(offset, fieldType, currentValue);
@@ -657,14 +653,13 @@ public abstract class Structure {
         }
 
         // Avoid redundant writes
-        if (busy().contains(this)) {
+        if (busy().contains(this))
             return;
-        }
         busy().add(this);
         try {
             // Write all fields, except those marked 'volatile'
-            for (Iterator i=fields().values().iterator();i.hasNext();) {
-                StructField sf = (StructField)i.next();
+            for (final Iterator i=fields().values().iterator();i.hasNext();) {
+                final StructField sf = (StructField)i.next();
                 if (!sf.isVolatile) {
                     writeField(sf);
                 }
@@ -679,9 +674,9 @@ public abstract class Structure {
      * field will be translated into native memory.
      * @throws IllegalArgumentException if no field exists with the given name
      */
-    public void writeField(String name) {
+    public void writeField(final String name) {
         ensureAllocated();
-        StructField f = (StructField)fields().get(name);
+        final StructField f = (StructField)fields().get(name);
         if (f == null)
             throw new IllegalArgumentException("No such field: " + name);
         writeField(f);
@@ -692,29 +687,29 @@ public abstract class Structure {
      * corresponding native memory.
      * @throws IllegalArgumentException if no field exists with the given name
      */
-    public void writeField(String name, Object value) {
+    public void writeField(final String name, final Object value) {
         ensureAllocated();
-        StructField structField = (StructField)fields().get(name);
+        final StructField structField = (StructField)fields().get(name);
         if (structField == null)
             throw new IllegalArgumentException("No such field: " + name);
         setFieldValue(structField.field, value);
         writeField(structField);
     }
 
-    void writeField(StructField structField) {
+    void writeField(final StructField structField) {
 
         if (structField.isReadOnly)
             return;
 
         // Get the offset of the field
-        int offset = structField.offset;
+        final int offset = structField.offset;
 
         // Get the value from the field
         Object value = getFieldValue(structField.field);
 
         // Determine the type of the field
         Class fieldType = structField.type;
-        ToNativeConverter converter = structField.writeConverter;
+        final ToNativeConverter converter = structField.writeConverter;
         if (converter != null) {
             value = converter.toNative(value, new StructureWriteContext(this, structField.field));
             fieldType = converter.nativeType();
@@ -724,13 +719,12 @@ public abstract class Structure {
         if (String.class == fieldType
             || WString.class == fieldType) {
             // Allocate a new string in memory
-            boolean wide = fieldType == WString.class;
+            final boolean wide = fieldType == WString.class;
             if (value != null) {
                 if (nativeStrings.containsKey(structField.name + ".ptr")
-                    && value.equals(nativeStrings.get(structField.name + ".val"))) {
+                    && value.equals(nativeStrings.get(structField.name + ".val")))
                     return;
-                }
-                NativeString nativeString = new NativeString(value.toString(), wide);
+                final NativeString nativeString = new NativeString(value.toString(), wide);
                 // Keep track of allocated C strings to avoid
                 // premature garbage collection of the memory.
                 nativeStrings.put(structField.name, nativeString);
@@ -746,8 +740,8 @@ public abstract class Structure {
         try {
             memory.setValue(offset, value, fieldType);
         }
-        catch(IllegalArgumentException e) {
-            String msg = "Structure field \"" + structField.name
+        catch(final IllegalArgumentException e) {
+            final String msg = "Structure field \"" + structField.name
                 + "\" was declared as " + structField.type
                 + (structField.type == fieldType
                    ? "" : " (native type " + fieldType + ")")
@@ -785,16 +779,16 @@ public abstract class Structure {
      * @deprecated Use the required method getFieldOrder() instead to
      * indicate the order of fields in this structure.
      */
-    protected final void setFieldOrder(String[] fields) {
+    protected final void setFieldOrder(final String[] fields) {
         throw new Error("This method is obsolete, use getFieldOrder() instead");
     }
 
     /** Sort the structure fields according to the given array of names. */
-    protected void sortFields(List fields, List names) {
+    protected void sortFields(final List fields, final List names) {
         for (int i=0;i < names.size();i++) {
-            String name = (String)names.get(i);
+            final String name = (String)names.get(i);
             for (int f=0;f < fields.size();f++) {
-                Field field = (Field)fields.get(f);
+                final Field field = (Field)fields.get(f);
                 if (name.equals(field.getName())) {
                     Collections.swap(fields, i, f);
                     break;
@@ -805,17 +799,18 @@ public abstract class Structure {
 
     /** Look up all fields in this class and superclasses. */
     protected List getFieldList() {
-        List flist = new ArrayList();
+        final List flist = new ArrayList();
         for (Class cls = getClass();
              !cls.equals(Structure.class);
              cls = cls.getSuperclass()) {
-            List classFields = new ArrayList();
-            Field[] fields = cls.getDeclaredFields();
+            final List classFields = new ArrayList();
+            final Field[] fields = cls.getDeclaredFields();
             for (int i=0;i < fields.length;i++) {
-                int modifiers = fields[i].getModifiers();
+                final int modifiers = fields[i].getModifiers();
                 if (Modifier.isStatic(modifiers)
-                    || !Modifier.isPublic(modifiers))
+                    || !Modifier.isPublic(modifiers)) {
                     continue;
+                }
                 classFields.add(fields[i]);
             }
             flist.addAll(0, classFields);
@@ -835,46 +830,44 @@ public abstract class Structure {
         }
     }
 
-    private List sort(Collection c) {
-        List list = new ArrayList(c);
+    private List sort(final Collection c) {
+        final List list = new ArrayList(c);
         Collections.sort(list);
         return list;
     }
 
-    /** Returns all field names (sorted) provided so far by 
+    /** Returns all field names (sorted) provided so far by
         {@link #getFieldOrder}
         @param force set if results are required immediately
         @return null if not yet able to provide fields, and force is false.
         @throws Error if force is true and field order data not yet specified
         and can't be generated automatically.
     **/
-    protected List getFields(boolean force) {
-        List flist = getFieldList();
-        Set names = new HashSet();
-        for (Iterator i=flist.iterator();i.hasNext();) {
+    protected List getFields(final boolean force) {
+        final List flist = getFieldList();
+        final Set names = new HashSet();
+        for (final Iterator i=flist.iterator();i.hasNext();) {
             names.add(((Field)i.next()).getName());
         }
-        List fieldOrder = fieldOrder();
+        final List fieldOrder = fieldOrder();
         if (fieldOrder.size() != flist.size() && flist.size() > 1) {
-            if (force) {
+            if (force)
                 throw new Error("Structure.getFieldOrder() on " + getClass()
                                 + " does not provide enough names ("
                                 + sort(fieldOrder)
                                 + ") to match declared fields ("
                                 + sort(names)
                                 + ")");
-            }
             return null;
         }
 
-        Set orderedNames = new HashSet(fieldOrder);
-        if (!orderedNames.equals(names)) {
-            throw new Error("Structure.getFieldOrder() on " + getClass() 
+        final Set orderedNames = new HashSet(fieldOrder);
+        if (!orderedNames.equals(names))
+            throw new Error("Structure.getFieldOrder() on " + getClass()
                             + " returns names ("
                             + sort(fieldOrder)
                             + ") which do not match declared field names ("
                             + sort(names) + ")");
-        }
 
         sortFields(flist, fieldOrder);
 
@@ -892,11 +885,11 @@ public abstract class Structure {
      * @throws IllegalArgumentException when an unsupported field type is
      * encountered
      */
-    private int calculateSize(boolean force) {
+    private int calculateSize(final boolean force) {
         return calculateSize(force, false);
     }
 
-    int calculateSize(boolean force, boolean avoidFFIType) {
+    int calculateSize(final boolean force, final boolean avoidFFIType) {
         int size = CALCULATE_SIZE;
         LayoutInfo info;
         synchronized(layoutInfo) {
@@ -942,9 +935,9 @@ public abstract class Structure {
         private boolean variable;
     }
 
-    private void validateField(String name, Class type) {
+    private void validateField(final String name, final Class type) {
         if (typeMapper != null) {
-            ToNativeConverter toNative = typeMapper.getToNativeConverter(type);
+            final ToNativeConverter toNative = typeMapper.getToNativeConverter(type);
             if (toNative != null) {
                 validateField(name, toNative.nativeType());
                 return;
@@ -957,8 +950,8 @@ public abstract class Structure {
             try {
                 getNativeSize(type);
             }
-            catch(IllegalArgumentException e) {
-                String msg = "Invalid Structure field in " + getClass() + ", field name '" + name + "' (" + type + "): " + e.getMessage();
+            catch(final IllegalArgumentException e) {
+                final String msg = "Invalid Structure field in " + getClass() + ", field name '" + name + "' (" + type + "): " + e.getMessage();
                 throw new IllegalArgumentException(msg);
             }
         }
@@ -966,9 +959,9 @@ public abstract class Structure {
 
     /** ensure all fields are of valid type. */
     private void validateFields() {
-        List fields = getFieldList();
-        for (Iterator i=fields.iterator();i.hasNext();) {
-            Field f = (Field)i.next();
+        final List fields = getFieldList();
+        for (final Iterator i=fields.iterator();i.hasNext();) {
+            final Field f = (Field)i.next();
             validateField(f.getName(), f.getType());
         }
     }
@@ -977,35 +970,33 @@ public abstract class Structure {
         Also initializes any null-valued Structure or NativeMapped
         members.
      */
-    private LayoutInfo deriveLayout(boolean force, boolean avoidFFIType) {
+    private LayoutInfo deriveLayout(final boolean force, final boolean avoidFFIType) {
 
         int calculatedSize = 0;
-        List fields = getFields(force);
-        if (fields == null) {
+        final List fields = getFields(force);
+        if (fields == null)
             return null;
-        }
 
-        LayoutInfo info = new LayoutInfo();
+        final LayoutInfo info = new LayoutInfo();
         info.alignType = this.alignType;
         info.typeMapper = this.typeMapper;
 
         boolean firstField = true;
-        for (Iterator i=fields.iterator();i.hasNext();firstField=false) {
-            Field field = (Field)i.next();
-            int modifiers = field.getModifiers();
+        for (final Iterator i=fields.iterator();i.hasNext();firstField=false) {
+            final Field field = (Field)i.next();
+            final int modifiers = field.getModifiers();
 
-            Class type = field.getType();
+            final Class type = field.getType();
             if (type.isArray()) {
                 info.variable = true;
             }
-            StructField structField = new StructField();
+            final StructField structField = new StructField();
             structField.isVolatile = Modifier.isVolatile(modifiers);
             structField.isReadOnly = Modifier.isFinal(modifiers);
             if (structField.isReadOnly) {
-                if (!Platform.RO_FIELDS) {
+                if (!Platform.RO_FIELDS)
                     throw new IllegalArgumentException("This VM does not support read-only fields (field '"
                                                        + field.getName() + "' within " + getClass() + ")");
-                }
                 // In J2SE VMs, this allows overriding the value of final
                 // fields
                 field.setAccessible(true);
@@ -1015,14 +1006,13 @@ public abstract class Structure {
             structField.type = type;
 
             // Check for illegal field types
-            if (Callback.class.isAssignableFrom(type) && !type.isInterface()) {
+            if (Callback.class.isAssignableFrom(type) && !type.isInterface())
                 throw new IllegalArgumentException("Structure Callback field '"
                                                    + field.getName()
                                                    + "' must be an interface");
-            }
             if (type.isArray()
                 && Structure.class.equals(type.getComponentType())) {
-                String msg = "Nested Structure arrays must use a "
+                final String msg = "Nested Structure arrays must use a "
                     + "derived Structure type so that the size of "
                     + "the elements can be determined";
                 throw new IllegalArgumentException(msg);
@@ -1035,23 +1025,22 @@ public abstract class Structure {
 
             Object value = getFieldValue(structField.field);
             if (value == null && type.isArray()) {
-                if (force) {
+                if (force)
                     throw new IllegalStateException("Array fields must be initialized");
-                }
                 // can't calculate size yet, defer until later
                 return null;
             }
             Class nativeType = type;
             if (NativeMapped.class.isAssignableFrom(type)) {
-                NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
+                final NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
                 nativeType = tc.nativeType();
                 structField.writeConverter = tc;
                 structField.readConverter = tc;
                 structField.context = new StructureReadContext(this, field);
             }
             else if (typeMapper != null) {
-                ToNativeConverter writeConverter = typeMapper.getToNativeConverter(type);
-                FromNativeConverter readConverter = typeMapper.getFromNativeConverter(type);
+                final ToNativeConverter writeConverter = typeMapper.getToNativeConverter(type);
+                final FromNativeConverter readConverter = typeMapper.getFromNativeConverter(type);
                 if (writeConverter != null && readConverter != null) {
                     value = writeConverter.toNative(value,
                                                     new StructureWriteContext(this, structField.field));
@@ -1061,7 +1050,7 @@ public abstract class Structure {
                     structField.context = new StructureReadContext(this, field);
                 }
                 else if (writeConverter != null || readConverter != null) {
-                    String msg = "Structures require bidirectional type conversion for " + type;
+                    final String msg = "Structures require bidirectional type conversion for " + type;
                     throw new IllegalArgumentException(msg);
                 }
             }
@@ -1074,19 +1063,18 @@ public abstract class Structure {
                 structField.size = getNativeSize(nativeType, value);
                 fieldAlignment = getNativeAlignment(nativeType, value, firstField);
             }
-            catch(IllegalArgumentException e) {
+            catch(final IllegalArgumentException e) {
                 // Might simply not yet have a type mapper set yet
-                if (!force && typeMapper == null) {
+                if (!force && typeMapper == null)
                     return null;
-                }
-                String msg = "Invalid Structure field in " + getClass() + ", field name '" + structField.name + "' (" + structField.type + "): " + e.getMessage();
+                final String msg = "Invalid Structure field in " + getClass() + ", field name '" + structField.name + "' (" + structField.type + "): " + e.getMessage();
                 throw new IllegalArgumentException(msg);
             }
 
             // Align fields as appropriate
             info.alignment = Math.max(info.alignment, fieldAlignment);
-            if ((calculatedSize % fieldAlignment) != 0) {
-                calculatedSize += fieldAlignment - (calculatedSize % fieldAlignment);
+            if (calculatedSize % fieldAlignment != 0) {
+                calculatedSize += fieldAlignment - calculatedSize % fieldAlignment;
             }
             structField.offset = calculatedSize;
             calculatedSize += structField.size;
@@ -1096,7 +1084,7 @@ public abstract class Structure {
         }
 
         if (calculatedSize > 0) {
-            int size = calculateAlignedSize(calculatedSize, info.alignment);
+            final int size = calculateAlignedSize(calculatedSize, info.alignment);
             // Update native FFI type information, if needed
             if (this instanceof ByValue && !avoidFFIType) {
                 getTypeInfo();
@@ -1116,16 +1104,16 @@ public abstract class Structure {
      */
     private void initializeFields() {
         // Get the full field list, don't care about sorting
-        List flist = getFieldList();
-        for (Iterator i = flist.iterator(); i.hasNext();) {
-            Field f = (Field) i.next();
+        final List flist = getFieldList();
+        for (final Iterator i = flist.iterator(); i.hasNext();) {
+            final Field f = (Field) i.next();
             try {
-                Object o = f.get(this);
+                final Object o = f.get(this);
                 if (o == null) {
                     initializeField(f, f.getType());
                 }
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 throw new Error("Exception reading field '"
                                 + f.getName() + "' in " + getClass()
                                 + ": " + e);
@@ -1133,38 +1121,38 @@ public abstract class Structure {
         }
     }
 
-    private Object initializeField(Field field, Class type) {
+    private Object initializeField(final Field field, final Class type) {
         Object value = null;
         if (Structure.class.isAssignableFrom(type)
-            && !(ByReference.class.isAssignableFrom(type))) {
+            && !ByReference.class.isAssignableFrom(type)) {
             try {
                 value = newInstance(type);
                 setFieldValue(field, value);
             }
-            catch(IllegalArgumentException e) {
-                String msg = "Can't determine size of nested structure: "
+            catch(final IllegalArgumentException e) {
+                final String msg = "Can't determine size of nested structure: "
                     + e.getMessage();
                 throw new IllegalArgumentException(msg);
             }
         }
         else if (NativeMapped.class.isAssignableFrom(type)) {
-            NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
+            final NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
             value = tc.defaultValue();
             setFieldValue(field, value);
         }
         return value;
     }
 
-    int calculateAlignedSize(int calculatedSize) {
+    int calculateAlignedSize(final int calculatedSize) {
         return calculateAlignedSize(calculatedSize, structAlignment);
     }
 
-    private int calculateAlignedSize(int calculatedSize, int alignment) {
+    private int calculateAlignedSize(int calculatedSize, final int alignment) {
         // Structure size must be an integral multiple of its alignment,
         // add padding if necessary.
         if (actualAlignType != ALIGN_NONE) {
-            if ((calculatedSize % alignment) != 0) {
-                calculatedSize += alignment - (calculatedSize % alignment);
+            if (calculatedSize % alignment != 0) {
+                calculatedSize += alignment - calculatedSize % alignment;
             }
         }
         return calculatedSize;
@@ -1182,22 +1170,22 @@ public abstract class Structure {
     // TODO: write getNaturalAlignment(stack/alloc) + getEmbeddedAlignment(structs)
     // TODO: move this into a native call which detects default alignment
     // automatically
-    protected int getNativeAlignment(Class type, Object value, boolean isFirstElement) {
+    protected int getNativeAlignment(Class type, Object value, final boolean isFirstElement) {
         int alignment = 1;
         if (NativeMapped.class.isAssignableFrom(type)) {
-            NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
+            final NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
             type = tc.nativeType();
             value = tc.toNative(value, new ToNativeContext());
         }
-        int size = Native.getNativeSize(type, value);
+        final int size = Native.getNativeSize(type, value);
         if (type.isPrimitive() || Long.class == type || Integer.class == type
             || Short.class == type || Character.class == type
             || Byte.class == type || Boolean.class == type
             || Float.class == type || Double.class == type) {
             alignment = size;
         }
-        else if ((Pointer.class.isAssignableFrom(type) && !Function.class.isAssignableFrom(type))
-                 || (Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(type))
+        else if (Pointer.class.isAssignableFrom(type) && !Function.class.isAssignableFrom(type)
+                 || Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(type)
                  || Callback.class.isAssignableFrom(type)
                  || WString.class == type
                  || String.class == type) {
@@ -1208,18 +1196,18 @@ public abstract class Structure {
                 alignment = Pointer.SIZE;
             }
             else {
-                if (value == null)
+                if (value == null) {
                     value = newInstance(type);
+                }
                 alignment = ((Structure)value).getStructAlignment();
             }
         }
         else if (type.isArray()) {
             alignment = getNativeAlignment(type.getComponentType(), null, isFirstElement);
         }
-        else {
+        else
             throw new IllegalArgumentException("Type " + type + " has unknown "
                                                + "native alignment");
-        }
         if (actualAlignType == ALIGN_NONE) {
             alignment = 1;
         }
@@ -1232,7 +1220,7 @@ public abstract class Structure {
             if (!isFirstElement || !(Platform.isMac() && isPPC)) {
                 alignment = Math.min(MAX_GNUC_ALIGNMENT, alignment);
             }
-            if (!isFirstElement && Platform.isAix() && (type.getName().equals("double"))) {
+            if (!isFirstElement && Platform.isAix() && type.getName().equals("double")) {
                 alignment = 4;
 			}
         }
@@ -1243,19 +1231,19 @@ public abstract class Structure {
         return toString(Boolean.getBoolean("jna.dump_memory"));
     }
 
-    public String toString(boolean debug) {
+    public String toString(final boolean debug) {
         return toString(0, true, true);
     }
 
-    private String format(Class type) {
-        String s = type.getName();
-        int dot = s.lastIndexOf(".");
+    private String format(final Class type) {
+        final String s = type.getName();
+        final int dot = s.lastIndexOf(".");
         return s.substring(dot + 1);
     }
 
-    private String toString(int indent, boolean showContents, boolean dumpMemory) {
+    private String toString(final int indent, final boolean showContents, final boolean dumpMemory) {
         ensureAllocated();
-        String LS = System.getProperty("line.separator");
+        final String LS = System.getProperty("line.separator");
         String name = format(getClass()) + "(" + getPointer() + ")";
         if (!(getPointer() instanceof Memory)) {
             name += " (" + size() + " bytes)";
@@ -1268,52 +1256,59 @@ public abstract class Structure {
         if (!showContents) {
             contents = "...}";
         }
-        else for (Iterator i=fields().values().iterator();i.hasNext();) {
-            StructField sf = (StructField)i.next();
-            Object value = getFieldValue(sf.field);
-            String type = format(sf.type);
-            String index = "";
-            contents += prefix;
-            if (sf.type.isArray() && value != null) {
-                type = format(sf.type.getComponentType());
-                index = "[" + Array.getLength(value) + "]";
+        else {
+            for (final Iterator i=fields().values().iterator();i.hasNext();) {
+                final StructField sf = (StructField)i.next();
+                Object value = getFieldValue(sf.field);
+                String type = format(sf.type);
+                String index = "";
+                contents += prefix;
+                if (sf.type.isArray() && value != null) {
+                    type = format(sf.type.getComponentType());
+                    index = "[" + Array.getLength(value) + "]";
+                }
+                contents += "  " + type + " "
+                    + sf.name + index + "@" + Integer.toHexString(sf.offset);
+                if (value instanceof Structure) {
+                    value = ((Structure)value).toString(indent + 1, !(value instanceof Structure.ByReference), dumpMemory);
+                }
+                contents += "=";
+                if (value instanceof Long) {
+                    contents += Long.toHexString(((Long)value).longValue());
+                }
+                else if (value instanceof Integer) {
+                    contents += Integer.toHexString(((Integer)value).intValue());
+                }
+                else if (value instanceof Short) {
+                    contents += Integer.toHexString(((Short)value).shortValue());
+                }
+                else if (value instanceof Byte) {
+                    contents += Integer.toHexString(((Byte)value).byteValue());
+                }
+                else {
+                    contents += String.valueOf(value).trim();
+                }
+                contents += LS;
+                if (!i.hasNext()) {
+                    contents += prefix + "}";
+                }
             }
-            contents += "  " + type + " "
-                + sf.name + index + "@" + Integer.toHexString(sf.offset);
-            if (value instanceof Structure) {
-                value = ((Structure)value).toString(indent + 1, !(value instanceof Structure.ByReference), dumpMemory);
-            }
-            contents += "=";
-            if (value instanceof Long) {
-                contents += Long.toHexString(((Long)value).longValue());
-            }
-            else if (value instanceof Integer) {
-                contents += Integer.toHexString(((Integer)value).intValue());
-            }
-            else if (value instanceof Short) {
-                contents += Integer.toHexString(((Short)value).shortValue());
-            }
-            else if (value instanceof Byte) {
-                contents += Integer.toHexString(((Byte)value).byteValue());
-            }
-            else {
-                contents += String.valueOf(value).trim();
-            }
-            contents += LS;
-            if (!i.hasNext())
-                contents += prefix + "}";
         }
         if (indent == 0 && dumpMemory) {
             final int BYTES_PER_ROW = 4;
             contents += LS + "memory dump" + LS;
-            byte[] buf = getPointer().getByteArray(0, size());
+            final byte[] buf = getPointer().getByteArray(0, size());
             for (int i=0;i < buf.length;i++) {
-                if ((i % BYTES_PER_ROW) == 0) contents += "[";
-                if (buf[i] >=0 && buf[i] < 16)
+                if (i % BYTES_PER_ROW == 0) {
+                    contents += "[";
+                }
+                if (buf[i] >=0 && buf[i] < 16) {
                     contents += "0";
+                }
                 contents += Integer.toHexString(buf[i] & 0xFF);
-                if ((i % BYTES_PER_ROW) == BYTES_PER_ROW-1 && i < buf.length-1)
+                if (i % BYTES_PER_ROW == BYTES_PER_ROW-1 && i < buf.length-1) {
                     contents += "]" + LS;
+                }
             }
             contents += "]";
         }
@@ -1326,18 +1321,18 @@ public abstract class Structure {
      * {@link Memory} backing, the memory will be resized to fit the entire
      * array.
      */
-    public Structure[] toArray(Structure[] array) {
+    public Structure[] toArray(final Structure[] array) {
         ensureAllocated();
         if (this.memory instanceof AutoAllocated) {
             // reallocate if necessary
-            Memory m = (Memory)this.memory;
-            int requiredSize = array.length * size();
+            final Memory m = (Memory)this.memory;
+            final int requiredSize = array.length * size();
             if (m.size() < requiredSize) {
                 useMemory(autoAllocate(requiredSize));
             }
         }
         array[0] = this;
-        int size = size();
+        final int size = size();
         for (int i=1;i < array.length;i++) {
             array[i] = Structure.newInstance(getClass());
             array[i].useMemory(memory.share(i*size, size));
@@ -1358,42 +1353,37 @@ public abstract class Structure {
      * {@link Memory} backing, the memory will be resized to fit the entire
      * array.
      */
-    public Structure[] toArray(int size) {
+    public Structure[] toArray(final int size) {
         return toArray((Structure[])Array.newInstance(getClass(), size));
     }
 
     private Class baseClass() {
         if ((this instanceof Structure.ByReference
              || this instanceof Structure.ByValue)
-            && Structure.class.isAssignableFrom(getClass().getSuperclass())) {
+            && Structure.class.isAssignableFrom(getClass().getSuperclass()))
             return getClass().getSuperclass();
-        }
         return getClass();
     }
 
     /** This structure is equal to another based on the same data type
      * and memory contents.
      */
-    public boolean equals(Object o) {
-        if (o == this) {
+    public boolean equals(final Object o) {
+        if (o == this)
             return true;
-        }
-        if (!(o instanceof Structure)) {
+        if (!(o instanceof Structure))
             return false;
-        }
         if (o.getClass() != getClass()
-            && ((Structure)o).baseClass() != baseClass()) {
+            && ((Structure)o).baseClass() != baseClass())
             return false;
-        }
-        Structure s = (Structure)o;
-        if (s.getPointer().equals(getPointer())) {
+        final Structure s = (Structure)o;
+        if (s.getPointer().equals(getPointer()))
             return true;
-        }
         if (s.size() == size()) {
             clear(); write();
-            byte[] buf = getPointer().getByteArray(0, size());
+            final byte[] buf = getPointer().getByteArray(0, size());
             s.clear(); s.write();
-            byte[] sbuf = s.getPointer().getByteArray(0, s.size());
+            final byte[] sbuf = s.getPointer().getByteArray(0, s.size());
             return Arrays.equals(buf, sbuf);
         }
         return false;
@@ -1404,22 +1394,21 @@ public abstract class Structure {
      */
     public int hashCode() {
         clear(); write();
-        Adler32 code = new Adler32();
+        final Adler32 code = new Adler32();
         code.update(getPointer().getByteArray(0, size()));
         return (int)code.getValue();
     }
 
     /** Cache native type information for use in native code. */
-    protected void cacheTypeInfo(Pointer p) {
-        this.typeInfo = p.peer;
+    protected void cacheTypeInfo(final Pointer p) {
     }
 
     /** Override to supply native type information for the given field. */
-    Pointer getFieldTypeInfo(StructField f) {
+    Pointer getFieldTypeInfo(final StructField f) {
         Class type = f.type;
         Object value = getFieldValue(f.field);
         if (typeMapper != null) {
-            ToNativeConverter nc = typeMapper.getToNativeConverter(type);
+            final ToNativeConverter nc = typeMapper.getToNativeConverter(type);
             if (nc != null) {
                 type = nc.nativeType();
                 value = nc.toNative(value, new ToNativeContext());
@@ -1430,7 +1419,7 @@ public abstract class Structure {
 
     /** Obtain native type information for this structure. */
     Pointer getTypeInfo() {
-        Pointer p = getTypeInfo(this);
+        final Pointer p = getTypeInfo(this);
         cacheTypeInfo(p);
         return p;
     }
@@ -1443,7 +1432,7 @@ public abstract class Structure {
         setAutoWrite(auto);
         </code></pre>
     */
-    public void setAutoSynch(boolean auto) {
+    public void setAutoSynch(final boolean auto) {
         setAutoRead(auto);
         setAutoWrite(auto);
     }
@@ -1451,7 +1440,7 @@ public abstract class Structure {
     /** Set whether the structure is read from native memory prior to
         a native function call.
     */
-    public void setAutoRead(boolean auto) {
+    public void setAutoRead(final boolean auto) {
         this.autoRead = auto;
     }
 
@@ -1465,7 +1454,7 @@ public abstract class Structure {
     /** Set whether the structure is written to native memory after a native
         function call.
     */
-    public void setAutoWrite(boolean auto) {
+    public void setAutoWrite(final boolean auto) {
         this.autoWrite = auto;
     }
 
@@ -1477,7 +1466,7 @@ public abstract class Structure {
     }
 
     /** Exposed for testing purposes only. */
-    static Pointer getTypeInfo(Object obj) {
+    static Pointer getTypeInfo(final Object obj) {
         return FFIType.get(obj);
     }
 
@@ -1486,20 +1475,20 @@ public abstract class Structure {
      * @return the new instance
      * @throws IllegalArgumentException if the instantiation fails
      */
-    public static Structure newInstance(Class type) throws IllegalArgumentException {
+    public static Structure newInstance(final Class type) throws IllegalArgumentException {
         try {
-            Structure s = (Structure)type.newInstance();
+            final Structure s = (Structure)type.newInstance();
             if (s instanceof ByValue) {
                 s.allocateMemory();
             }
             return s;
         }
-        catch(InstantiationException e) {
-            String msg = "Can't instantiate " + type + " (" + e + ")";
+        catch(final InstantiationException e) {
+            final String msg = "Can't instantiate " + type + " (" + e + ")";
             throw new IllegalArgumentException(msg);
         }
-        catch(IllegalAccessException e) {
-            String msg = "Instantiation of " + type
+        catch(final IllegalAccessException e) {
+            final String msg = "Instantiation of " + type
                 + " not allowed, is it public? (" + e + ")";
             throw new IllegalArgumentException(msg);
         }
@@ -1527,7 +1516,7 @@ public abstract class Structure {
     static class FFIType extends Structure {
         public static class size_t extends IntegerType {
             public size_t() { this(0); }
-            public size_t(long value) { super(Native.POINTER_SIZE, value); }
+            public size_t(final long value) { super(Native.POINTER_SIZE, value); }
         }
         private static Map typeInfoMap = new WeakHashMap();
         // Native.initIDs initializes these fields to their appropriate
@@ -1537,14 +1526,11 @@ public abstract class Structure {
             private static Pointer ffi_type_void;
             private static Pointer ffi_type_float;
             private static Pointer ffi_type_double;
-            private static Pointer ffi_type_longdouble;
-            private static Pointer ffi_type_uint8;
             private static Pointer ffi_type_sint8;
             private static Pointer ffi_type_uint16;
             private static Pointer ffi_type_sint16;
             private static Pointer ffi_type_uint32;
             private static Pointer ffi_type_sint32;
-            private static Pointer ffi_type_uint64;
             private static Pointer ffi_type_sint64;
             private static Pointer ffi_type_pointer;
         }
@@ -1565,7 +1551,7 @@ public abstract class Structure {
             typeInfoMap.put(Integer.class, FFITypes.ffi_type_sint32);
             typeInfoMap.put(short.class, FFITypes.ffi_type_sint16);
             typeInfoMap.put(Short.class, FFITypes.ffi_type_sint16);
-            Pointer ctype = Native.WCHAR_SIZE == 2
+            final Pointer ctype = Native.WCHAR_SIZE == 2
                 ? FFITypes.ffi_type_uint16 : FFITypes.ffi_type_uint32;
             typeInfoMap.put(char.class, ctype);
             typeInfoMap.put(Character.class, ctype);
@@ -1585,12 +1571,12 @@ public abstract class Structure {
         public short type = FFI_TYPE_STRUCT;
         public Pointer elements;
 
-        private FFIType(Structure ref) {
+        private FFIType(final Structure ref) {
             Pointer[] els;
             ref.ensureAllocated(true);
 
             if (ref instanceof Union) {
-                StructField sf = ((Union)ref).biggestField;
+                final StructField sf = ((Union)ref).biggestField;
                 els = new Pointer[] {
                     get(ref.getFieldValue(sf.field), sf.type),
                     null,
@@ -1599,18 +1585,18 @@ public abstract class Structure {
             else {
                 els = new Pointer[ref.fields().size() + 1];
                 int idx = 0;
-                for (Iterator i=ref.fields().values().iterator();i.hasNext();) {
-                    StructField sf = (StructField)i.next();
+                for (final Iterator i=ref.fields().values().iterator();i.hasNext();) {
+                    final StructField sf = (StructField)i.next();
                     els[idx++] = ref.getFieldTypeInfo(sf);
                 }
             }
             init(els);
         }
         // Represent fixed-size arrays as structures of N identical elements
-        private FFIType(Object array, Class type) {
-            int length = Array.getLength(array);
-            Pointer[] els = new Pointer[length+1];
-            Pointer p = get(null, type.getComponentType());
+        private FFIType(final Object array, final Class type) {
+            final int length = Array.getLength(array);
+            final Pointer[] els = new Pointer[length+1];
+            final Pointer p = get(null, type.getComponentType());
             for (int i=0;i < length;i++) {
                 els[i] = p;
             }
@@ -1619,13 +1605,13 @@ public abstract class Structure {
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "size", "alignment", "type", "elements" });
         }
-        private void init(Pointer[] els) {
+        private void init(final Pointer[] els) {
             elements = new Memory(Pointer.SIZE * els.length);
             elements.write(0, els, 0, els.length);
             write();
         }
 
-        static Pointer get(Object obj) {
+        static Pointer get(final Object obj) {
             if (obj == null)
                 return FFITypes.ffi_type_pointer;
             if (obj instanceof Class)
@@ -1634,42 +1620,42 @@ public abstract class Structure {
         }
 
         private static Pointer get(Object obj, Class cls) {
-            TypeMapper mapper = Native.getTypeMapper(cls);
+            final TypeMapper mapper = Native.getTypeMapper(cls);
             if (mapper != null) {
-                ToNativeConverter nc = mapper.getToNativeConverter(cls);
+                final ToNativeConverter nc = mapper.getToNativeConverter(cls);
                 if (nc != null) {
                     cls = nc.nativeType();
                 }
             }
             synchronized(typeInfoMap) {
-                Object o = typeInfoMap.get(cls);
-                if (o instanceof Pointer) {
+                final Object o = typeInfoMap.get(cls);
+                if (o instanceof Pointer)
                     return (Pointer)o;
-                }
-                if (o instanceof FFIType) {
+                if (o instanceof FFIType)
                     return ((FFIType)o).getPointer();
-                }
-                if ((Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(cls))
+                if (Platform.HAS_BUFFERS && Buffer.class.isAssignableFrom(cls)
                     || Callback.class.isAssignableFrom(cls)) {
                     typeInfoMap.put(cls, FFITypes.ffi_type_pointer);
                     return FFITypes.ffi_type_pointer;
                 }
                 if (Structure.class.isAssignableFrom(cls)) {
-                    if (obj == null) obj = newInstance(cls);
+                    if (obj == null) {
+                        obj = newInstance(cls);
+                    }
                     if (ByReference.class.isAssignableFrom(cls)) {
                         typeInfoMap.put(cls, FFITypes.ffi_type_pointer);
                         return FFITypes.ffi_type_pointer;
                     }
-                    FFIType type = new FFIType((Structure)obj);
+                    final FFIType type = new FFIType((Structure)obj);
                     typeInfoMap.put(cls, type);
                     return type.getPointer();
                 }
                 if (NativeMapped.class.isAssignableFrom(cls)) {
-                    NativeMappedConverter c = NativeMappedConverter.getInstance(cls);
+                    final NativeMappedConverter c = NativeMappedConverter.getInstance(cls);
                     return get(c.toNative(obj, new ToNativeContext()), c.nativeType());
                 }
                 if (cls.isArray()) {
-                    FFIType type = new FFIType(obj, cls);
+                    final FFIType type = new FFIType(obj, cls);
                     // Store it in the map to prevent premature GC of type info
                     typeInfoMap.put(obj, type);
                     return type.getPointer();
@@ -1680,7 +1666,7 @@ public abstract class Structure {
     }
 
     private static class AutoAllocated extends Memory {
-        public AutoAllocated(int size) {
+        public AutoAllocated(final int size) {
             super(size);
             // Always clear new structure memory
             super.clear();
@@ -1690,22 +1676,21 @@ public abstract class Structure {
         }
     }
 
-    private static void structureArrayCheck(Structure[] ss) {
-        if (Structure.ByReference[].class.isAssignableFrom(ss.getClass())) {
+    private static void structureArrayCheck(final Structure[] ss) {
+        if (Structure.ByReference[].class.isAssignableFrom(ss.getClass()))
             return;
-        }
-        Pointer base = ss[0].getPointer();
-        int size = ss[0].size();
+        final Pointer base = ss[0].getPointer();
+        final int size = ss[0].size();
         for (int si=1;si < ss.length;si++) {
             if (ss[si].getPointer().peer != base.peer + size*si) {
-                String msg = "Structure array elements must use"
+                final String msg = "Structure array elements must use"
                     + " contiguous memory (bad backing address at Structure array index " + si + ")";
                 throw new IllegalArgumentException(msg);
             }
         }
     }
 
-    public static void autoRead(Structure[] ss) {
+    public static void autoRead(final Structure[] ss) {
         structureArrayCheck(ss);
         if (ss[0].array == ss) {
             ss[0].autoRead();
@@ -1730,7 +1715,7 @@ public abstract class Structure {
         }
     }
 
-    public static void autoWrite(Structure[] ss) {
+    public static void autoWrite(final Structure[] ss) {
         structureArrayCheck(ss);
         if (ss[0].array == ss) {
             ss[0].autoWrite();
@@ -1758,14 +1743,14 @@ public abstract class Structure {
     /** Return the native size of the given Java type, from the perspective of
         this Structure.
     */
-    protected int getNativeSize(Class nativeType) {
+    protected int getNativeSize(final Class nativeType) {
         return getNativeSize(nativeType, null);
     }
 
     /** Return the native size of the given Java type, from the perspective of
         this Structure.
     */
-    protected int getNativeSize(Class nativeType, Object value) {
+    protected int getNativeSize(final Class nativeType, final Object value) {
         return Native.getNativeSize(nativeType, value);
     }
 

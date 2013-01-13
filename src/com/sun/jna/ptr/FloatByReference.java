@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
@@ -16,16 +16,16 @@ public class FloatByReference extends ByReference {
     public FloatByReference() {
         this(0f);
     }
-    
-    public FloatByReference(float value) {
+
+    public FloatByReference(final float value) {
         super(4);
         setValue(value);
     }
-    
-    public void setValue(float value) {
+
+    public void setValue(final float value) {
         getPointer().setFloat(0, value);
     }
-    
+
     public float getValue() {
         return getPointer().getFloat(0);
     }

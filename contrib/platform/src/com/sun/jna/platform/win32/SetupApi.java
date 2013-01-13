@@ -249,7 +249,7 @@ public interface SetupApi extends StdCallLibrary {
             public ByReference() {
             }
 
-            public ByReference(Pointer memory) {
+            public ByReference(final Pointer memory) {
                 super(memory);
             }
         }
@@ -258,7 +258,7 @@ public interface SetupApi extends StdCallLibrary {
             cbSize = size();
         }
 
-        public SP_DEVICE_INTERFACE_DATA(Pointer memory) {
+        public SP_DEVICE_INTERFACE_DATA(final Pointer memory) {
             super(memory);
             read();
         }
@@ -285,7 +285,7 @@ public interface SetupApi extends StdCallLibrary {
          * Reserved. Do not use.
          */
         public Pointer Reserved;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "cbSize", "InterfaceClassGuid", "Flags", "Reserved" });
         }
@@ -300,7 +300,7 @@ public interface SetupApi extends StdCallLibrary {
             public ByReference() {
             }
 
-            public ByReference(Pointer memory) {
+            public ByReference(final Pointer memory) {
                 super(memory);
             }
         }
@@ -309,7 +309,7 @@ public interface SetupApi extends StdCallLibrary {
             cbSize = size();
         }
 
-        public SP_DEVINFO_DATA(Pointer memory) {
+        public SP_DEVINFO_DATA(final Pointer memory) {
             super(memory);
             read();
         }
@@ -337,7 +337,7 @@ public interface SetupApi extends StdCallLibrary {
          * Reserved. For internal use only.
          */
         public Pointer Reserved;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "cbSize", "InterfaceClassGuid", "DevInst", "Reserved" });
         }

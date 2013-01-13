@@ -1,14 +1,14 @@
 /* Copyright (c) 2009-2012 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -41,7 +41,7 @@ import junit.framework.TestResult;
  * Works under OSX, windows, and linux.
  */
 public class WebStartTest extends TestCase {
-    
+
     // Provide a policy file for unsigned jars
     // Unfortunately this does not allow native libraries
     private static final String POLICY =
@@ -49,7 +49,7 @@ public class WebStartTest extends TestCase {
         + " permission java.security.AllPermission;\n"
         + "};";
 
-    private static final String JNLP = 
+    private static final String JNLP =
         "<?xml version='1.0' encoding='UTF-8'?>\n"
         + "<jnlp spec='1.0' codebase='{CODEBASE}' href='{JNLP_FILE}'>\n"
         + "  <information>\n"
@@ -107,7 +107,7 @@ public class WebStartTest extends TestCase {
     }
 
     public void testJNLPFindProcessLibrary() {
-        String libname = Platform.C_LIBRARY_NAME;
+        final String libname = Platform.C_LIBRARY_NAME;
         assertNull("Process library path not expected to be found by JNLP class loader",
                    Native.getWebStartLibraryPath(libname));
         Native.loadLibrary(libname, Dummy.class);
@@ -118,83 +118,85 @@ public class WebStartTest extends TestCase {
             Native.loadLibrary("xyzzy", Dummy.class);
             fail("Missing native libraries should throw UnsatisfiedLinkError");
         }
-        catch(UnsatisfiedLinkError e) {
+        catch(final UnsatisfiedLinkError e) {
         }
     }
 
-    private void runTestUnderWebStart(String testClass, String testMethod) throws Exception {
-        String BUILDDIR = System.getProperty("jna.builddir",
+    private void runTestUnderWebStart(final String testClass, final String testMethod) throws Exception {
+        final String BUILDDIR = System.getProperty("jna.builddir",
                                              "build"
                                              + (Platform.is64Bit()
                                                 ? "-d64" : ""));
-        String codebase = new File(BUILDDIR, "jws").toURI().toURL().toString();
+        final String codebase = new File(BUILDDIR, "jws").toURI().toURL().toString();
 
-        ServerSocket s = new ServerSocket(0);
+        final ServerSocket s = new ServerSocket(0);
         s.setSoTimeout(120000);
-        int port = s.getLocalPort();
+        final int port = s.getLocalPort();
 
-        File jnlp = File.createTempFile(getName(), ".jnlp");
+        final File jnlp = File.createTempFile(getName(), ".jnlp");
         String contents = JNLP.replace("{CLASS}", testClass);
         contents = contents.replace("{METHOD}", testMethod);
         contents = contents.replace("{CODEBASE}", codebase);
         contents = contents.replace("{JNLP_FILE}", jnlp.toURI().toURL().toString());
         contents = contents.replace("{PORT}", String.valueOf(port));
-        boolean clover =
+        final boolean clover =
             System.getProperty("java.class.path").indexOf("clover") != -1;
         contents = contents.replace("{CLOVER}",
                                     clover ? "<jar href='clover.jar'/>" : "");
 
         try {
-            OutputStream os = new FileOutputStream(jnlp);
+            final OutputStream os = new FileOutputStream(jnlp);
             os.write(contents.getBytes());
             os.close();
-            String path = findJWS();
-            String[] cmd = {
+            final String path = findJWS();
+            final String[] cmd = {
                 path,
-                "-Xnosplash", 
-                "-wait", 
+                "-Xnosplash",
+                "-wait",
                 jnlp.toURI().toURL().toString(),
             };
             final Process p = Runtime.getRuntime().exec(cmd);
             final StringBuffer output = new StringBuffer();
             class SocketHandler extends Thread {
-                private InputStream is;
-                private StringBuffer sb;
-                public SocketHandler(Socket s, StringBuffer b) throws IOException {
+                private final InputStream is;
+                private final StringBuffer sb;
+                public SocketHandler(final Socket s, final StringBuffer b) throws IOException {
                     this.is = s.getInputStream();
                     this.sb = b;
                 }
                 public void run() {
-                    byte[] buf = new byte[256];
+                    final byte[] buf = new byte[256];
                     while (true) {
                         try {
-                            int count = is.read(buf, 0, buf.length);
-                            if (count == -1) break;
+                            final int count = is.read(buf, 0, buf.length);
+                            if (count == -1) {
+                                break;
+                            }
                             if (count == 0) {
-                                try { sleep(1); } catch(InterruptedException e) { }
+                                try { sleep(1); } catch(final InterruptedException e) { }
                             }
                             else {
                                 sb.append(new String(buf, 0, count));
                             }
                         }
-                        catch(IOException e) {
+                        catch(final IOException e) {
                             showMessage("read error: " + e.toString());
                         }
                     }
-                    try { is.close(); } catch(IOException e) { }
+                    try { is.close(); } catch(final IOException e) { }
                 }
             }
-            
+
             Thread out = null;
             try {
                 out = new SocketHandler(s.accept(), output);
                 out.start();
             }
-            catch(SocketTimeoutException e) {
-                try { 
+            catch(final SocketTimeoutException e) {
+                try {
                     p.exitValue();
                 }
-                catch(IllegalThreadStateException e2) {
+                catch(final IllegalThreadStateException e2) {
                     p.destroy();
                     throw new Error("JWS Timed out");
                 }
@@ -203,9 +205,9 @@ public class WebStartTest extends TestCase {
             if (out != null) {
                 out.join();
             }
-            
-            int code = p.exitValue();
-            String error = output.toString();
+
+            final int code = p.exitValue();
+            final String error = output.toString();
             if (code != 0 || !"".equals(error)) {
                 if (code == 1
                     || error.indexOf("AssertionFailedError") != -1) {
@@ -229,7 +231,7 @@ public class WebStartTest extends TestCase {
                 try {
                     runTestUnderWebStart(getClass().getName(), getName());
                 }
-                catch(AssertionFailedError e) {
+                catch(final AssertionFailedError e) {
                     if (e.getMessage().indexOf(FAILURE) != -1)
                         return;
                 }
@@ -239,10 +241,10 @@ public class WebStartTest extends TestCase {
                 try {
                     runTestUnderWebStart(getClass().getName(), getName());
                 }
-                catch(AssertionFailedError e) {
+                catch(final AssertionFailedError e) {
                     fail("Test produced a failure instead of an error: " + e);
                 }
-                catch(Error e) {
+                catch(final Error e) {
                     if (e.getMessage().indexOf(ERROR) != -1)
                         return;
                     throw e;
@@ -257,7 +259,7 @@ public class WebStartTest extends TestCase {
             runTestUnderWebStart(getClass().getName(), getName());
         }
     }
-    
+
     public interface FolderInfo extends com.sun.jna.win32.StdCallLibrary {
         int MAX_PATH = 260;
         int SHGFP_TYPE_CURRENT = 0;
@@ -269,8 +271,8 @@ public class WebStartTest extends TestCase {
     }
 
     private String findJWS() throws IOException {
-        String JAVA_HOME = System.getProperty("java.home");
-        String BIN = new File(JAVA_HOME, "/bin").getAbsolutePath();
+        final String JAVA_HOME = System.getProperty("java.home");
+        final String BIN = new File(JAVA_HOME, "/bin").getAbsolutePath();
         File javaws = new File(BIN, "javaws" + (Platform.isWindows()?".exe":""));
         if (!javaws.exists()) {
             // NOTE: OSX puts javaws somewhere else entirely
@@ -279,12 +281,12 @@ public class WebStartTest extends TestCase {
             }
             // NOTE: win64 only includes javaws in the system path
             if (Platform.isWindows()) {
-                FolderInfo info = (FolderInfo)
+                final FolderInfo info = (FolderInfo)
                     Native.loadLibrary("shell32", FolderInfo.class);
-                char[] buf = new char[FolderInfo.MAX_PATH];
+                final char[] buf = new char[FolderInfo.MAX_PATH];
                 //int result =
                         info.SHGetFolderPathW(null, FolderInfo.CSIDL_WINDOWS, null, 0, buf);
-                String path = Native.toString(buf);
+                final String path = Native.toString(buf);
                 if (Platform.is64Bit()) {
                     javaws = new File(path, "SysWOW64/javaws.exe");
                 }
@@ -292,22 +294,21 @@ public class WebStartTest extends TestCase {
                     javaws = new File(path, "system32/javaws.exe");
                 }
             }
-            if (!javaws.exists()) {
+            if (!javaws.exists())
                 throw new IOException("javaws executable not found");
-            }
         }
         return javaws.getAbsolutePath();
     }
 
     // TODO: find some way of querying the current VM for the deployment
-    // properties path 
+    // properties path
     private File findDeploymentProperties() {
         String path = System.getProperty("user.home");
         File deployment;
         if (Platform.isWindows()) {
-            FolderInfo info = (FolderInfo)
+            final FolderInfo info = (FolderInfo)
                 Native.loadLibrary("shell32", FolderInfo.class);
-            char[] buf = new char[FolderInfo.MAX_PATH];
+            final char[] buf = new char[FolderInfo.MAX_PATH];
             info.SHGetFolderPathW(null, FolderInfo.CSIDL_APPDATA,
                                   null, 0, buf);
             path = Native.toString(buf);
@@ -335,13 +336,12 @@ public class WebStartTest extends TestCase {
         else {
             deployment = new File(path + "/.java/deployment");
         }
-        if (!deployment.exists()) {
+        if (!deployment.exists())
             throw new Error("The user deployment directory " + deployment + " does not exist; save Java Control Panel or Web Start settings to initialize it");
-        }
         return new File(deployment, "deployment.properties");
     }
 
-    private static final String POLICY_KEY = 
+    private static final String POLICY_KEY =
         "deployment.user.security.policy";
     private static final String CERTS_KEY =
         "deployment.user.security.trusted.certs";
@@ -350,14 +350,14 @@ public class WebStartTest extends TestCase {
             super.runBare();
         }
         else if (!GraphicsEnvironment.isHeadless()) {
-            File policy = File.createTempFile(getName(), ".policy");
+            final File policy = File.createTempFile(getName(), ".policy");
             OutputStream os = new FileOutputStream(policy);
             os.write(POLICY.getBytes());
             os.close();
-            File dpfile = findDeploymentProperties();
-            Properties saved = new Properties();
+            final File dpfile = findDeploymentProperties();
+            final Properties saved = new Properties();
             saved.load(new FileInputStream(dpfile));
-            Properties props = new Properties();
+            final Properties props = new Properties();
             props.putAll(saved);
             props.setProperty(CERTS_KEY, new File("jna.keystore").getAbsolutePath());
             props.setProperty(POLICY_KEY, policy.getAbsolutePath());
@@ -376,22 +376,22 @@ public class WebStartTest extends TestCase {
         }
     }
 
-    private static void runTestCaseTest(String testClass, String method, int port) {
+    private static void runTestCaseTest(final String testClass, final String method, final int port) {
         try {
-            TestCase test = (TestCase)Class.forName(testClass).newInstance();
+            final TestCase test = (TestCase)Class.forName(testClass).newInstance();
             test.setName(method);
-            TestResult result = new TestResult();
+            final TestResult result = new TestResult();
             test.run(result);
-            Socket s = new Socket(InetAddress.getLocalHost(), port);
-            OutputStream os = s.getOutputStream();
+            final Socket s = new Socket(InetAddress.getLocalHost(), port);
+            final OutputStream os = s.getOutputStream();
             if (result.failureCount() != 0) {
-                Enumeration e = result.failures();
-                Throwable t = ((TestFailure)e.nextElement()).thrownException();
+                final Enumeration e = result.failures();
+                final Throwable t = ((TestFailure)e.nextElement()).thrownException();
                 t.printStackTrace(new PrintStream(os));
             }
             else if (result.errorCount() != 0) {
-                Enumeration e = result.errors();
-                Throwable t = ((TestFailure)e.nextElement()).thrownException();
+                final Enumeration e = result.errors();
+                final Throwable t = ((TestFailure)e.nextElement()).thrownException();
                 t.printStackTrace(new PrintStream(os));
             }
             // NOTE: System.exit with non-zero status causes an error dialog
@@ -399,30 +399,30 @@ public class WebStartTest extends TestCase {
             s.close();
             System.exit(0);
         }
-        catch(Throwable e) {
+        catch(final Throwable e) {
             // Can't communicate back to launching process
             showMessage("ERROR: " + e.getMessage());
             System.exit(0);
         }
     }
 
-    private static void showMessage(String msg) {
+    private static void showMessage(final String msg) {
         showMessage(msg, 60000);
     }
 
-    private static void showMessage(String msg, int timeout) {
-        JFrame f = new JFrame("Web Start Test Failure");
+    private static void showMessage(final String msg, final int timeout) {
+        final JFrame f = new JFrame("Web Start Test Failure");
         f.getContentPane().add(new JScrollPane(new JLabel(msg)));
         f.pack();
         f.setLocation(100, 100);
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         if (timeout != 0) {
-            try { Thread.sleep(timeout); } catch(Exception e) { }
+            try { Thread.sleep(timeout); } catch(final Exception e) { }
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             if (args.length == 4
                 && "javawebstart".equals(args[3])
@@ -430,12 +430,12 @@ public class WebStartTest extends TestCase {
                 System.setProperty("javawebstart.version", "fake");
             }
             if (runningWebStart()) {
-                
-                String testClass = args.length > 0
+
+                final String testClass = args.length > 0
                     ? args[0] : WebStartTest.class.getName();
-                String testMethod = args.length > 1
+                final String testMethod = args.length > 1
                     ? args[1] : "testLaunchedUnderWebStart";
-                int port = args.length > 2
+                final int port = args.length > 2
                     ? Integer.parseInt(args[2]) : 8080;
                 runTestCaseTest(testClass, testMethod, port);
             }
@@ -443,7 +443,7 @@ public class WebStartTest extends TestCase {
                 junit.textui.TestRunner.run(WebStartTest.class);
             }
         }
-        catch(Throwable t) {
+        catch(final Throwable t) {
             showMessage("ERROR: " + t.getMessage());
         }
     }

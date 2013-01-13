@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.dnd;
 
@@ -31,11 +31,11 @@ import javax.swing.Timer;
 
 import com.sun.jna.platform.WindowUtils;
 
-/** Provide a ghosted drag image for use during drags where 
+/** Provide a ghosted drag image for use during drags where
  * {@link DragSource#isDragImageSupported} returns false.<p>
- * Its location in screen coordinates may be changed via {@link #move}.<p>  
+ * Its location in screen coordinates may be changed via {@link #move}.<p>
  * When the image is no longer needed, invoke {@link #dispose}, which
- * hides the graphic immediately, or {@link #returnToOrigin}, which 
+ * hides the graphic immediately, or {@link #returnToOrigin}, which
  * moves the image to its original location and then disposes it.
  */
 public class GhostedDragImage {
@@ -49,19 +49,19 @@ public class GhostedDragImage {
      * @param icon image to be drawn
      * @param initialScreenLoc initial screen location of the image
      */
-    public GhostedDragImage(Component dragSource, final Icon icon, Point initialScreenLoc, 
+    public GhostedDragImage(final Component dragSource, final Icon icon, final Point initialScreenLoc,
                             final Point cursorOffset) {
-        Window parent = dragSource instanceof Window
+        final Window parent = dragSource instanceof Window
             ? (Window)dragSource : SwingUtilities.getWindowAncestor(dragSource);
         // FIXME ensure gc is compatible (X11)
-        GraphicsConfiguration gc = parent.getGraphicsConfiguration();
+        final GraphicsConfiguration gc = parent.getGraphicsConfiguration();
         dragImage = new Window(JOptionPane.getRootFrame(), gc) {
     		private static final long serialVersionUID = 1L;
-            public void paint(Graphics g) {
+            public void paint(final Graphics g) {
                 icon.paintIcon(this, g, 0, 0);
             }
             public Dimension getPreferredSize() {
-                return new Dimension(icon.getIconWidth(), icon.getIconHeight()); 
+                return new Dimension(icon.getIconWidth(), icon.getIconHeight());
             }
             public Dimension getMinimumSize() {
                 return getPreferredSize();
@@ -72,23 +72,23 @@ public class GhostedDragImage {
         };
         dragImage.setFocusableWindowState(false);
         dragImage.setName("###overrideRedirect###");
-        Icon dragIcon = new Icon() {
+        final Icon dragIcon = new Icon() {
             public int getIconHeight() {
                 return icon.getIconHeight();
             }
             public int getIconWidth() {
                 return icon.getIconWidth();
             }
-            public void paintIcon(Component c, Graphics g, int x, int y) {
+            public void paintIcon(final Component c, Graphics g, final int x, final int y) {
                 g = g.create();
-                Area area = new Area(new Rectangle(x, y, getIconWidth(), getIconHeight()));
+                final Area area = new Area(new Rectangle(x, y, getIconWidth(), getIconHeight()));
                 // X11 needs more of a window due to differences in event processing
                 area.subtract(new Area(new Rectangle(x + cursorOffset.x-1, y + cursorOffset.y-1, 3, 3)));
                 g.setClip(area);
                 icon.paintIcon(c, g, x, y);
                 g.dispose();
             }
-            
+
         };
         dragImage.pack();
         WindowUtils.setWindowMask(dragImage, dragIcon);
@@ -98,36 +98,36 @@ public class GhostedDragImage {
     }
 
     /** Set the transparency of the ghosted image. */
-    public void setAlpha(float alpha) {
+    public void setAlpha(final float alpha) {
         WindowUtils.setWindowAlpha(dragImage, alpha);
     }
-    
+
     /** Make all ghosted images go away. */
     public void dispose() {
         dragImage.dispose();
         dragImage = null;
     }
 
-    /** Move the ghosted image to the requested location. 
+    /** Move the ghosted image to the requested location.
      * @param screenLocation Where to draw the image, in screen coordinates
      */
-    public void move(Point screenLocation) {
+    public void move(final Point screenLocation) {
         if (origin == null) {
             origin = screenLocation;
         }
         dragImage.setLocation(screenLocation.x, screenLocation.y);
     }
-    
+
     private static final int SLIDE_INTERVAL = 1000/30;
     /** Animate the ghosted image returning to its origin. */
     public void returnToOrigin() {
         final Timer timer = new Timer(SLIDE_INTERVAL, null);
         timer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Point location = dragImage.getLocationOnScreen();
-                Point dst = new Point(origin);
-                int dx = (dst.x - location.x)/2;
-                int dy = (dst.y - location.y)/2;
+            public void actionPerformed(final ActionEvent e) {
+                final Point location = dragImage.getLocationOnScreen();
+                final Point dst = new Point(origin);
+                final int dx = (dst.x - location.x)/2;
+                final int dy = (dst.y - location.y)/2;
                 if (dx != 0 || dy != 0) {
                     location.translate(dx, dy);
                     move(location);

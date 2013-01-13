@@ -37,7 +37,7 @@ public final class JnaTest {
     public interface CLibrary extends Library {
 
         CLibrary INSTANCE = (CLibrary) Native.loadLibrary(
-                (Platform.isWindows() ? "msvcrt" : "c"), CLibrary.class);
+                Platform.isWindows() ? "msvcrt" : "c", CLibrary.class);
 
         Pointer malloc(int length);
 

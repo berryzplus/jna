@@ -9,7 +9,7 @@ public class IntegerTypeTest extends TestCase {
 
     public static class Sized extends IntegerType {
         public Sized() { this(4, 0); }
-        public Sized(int size, long value) { super(size, value); }
+        public Sized(final int size, final long value) { super(size, value); }
     }
 
     public void testWriteNull() {
@@ -19,7 +19,7 @@ public class IntegerTypeTest extends TestCase {
                 return Arrays.asList(new String[] { "field" });
             }
         }
-        NTStruct s = new NTStruct();
+        final NTStruct s = new NTStruct();
         assertNotNull("Field not initialized", s.field);
     }
     public void testReadNull() {
@@ -29,54 +29,54 @@ public class IntegerTypeTest extends TestCase {
                 return Arrays.asList(new String[] { "field" });
             }
         }
-        NTStruct s = new NTStruct();
+        final NTStruct s = new NTStruct();
         s.read();
         assertNotNull("Integer type field should be initialized on read", s.field);
     }
 
     public void testCheckArgumentSize() {
         for (int i=1;i <= 8;i*=2) {
-            long value = -1L << (i*8-1);
+            long value = -1L << i*8-1;
             new Sized(i, value);
             new Sized(i, -1);
             new Sized(i, 0);
             new Sized(i, 1);
 
-            value = 1L << (i*8-1);
+            value = 1L << i*8-1;
             new Sized(i, value);
-            value = -1L & ~(-1L << (i*8));
+            value = -1L & ~(-1L << i*8);
             new Sized(i, value);
 
             if (i < 8) {
                 try {
-                    value = 1L << (i*8);
+                    value = 1L << i*8;
                     new Sized(i, value);
                     fail("Value exceeding size (" + i + ") should fail");
                 }
-                catch(IllegalArgumentException e) {
+                catch(final IllegalArgumentException e) {
                 }
             }
             if (i < 8) {
                 try {
-                    value = -1L << (i*8);
+                    value = -1L << i*8;
                     new Sized(i, value);
                     fail("Negative value (" + value + ") exceeding size (" + i + ") should fail");
                 }
-                catch(IllegalArgumentException e) {
+                catch(final IllegalArgumentException e) {
                 }
             }
         }
     }
-	
+
     public void testInitialValue() {
-        long VALUE = 20;
-        NativeLong nl = new NativeLong(VALUE);
+        final long VALUE = 20;
+        final NativeLong nl = new NativeLong(VALUE);
         assertEquals("Wrong initial value", VALUE, nl.longValue());
     }
 
     public void testValueBoundaries() {
         class TestType extends IntegerType {
-            public TestType(int size, long value) {
+            public TestType(final int size, final long value) {
                 super(size, value);
             }
         }
@@ -84,25 +84,25 @@ public class IntegerTypeTest extends TestCase {
             new TestType(1, 0x100L);
             fail("Exception should be thrown if byte value out of bounds");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
         try {
             new TestType(2, 0x10000L);
             fail("Exception should be thrown if short value out of bounds");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
         try {
             new TestType(4, 0x100000000L);
             fail("Exception should be thrown if int value out of bounds");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
 
     public void testUnsignedValues() {
         class TestType extends IntegerType {
-            public TestType(int size, long value) {
+            public TestType(final int size, final long value) {
                 super(size, value);
             }
         }
@@ -114,17 +114,17 @@ public class IntegerTypeTest extends TestCase {
         assertEquals("Wrong unsigned int value", VALUE, new TestType(4, VALUE).longValue());
 
         class UnsignedTestType extends IntegerType {
-            public UnsignedTestType(int size, long value) {
+            public UnsignedTestType(final int size, final long value) {
                 super(size, value, true);
             }
         }
-        UnsignedTestType tt = new UnsignedTestType(4, -1);
+        final UnsignedTestType tt = new UnsignedTestType(4, -1);
         assertTrue("Expected an unsigned value (ctor): " + tt.longValue(), tt.longValue() > 0);
         tt.setValue(-2);
         assertTrue("Expected an unsigned value: " + tt.longValue(), tt.longValue() > 0);
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(IntegerTypeTest.class);
     }
 }

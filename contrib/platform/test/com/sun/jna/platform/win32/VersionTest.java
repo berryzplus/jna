@@ -19,33 +19,33 @@ import junit.framework.TestCase;
 
 public class VersionTest extends TestCase {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(VersionTest.class);
     }
 
     public void testGetFileVersion() {
-        String systemRoot = System.getenv("SystemRoot");
-        File file = new File(systemRoot + "\\regedit.exe");
+        final String systemRoot = System.getenv("SystemRoot");
+        final File file = new File(systemRoot + "\\regedit.exe");
         if (!file.exists()) {
             fail("Can't obtain file version, file " + file + " is missing");
         }
 
-        int size = Version.INSTANCE.GetFileVersionInfoSize(file.getAbsolutePath(), null);
+        final int size = Version.INSTANCE.GetFileVersionInfoSize(file.getAbsolutePath(), null);
         assertTrue(size > 0);
 
-        Pointer buffer = Kernel32.INSTANCE.LocalAlloc(WinBase.LMEM_ZEROINIT, size);
+        final Pointer buffer = Kernel32.INSTANCE.LocalAlloc(WinBase.LMEM_ZEROINIT, size);
         assertTrue(!buffer.equals(Pointer.NULL));
 
         try
         {
             assertTrue(Version.INSTANCE.GetFileVersionInfo(file.getAbsolutePath(), 0, size, buffer));
 
-            IntByReference outputSize = new IntByReference();
-            PointerByReference pointer = new PointerByReference();
+            final IntByReference outputSize = new IntByReference();
+            final PointerByReference pointer = new PointerByReference();
 
             assertTrue(Version.INSTANCE.VerQueryValue(buffer, "\\", pointer, outputSize));
 
-            VerRsrc.VS_FIXEDFILEINFO fixedFileInfo = new VerRsrc.VS_FIXEDFILEINFO(pointer.getValue());
+            final VerRsrc.VS_FIXEDFILEINFO fixedFileInfo = new VerRsrc.VS_FIXEDFILEINFO(pointer.getValue());
             assertTrue(fixedFileInfo.dwFileVersionLS.longValue() > 0);
             assertTrue(fixedFileInfo.dwFileVersionMS.longValue() > 0);
         }

@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 
 package com.sun.jna;
@@ -26,9 +26,9 @@ public class NativeLong extends IntegerType {
     public NativeLong() {
         this(0);
     }
-    
+
     /** Create a NativeLong with the given value. */
-    public NativeLong(long value) {
+    public NativeLong(final long value) {
         super(SIZE, value);
     }
 }

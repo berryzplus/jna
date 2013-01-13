@@ -66,15 +66,15 @@ public interface Wtsapi32 extends StdCallLibrary {
 
 	/**
 	 * Registers the specified window to receive session change notifications.
-	 * 
+	 *
 	 * @param hWnd
 	 *            [in] Handle of the window to receive session change
 	 *            notifications.
-	 * 
+	 *
 	 * @param dwFlags
 	 *            [in] Specifies which session notifications are to be received.
 	 *            This parameter can be one of the following values.
-	 * 
+	 *
 	 * @return If the function succeeds, the return value is TRUE. Otherwise, it
 	 *         is FALSE. To get extended error information, call GetLastError.
 	 */
@@ -83,11 +83,11 @@ public interface Wtsapi32 extends StdCallLibrary {
 	/**
 	 * Unregisters the specified window so that it receives no further session
 	 * change notifications.
-	 * 
+	 *
 	 * @param hWnd
 	 *            [in] Handle of the window to be unregistered from receiving
 	 *            session notifications.
-	 * 
+	 *
 	 * @return If the function succeeds, the return value is TRUE. Otherwise, it
 	 *         is FALSE. To get extended error information, call GetLastError.
 	 */

@@ -1,19 +1,18 @@
 /* Copyright (c) 2007 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
 import java.lang.ref.WeakReference;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
@@ -28,11 +27,11 @@ public class MemoryTest extends TestCase {
             }
         };
         Pointer shared = core.share(0, 5);
-        WeakReference ref = new WeakReference(core);
-        
+        final WeakReference ref = new WeakReference(core);
+
         core = null;
         System.gc();
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         assertFalse("Memory prematurely GC'd", flag[0]);
         assertNotNull("Base memory GC'd while shared memory extant", ref.get());
         // Avoid having IBM J9 prematurely nullify "shared"
@@ -41,47 +40,49 @@ public class MemoryTest extends TestCase {
         shared = null;
         System.gc();
         while (ref.get() != null) {
-            if (System.currentTimeMillis() - start > 5000)
+            if (System.currentTimeMillis() - start > 5000) {
                 break;
+            }
             Thread.sleep(10);
         }
         assertNull("Memory not GC'd", ref.get());
     }
 
     public void testShareMemory() {
-        Memory base = new Memory(8);
-        Pointer shared = base.share(0);
+        final Memory base = new Memory(8);
+        final Pointer shared = base.share(0);
         assertNotSame("Memory share should return a different object", base, shared);
     }
 
     public void testSharedMemoryBounds() {
-        Memory base = new Memory(16);
-        Pointer shared = base.share(4, 4);
+        final Memory base = new Memory(16);
+        final Pointer shared = base.share(4, 4);
         shared.getInt(-4);
         try {
             shared.getInt(-8);
             fail("Bounds check should fail");
         }
-        catch(IndexOutOfBoundsException e) {
+        catch(final IndexOutOfBoundsException e) {
         }
         shared.getInt(8);
         try {
             shared.getInt(12);
             fail("Bounds check should fail");
         }
-        catch(IndexOutOfBoundsException e) {
+        catch(final IndexOutOfBoundsException e) {
         }
     }
 
     public void testAlignment() {
         final int SIZE = 1<<16;
-        Memory base = new Memory(SIZE);
+        final Memory base = new Memory(SIZE);
         for (int align=1;align < SIZE;align *= 2) {
             Memory unaligned = base;
-            long mask = ~((long)align - 1);
-            if ((base.peer & mask) == base.peer)
+            final long mask = ~((long)align - 1);
+            if ((base.peer & mask) == base.peer) {
                 unaligned = (Memory)base.share(1, SIZE-1);
-            Pointer aligned = unaligned.align(align);
+            }
+            final Pointer aligned = unaligned.align(align);
             assertEquals("Memory not aligned (" + align + ")",
                          aligned.peer & mask, aligned.peer);
 
@@ -92,24 +93,24 @@ public class MemoryTest extends TestCase {
 
     public void testNegativeAlignment() {
         final int SIZE = 128;
-        Memory base = new Memory(SIZE);
+        final Memory base = new Memory(SIZE);
         try {
             base.align(-1);
             fail("Negative alignments not allowed");
         }
-        catch(IllegalArgumentException e) { }
+        catch(final IllegalArgumentException e) { }
     }
 
     public void testInvalidAlignment() {
         final int SIZE = 128;
-        Memory base = new Memory(SIZE);
-        int[] alignments = { 0, 3, 5, 9, 13 };
+        final Memory base = new Memory(SIZE);
+        final int[] alignments = { 0, 3, 5, 9, 13 };
         for (int i=0;i < alignments.length;i++) {
             try {
                 base.align(alignments[i]);
                 fail("Power-of-two alignments required");
             }
-            catch(IllegalArgumentException e) { }
+            catch(final IllegalArgumentException e) { }
         }
     }
 
@@ -120,8 +121,8 @@ public class MemoryTest extends TestCase {
         m.clear();
 
         ByteBuffer b = m.getByteBuffer(0, m.size());
-        WeakReference ref = new WeakReference(m);
-        WeakReference bref = new WeakReference(b);
+        final WeakReference ref = new WeakReference(m);
+        final WeakReference bref = new WeakReference(b);
 
         // Create a second byte buffer "equal" to the first
         m = new Memory(1024);
@@ -153,7 +154,7 @@ public class MemoryTest extends TestCase {
         assertNull("Memory not GC'd after buffer GC'd\n", ref.get());
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(MemoryTest.class);
     }
 }

@@ -121,7 +121,7 @@ import com.sun.jna.ptr.PointerByReference;
  * set to its final value <em>before</em> the heavyweight peer for the Window
  * is created.  Once {@link Component#addNotify} has been called on the
  * component, causing creation of the heavyweight peer, changing this
- * property has no effect. 
+ * property has no effect.
  * @see <a href="http://developer.apple.com/technotes/tn2007/tn2196.html#APPLE_AWT_DRAGGABLEWINDOWBACKGROUND">Apple Technote 2007</a>
  */
 // TODO: setWindowMask() should accept a threshold; some cases want a
@@ -154,7 +154,7 @@ public class WindowUtils {
 		private static final long serialVersionUID = 1L;
         private final boolean packed;
 
-        public HeavyweightForcer(Window parent) {
+        public HeavyweightForcer(final Window parent) {
             super(parent);
             pack();
             packed = true;
@@ -182,34 +182,34 @@ public class WindowUtils {
         protected class Listener
             extends WindowAdapter
             implements ComponentListener, HierarchyListener, AWTEventListener {
-            public void windowOpened(WindowEvent e) {
+            public void windowOpened(final WindowEvent e) {
                 repaint();
             }
 
-            public void componentHidden(ComponentEvent e) {}
+            public void componentHidden(final ComponentEvent e) {}
 
-            public void componentMoved(ComponentEvent e) {}
+            public void componentMoved(final ComponentEvent e) {}
 
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(final ComponentEvent e) {
                 setSize(getParent().getSize());
                 repaint();
             }
 
-            public void componentShown(ComponentEvent e) {
+            public void componentShown(final ComponentEvent e) {
                 repaint();
             }
 
-            public void hierarchyChanged(HierarchyEvent e) {
+            public void hierarchyChanged(final HierarchyEvent e) {
                 repaint();
             }
 
-            public void eventDispatched(AWTEvent e) {
+            public void eventDispatched(final AWTEvent e) {
                 if (e instanceof MouseEvent) {
-                    Component src = ((MouseEvent)e).getComponent();
+                    final Component src = ((MouseEvent)e).getComponent();
                     if (src != null
                         && SwingUtilities.isDescendingFrom(src, content)) {
-                        MouseEvent me = SwingUtilities.convertMouseEvent(src, (MouseEvent)e, content);
-                        Component c = SwingUtilities.getDeepestComponentAt(content, me.getX(), me.getY());
+                        final MouseEvent me = SwingUtilities.convertMouseEvent(src, (MouseEvent)e, content);
+                        final Component c = SwingUtilities.getDeepestComponentAt(content, me.getX(), me.getY());
                         if (c != null) {
                             setCursor(c.getCursor());
                         }
@@ -221,13 +221,13 @@ public class WindowUtils {
         private final Listener listener = createListener();
         private final JComponent content;
 
-        public RepaintTrigger(JComponent content) {
+        public RepaintTrigger(final JComponent content) {
             this.content = content;
         }
 
         public void addNotify() {
             super.addNotify();
-            Window w = SwingUtilities.getWindowAncestor(this);
+            final Window w = SwingUtilities.getWindowAncestor(this);
             setSize(getParent().getSize());
             w.addComponentListener(listener);
             w.addWindowListener(listener);
@@ -236,15 +236,15 @@ public class WindowUtils {
 
         public void removeNotify() {
             Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
-            Window w = SwingUtilities.getWindowAncestor(this);
+            final Window w = SwingUtilities.getWindowAncestor(this);
             w.removeComponentListener(listener);
             w.removeWindowListener(listener);
             super.removeNotify();
         }
 
         private Rectangle dirty;
-        protected void paintComponent(Graphics g) {
-            Rectangle bounds = g.getClipBounds();
+        protected void paintComponent(final Graphics g) {
+            final Rectangle bounds = g.getClipBounds();
             if (dirty == null || !dirty.contains(bounds)) {
                 if (dirty == null) {
                     dirty = bounds;
@@ -270,7 +270,7 @@ public class WindowUtils {
             extends JPanel implements AWTEventListener {
     		private static final long serialVersionUID = 1L;
             private boolean transparent;
-            public TransparentContentPane(Container oldContent) {
+            public TransparentContentPane(final Container oldContent) {
                 super(new BorderLayout());
                 add(oldContent, BorderLayout.CENTER);
                 setTransparent(true);
@@ -286,22 +286,22 @@ public class WindowUtils {
                 Toolkit.getDefaultToolkit().removeAWTEventListener(this);
                 super.removeNotify();
             }
-            public void setTransparent(boolean transparent) {
+            public void setTransparent(final boolean transparent) {
                 this.transparent = transparent;
                 setOpaque(!transparent);
                 setDoubleBuffered(!transparent);
                 repaint();
             }
-            public void eventDispatched(AWTEvent e) {
+            public void eventDispatched(final AWTEvent e) {
                 if (e.getID() == ContainerEvent.COMPONENT_ADDED
                     && SwingUtilities.isDescendingFrom(((ContainerEvent)e).getChild(), this)) {
-                    Component child = ((ContainerEvent)e).getChild();
+                    final Component child = ((ContainerEvent)e).getChild();
                     NativeWindowUtils.this.setDoubleBuffered(child, false);
                 }
             }
-            public void paint(Graphics gr) {
+            public void paint(final Graphics gr) {
                 if (transparent) {
-                    Rectangle r = gr.getClipBounds();
+                    final Rectangle r = gr.getClipBounds();
                     final int w = r.width;
                     final int h = r.height;
                     if (getWidth() > 0 && getHeight() > 0) {
@@ -331,7 +331,7 @@ public class WindowUtils {
             protected abstract void paintDirect(BufferedImage buf, Rectangle bounds);
         }
 
-        protected Window getWindow(Component c) {
+        protected Window getWindow(final Component c) {
             return c instanceof Window
                 ? (Window)c : SwingUtilities.getWindowAncestor(c);
         }
@@ -339,17 +339,17 @@ public class WindowUtils {
          * Execute the given action when the given window becomes
          * displayable.
          */
-        protected void whenDisplayable(Component w, final Runnable action) {
+        protected void whenDisplayable(final Component w, final Runnable action) {
             if (w.isDisplayable() && (!Holder.requiresVisible || w.isVisible())) {
                 action.run();
             }
             else if (Holder.requiresVisible) {
                 getWindow(w).addWindowListener(new WindowAdapter() {
-                    public void windowOpened(WindowEvent e) {
+                    public void windowOpened(final WindowEvent e) {
                         e.getWindow().removeWindowListener(this);
                         action.run();
                     }
-                    public void windowClosed(WindowEvent e) {
+                    public void windowClosed(final WindowEvent e) {
                         e.getWindow().removeWindowListener(this);
                     }
                 });
@@ -358,7 +358,7 @@ public class WindowUtils {
                 // Hierarchy events are fired in direct response to
                 // displayability changes
                 w.addHierarchyListener(new HierarchyListener() {
-                    public void hierarchyChanged(HierarchyEvent e) {
+                    public void hierarchyChanged(final HierarchyEvent e) {
                         if ((e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0
                             && e.getComponent().isDisplayable()) {
                             e.getComponent().removeHierarchyListener(this);
@@ -369,16 +369,16 @@ public class WindowUtils {
             }
         }
 
-        protected Raster toRaster(Shape mask) {
+        protected Raster toRaster(final Shape mask) {
             Raster raster = null;
             if (mask != MASK_NONE) {
-                Rectangle bounds = mask.getBounds();
+                final Rectangle bounds = mask.getBounds();
                 if (bounds.width > 0 && bounds.height > 0) {
-                    BufferedImage clip =
+                    final BufferedImage clip =
                         new BufferedImage(bounds.x + bounds.width,
                                           bounds.y + bounds.height,
                                           BufferedImage.TYPE_BYTE_BINARY);
-                    Graphics2D g = clip.createGraphics();
+                    final Graphics2D g = clip.createGraphics();
                     g.setColor(Color.black);
                     g.fillRect(0, 0, bounds.x + bounds.width, bounds.y + bounds.height);
                     g.setColor(Color.white);
@@ -389,15 +389,15 @@ public class WindowUtils {
             return raster;
         }
 
-        protected Raster toRaster(Component c, Icon mask) {
+        protected Raster toRaster(final Component c, final Icon mask) {
             Raster raster = null;
             if (mask != null) {
-                Rectangle bounds = new Rectangle(0, 0, mask.getIconWidth(),
+                final Rectangle bounds = new Rectangle(0, 0, mask.getIconWidth(),
                                                  mask.getIconHeight());
-                BufferedImage clip = new BufferedImage(bounds.width,
+                final BufferedImage clip = new BufferedImage(bounds.width,
                                                        bounds.height,
                                                        BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g = clip.createGraphics();
+                final Graphics2D g = clip.createGraphics();
                 g.setComposite(AlphaComposite.Clear);
                 g.fillRect(0, 0, bounds.width, bounds.height);
                 g.setComposite(AlphaComposite.SrcOver);
@@ -407,10 +407,10 @@ public class WindowUtils {
             return raster;
         }
 
-        protected Shape toShape(Raster raster) {
+        protected Shape toShape(final Raster raster) {
             final Area area = new Area(new Rectangle(0, 0, 0, 0));
             RasterRangesUtils.outputOccupiedRanges(raster, new RasterRangesUtils.RangesOutput() {
-                public boolean outputRange(int x, int y, int w, int h) {
+                public boolean outputRange(final int x, final int y, final int w, final int h) {
                     area.add(new Area(new Rectangle(x, y, w, h)));
                     return true;
                 }
@@ -422,7 +422,7 @@ public class WindowUtils {
          * Set the overall alpha transparency of the window. An alpha of
          * 1.0 is fully opaque, 0.0 is fully transparent.
          */
-        public void setWindowAlpha(Window w, float alpha) {
+        public void setWindowAlpha(final Window w, final float alpha) {
             // do nothing
         }
 
@@ -433,9 +433,9 @@ public class WindowUtils {
 
         /** Return the default graphics configuration. */
         public GraphicsConfiguration getAlphaCompatibleGraphicsConfiguration() {
-            GraphicsEnvironment env = GraphicsEnvironment
+            final GraphicsEnvironment env = GraphicsEnvironment
                                                          .getLocalGraphicsEnvironment();
-            GraphicsDevice dev = env.getDefaultScreenDevice();
+            final GraphicsDevice dev = env.getDefaultScreenDevice();
             return dev.getDefaultConfiguration();
         }
 
@@ -444,11 +444,11 @@ public class WindowUtils {
          * pixels will be non-transparent. All pixels will be composited
          * with whatever is under the window using their alpha values.
          */
-        public void setWindowTransparent(Window w, boolean transparent) {
+        public void setWindowTransparent(final Window w, final boolean transparent) {
             // do nothing
         }
 
-        protected void setDoubleBuffered(Component root, boolean buffered) {
+        protected void setDoubleBuffered(final Component root, final boolean buffered) {
             if (root instanceof JComponent) {
                 ((JComponent)root).setDoubleBuffered(buffered);
             }
@@ -456,23 +456,23 @@ public class WindowUtils {
                 ((JRootPane)root).setDoubleBuffered(true);
             }
             else if (root instanceof Container) {
-                Component[] kids = ((Container)root).getComponents();
+                final Component[] kids = ((Container)root).getComponents();
                 for (int i=0;i < kids.length;i++) {
                     setDoubleBuffered(kids[i], buffered);
                 }
             }
         }
 
-        protected void setLayersTransparent(Window w, boolean transparent) {
+        protected void setLayersTransparent(final Window w, final boolean transparent) {
 
             Color bg = transparent ? new Color(0, 0, 0, 0) : null;
             if (w instanceof RootPaneContainer) {
-                RootPaneContainer rpc = (RootPaneContainer)w;
-                JRootPane root = rpc.getRootPane();
-                JLayeredPane lp = root.getLayeredPane();
-                Container c = root.getContentPane();
-                JComponent content =
-                    (c instanceof JComponent) ? (JComponent)c : null;
+                final RootPaneContainer rpc = (RootPaneContainer)w;
+                final JRootPane root = rpc.getRootPane();
+                final JLayeredPane lp = root.getLayeredPane();
+                final Container c = root.getContentPane();
+                final JComponent content =
+                    c instanceof JComponent ? (JComponent)c : null;
                 if (transparent) {
                     lp.putClientProperty(TRANSPARENT_OLD_OPAQUE,
                                          Boolean.valueOf(lp.isOpaque()));
@@ -507,7 +507,7 @@ public class WindowUtils {
         /** Override this method to provide bitmap masking of the given
          * heavyweight component.
          */
-        protected void setMask(Component c, Raster raster) {
+        protected void setMask(final Component c, final Raster raster) {
             throw new UnsupportedOperationException("Window masking is not available");
         }
 
@@ -516,14 +516,14 @@ public class WindowUtils {
          * be treated as a bitmap (zero/nonzero values only). A value of
          * <code>null</code> means to remove the mask.
          */
-        protected void setWindowMask(Component w, Raster raster) {
+        protected void setWindowMask(final Component w, final Raster raster) {
             if (w.isLightweight())
                 throw new IllegalArgumentException("Component must be heavyweight: " + w);
             setMask(w, raster);
         }
 
         /** Set the window mask based on a {@link Shape}. */
-        public void setWindowMask(Component w, Shape mask) {
+        public void setWindowMask(final Component w, final Shape mask) {
             setWindowMask(w, toRaster(mask));
         }
 
@@ -531,7 +531,7 @@ public class WindowUtils {
          * Set the window mask based on an Icon. All non-transparent
          * pixels will be included in the mask.
          */
-        public void setWindowMask(Component w, Icon mask) {
+        public void setWindowMask(final Component w, final Icon mask) {
             setWindowMask(w, toRaster(w, mask));
         }
 
@@ -540,9 +540,9 @@ public class WindowUtils {
          * conjunction with a given window. This prevents the window's
          * alpha setting or mask region from being applied to the popup.
          */
-        protected void setForceHeavyweightPopups(Window w, boolean force) {
+        protected void setForceHeavyweightPopups(final Window w, final boolean force) {
             if (!(w instanceof HeavyweightForcer)) {
-                Window[] owned = w.getOwnedWindows();
+                final Window[] owned = w.getOwnedWindows();
                 for (int i = 0; i < owned.length; i++) {
                     if (owned[i] instanceof HeavyweightForcer) {
                         if (force)
@@ -550,7 +550,7 @@ public class WindowUtils {
                         owned[i].dispose();
                     }
                 }
-                Boolean b = Boolean.valueOf(System.getProperty("jna.force_hw_popups", "true"));
+                final Boolean b = Boolean.valueOf(System.getProperty("jna.force_hw_popups", "true"));
                 if (force && b.booleanValue()) {
                     new HeavyweightForcer(w);
                 }
@@ -579,7 +579,7 @@ public class WindowUtils {
                                         .matches("^1\\.4\\..*");
             }
             else {
-                String os = System.getProperty("os.name");
+                final String os = System.getProperty("os.name");
                 throw new UnsupportedOperationException("No support for " + os);
             }
         }
@@ -590,8 +590,8 @@ public class WindowUtils {
     }
 
     private static class W32WindowUtils extends NativeWindowUtils {
-        private HWND getHWnd(Component w) {
-            HWND hwnd = new HWND();
+        private HWND getHWnd(final Component w) {
+            final HWND hwnd = new HWND();
             hwnd.setPointer(Native.getComponentPointer(w));
             return hwnd;
         }
@@ -605,9 +605,9 @@ public class WindowUtils {
         }
 
         /** Indicates whether UpdateLayeredWindow is in use. */
-        private boolean usingUpdateLayeredWindow(Window w) {
+        private boolean usingUpdateLayeredWindow(final Window w) {
             if (w instanceof RootPaneContainer) {
-                JRootPane root = ((RootPaneContainer)w).getRootPane();
+                final JRootPane root = ((RootPaneContainer)w).getRootPane();
                 return root.getClientProperty(TRANSPARENT_OLD_BG) != null;
             }
             return false;
@@ -616,40 +616,38 @@ public class WindowUtils {
         /** Keep track of the alpha level, since we can't read it from
          * the window itself.
          */
-        private void storeAlpha(Window w, byte alpha) {
+        private void storeAlpha(final Window w, final byte alpha) {
             if (w instanceof RootPaneContainer) {
-                JRootPane root = ((RootPaneContainer)w).getRootPane();
-                Byte b = alpha == (byte)0xFF ? null : new Byte(alpha);
+                final JRootPane root = ((RootPaneContainer)w).getRootPane();
+                final Byte b = alpha == (byte)0xFF ? null : new Byte(alpha);
                 root.putClientProperty(TRANSPARENT_ALPHA, b);
             }
         }
 
         /** Return the last alpha level we set on the window. */
-        private byte getAlpha(Window w) {
+        private byte getAlpha(final Window w) {
             if (w instanceof RootPaneContainer) {
-                JRootPane root = ((RootPaneContainer)w).getRootPane();
-                Byte b = (Byte)root.getClientProperty(TRANSPARENT_ALPHA);
-                if (b != null) {
+                final JRootPane root = ((RootPaneContainer)w).getRootPane();
+                final Byte b = (Byte)root.getClientProperty(TRANSPARENT_ALPHA);
+                if (b != null)
                     return b.byteValue();
-                }
             }
             return (byte)0xFF;
         }
 
         public void setWindowAlpha(final Window w, final float alpha) {
-            if (!isWindowAlphaSupported()) {
+            if (!isWindowAlphaSupported())
                 throw new UnsupportedOperationException("Set sun.java2d.noddraw=true to enable transparent windows");
-            }
             whenDisplayable(w, new Runnable() {
                 public void run() {
-                    HWND hWnd = getHWnd(w);
-                    User32 user = User32.INSTANCE;
+                    final HWND hWnd = getHWnd(w);
+                    final User32 user = User32.INSTANCE;
                     int flags = user.GetWindowLong(hWnd, WinUser.GWL_EXSTYLE);
-                    byte level = (byte)((int)(255 * alpha) & 0xFF);
+                    final byte level = (byte)((int)(255 * alpha) & 0xFF);
                     if (usingUpdateLayeredWindow(w)) {
                         // If already using UpdateLayeredWindow, continue to
                         // do so
-                        BLENDFUNCTION blend = new BLENDFUNCTION();
+                        final BLENDFUNCTION blend = new BLENDFUNCTION();
                         blend.SourceConstantAlpha = level;
                         blend.AlphaFormat = WinUser.AC_SRC_ALPHA;
                         user.UpdateLayeredWindow(hWnd, null, null, null, null,
@@ -682,11 +680,11 @@ public class WindowUtils {
             private HBITMAP hBitmap;
             private Pointer pbits;
             private Dimension bitmapSize;
-            public W32TransparentContentPane(Container content) {
+            public W32TransparentContentPane(final Container content) {
                 super(content);
             }
             private void disposeBackingStore() {
-                GDI32 gdi = GDI32.INSTANCE;
+                final GDI32 gdi = GDI32.INSTANCE;
                 if (hBitmap != null) {
                     gdi.DeleteObject(hBitmap);
                     hBitmap = null;
@@ -700,25 +698,25 @@ public class WindowUtils {
                 super.removeNotify();
                 disposeBackingStore();
             }
-            public void setTransparent(boolean transparent) {
+            public void setTransparent(final boolean transparent) {
                 super.setTransparent(transparent);
                 if (!transparent) {
                     disposeBackingStore();
                 }
             }
-            protected void paintDirect(BufferedImage buf, Rectangle bounds) {
+            protected void paintDirect(final BufferedImage buf, final Rectangle bounds) {
                 // TODO: paint frame decoration if window is decorated
-                Window win = SwingUtilities.getWindowAncestor(this);
-                GDI32 gdi = GDI32.INSTANCE;
-                User32 user = User32.INSTANCE;
-                int x = bounds.x;
-                int y = bounds.y;
-                Point origin = SwingUtilities.convertPoint(this, x, y, win);
-                int w = bounds.width;
-                int h = bounds.height;
-                int ww = win.getWidth();
-                int wh = win.getHeight();
-                HDC screenDC = user.GetDC(null);
+                final Window win = SwingUtilities.getWindowAncestor(this);
+                final GDI32 gdi = GDI32.INSTANCE;
+                final User32 user = User32.INSTANCE;
+                final int x = bounds.x;
+                final int y = bounds.y;
+                final Point origin = SwingUtilities.convertPoint(this, x, y, win);
+                final int w = bounds.width;
+                final int h = bounds.height;
+                final int ww = win.getWidth();
+                final int wh = win.getHeight();
+                final HDC screenDC = user.GetDC(null);
                 HANDLE oldBitmap = null;
                 try {
                     if (memDC == null) {
@@ -729,14 +727,14 @@ public class WindowUtils {
                             gdi.DeleteObject(hBitmap);
                             hBitmap = null;
                         }
-                        BITMAPINFO bmi = new BITMAPINFO();
+                        final BITMAPINFO bmi = new BITMAPINFO();
                         bmi.bmiHeader.biWidth = ww;
                         bmi.bmiHeader.biHeight = wh;
                         bmi.bmiHeader.biPlanes = 1;
                         bmi.bmiHeader.biBitCount = 32;
                         bmi.bmiHeader.biCompression = WinGDI.BI_RGB;
                         bmi.bmiHeader.biSizeImage = ww * wh * 4;
-                        PointerByReference ppbits = new PointerByReference();
+                        final PointerByReference ppbits = new PointerByReference();
                         hBitmap = gdi.CreateDIBSection(memDC, bmi,
                         		WinGDI.DIB_RGB_COLORS,
                         		ppbits, null, 0);
@@ -744,33 +742,33 @@ public class WindowUtils {
                         bitmapSize = new Dimension(ww, wh);
                     }
                     oldBitmap = gdi.SelectObject(memDC, hBitmap);
-                    Raster raster = buf.getData();
-                    int[] pixel = new int[4];
-                    int[] bits = new int[w];
+                    final Raster raster = buf.getData();
+                    final int[] pixel = new int[4];
+                    final int[] bits = new int[w];
                     for (int row = 0; row < h; row++) {
                         for (int col = 0; col < w; col++) {
                             raster.getPixel(col, row, pixel);
-                            int alpha = (pixel[3] & 0xFF) << 24;
-                            int red = (pixel[2] & 0xFF);
-                            int green = (pixel[1] & 0xFF) << 8;
-                            int blue = (pixel[0] & 0xFF) << 16;
+                            final int alpha = (pixel[3] & 0xFF) << 24;
+                            final int red = pixel[2] & 0xFF;
+                            final int green = (pixel[1] & 0xFF) << 8;
+                            final int blue = (pixel[0] & 0xFF) << 16;
                             bits[col] = alpha | red | green | blue;
                         }
-                        int v = wh - (origin.y + row) - 1;
+                        final int v = wh - (origin.y + row) - 1;
                         pbits.write((v*ww+origin.x)*4, bits, 0, bits.length);
                     }
-                    SIZE winSize = new SIZE();
+                    final SIZE winSize = new SIZE();
                     winSize.cx = win.getWidth();
                     winSize.cy = win.getHeight();
-                    POINT winLoc = new POINT();
+                    final POINT winLoc = new POINT();
                     winLoc.x = win.getX();
                     winLoc.y = win.getY();
-                    POINT srcLoc = new POINT();
-                    BLENDFUNCTION blend = new BLENDFUNCTION();
-                    HWND hWnd = getHWnd(win);
+                    final POINT srcLoc = new POINT();
+                    final BLENDFUNCTION blend = new BLENDFUNCTION();
+                    final HWND hWnd = getHWnd(win);
                     // extract current constant alpha setting, if possible
-                    ByteByReference bref = new ByteByReference();
-                    IntByReference iref = new IntByReference();
+                    final ByteByReference bref = new ByteByReference();
+                    final IntByReference iref = new IntByReference();
                     byte level = getAlpha(win);
                     try {
                         // GetLayeredwindowAttributes supported WinXP and later
@@ -779,7 +777,7 @@ public class WindowUtils {
                             level = bref.getValue();
                         }
                     }
-                    catch(UnsatisfiedLinkError e) {
+                    catch(final UnsatisfiedLinkError e) {
                     }
                     blend.SourceConstantAlpha = level;
                     blend.AlphaFormat = WinUser.AC_SRC_ALPHA;
@@ -799,29 +797,27 @@ public class WindowUtils {
          */
         public void setWindowTransparent(final Window w,
                                          final boolean transparent) {
-            if (!(w instanceof RootPaneContainer)) {
+            if (!(w instanceof RootPaneContainer))
                 throw new IllegalArgumentException("Window must be a RootPaneContainer");
-            }
-            if (!isWindowAlphaSupported()) {
+            if (!isWindowAlphaSupported())
                 throw new UnsupportedOperationException("Set sun.java2d.noddraw=true to enable transparent windows");
-            }
-            boolean isTransparent = w.getBackground() != null
+            final boolean isTransparent = w.getBackground() != null
                 && w.getBackground().getAlpha() == 0;
             if (transparent == isTransparent)
                 return;
             whenDisplayable(w, new Runnable() {
                 public void run() {
-                    User32 user = User32.INSTANCE;
-                    HWND hWnd = getHWnd(w);
+                    final User32 user = User32.INSTANCE;
+                    final HWND hWnd = getHWnd(w);
                     int flags = user.GetWindowLong(hWnd, WinUser.GWL_EXSTYLE);
-                    JRootPane root = ((RootPaneContainer)w).getRootPane();
-                    JLayeredPane lp = root.getLayeredPane();
-                    Container content = root.getContentPane();
+                    final JRootPane root = ((RootPaneContainer)w).getRootPane();
+                    final JLayeredPane lp = root.getLayeredPane();
+                    final Container content = root.getContentPane();
                     if (content instanceof W32TransparentContentPane) {
                         ((W32TransparentContentPane)content).setTransparent(transparent);
                     }
                     else if (transparent) {
-                        W32TransparentContentPane w32content =
+                        final W32TransparentContentPane w32content =
                             new W32TransparentContentPane(content);
                         root.setContentPane(w32content);
                         lp.add(new RepaintTrigger(w32content),
@@ -855,9 +851,9 @@ public class WindowUtils {
         private void setWindowRegion(final Component w, final HRGN hrgn) {
             whenDisplayable(w, new Runnable() {
                 public void run() {
-                    GDI32 gdi = GDI32.INSTANCE;
-                    User32 user = User32.INSTANCE;
-                    HWND hWnd = getHWnd(w);
+                    final GDI32 gdi = GDI32.INSTANCE;
+                    final User32 user = User32.INSTANCE;
+                    final HWND hWnd = getHWnd(w);
                     try {
                         user.SetWindowRgn(hWnd, hrgn, true);
                         setForceHeavyweightPopups(getWindow(w), hrgn != null);
@@ -871,16 +867,16 @@ public class WindowUtils {
 
         // Take advantage of CreatePolyPolygonalRgn on w32
         private void setMask(final Component w, final Area area) {
-            GDI32 gdi = GDI32.INSTANCE;
-            PathIterator pi = area.getPathIterator(null);
-            int mode = pi.getWindingRule() == PathIterator.WIND_NON_ZERO
+            final GDI32 gdi = GDI32.INSTANCE;
+            final PathIterator pi = area.getPathIterator(null);
+            final int mode = pi.getWindingRule() == PathIterator.WIND_NON_ZERO
                 ? WinGDI.WINDING: WinGDI.ALTERNATE;
-            float[] coords = new float[6];
-            List<POINT> points = new ArrayList<POINT>();
+            final float[] coords = new float[6];
+            final List<POINT> points = new ArrayList<POINT>();
             int size = 0;
-            List<Integer> sizes = new ArrayList<Integer>();
+            final List<Integer> sizes = new ArrayList<Integer>();
             while (!pi.isDone()) {
-                int type = pi.currentSegment(coords);
+                final int type = pi.currentSegment(coords);
                 if (type == PathIterator.SEG_MOVETO) {
                     size = 1;
                     points.add(new POINT((int)coords[0], (int)coords[1]));
@@ -892,35 +888,34 @@ public class WindowUtils {
                 else if (type == PathIterator.SEG_CLOSE) {
                     sizes.add(new Integer(size));
                 }
-                else {
+                else
                     throw new RuntimeException("Area is not polygonal: " + area);
-                }
                 pi.next();
             }
-            POINT[] lppt = (POINT[])new POINT().toArray(points.size());
-            POINT[] pts = points.toArray(new POINT[points.size()]);
+            final POINT[] lppt = (POINT[])new POINT().toArray(points.size());
+            final POINT[] pts = points.toArray(new POINT[points.size()]);
             for (int i=0;i < lppt.length;i++) {
                 lppt[i].x = pts[i].x;
                 lppt[i].y = pts[i].y;
             }
-            int[] counts = new int[sizes.size()];
+            final int[] counts = new int[sizes.size()];
             for (int i=0;i < counts.length;i++) {
                 counts[i] = sizes.get(i).intValue();
             }
-            HRGN hrgn = gdi.CreatePolyPolygonRgn(lppt, counts, counts.length, mode);
+            final HRGN hrgn = gdi.CreatePolyPolygonRgn(lppt, counts, counts.length, mode);
             setWindowRegion(w, hrgn);
         }
 
         protected void setMask(final Component w, final Raster raster) {
-            GDI32 gdi = GDI32.INSTANCE;
+            final GDI32 gdi = GDI32.INSTANCE;
             final HRGN region = raster != null
                 ? gdi.CreateRectRgn(0, 0, 0, 0) : null;
             if (region != null) {
                 final HRGN tempRgn = gdi.CreateRectRgn(0, 0, 0, 0);
                 try {
                     RasterRangesUtils.outputOccupiedRanges(raster, new RasterRangesUtils.RangesOutput() {
-                        public boolean outputRange(int x, int y, int w, int h) {
-                            GDI32 gdi = GDI32.INSTANCE;
+                        public boolean outputRange(final int x, final int y, final int w, final int h) {
+                            final GDI32 gdi = GDI32.INSTANCE;
                             gdi.SetRectRgn(tempRgn, x, y, x + w, y + h);
                             return gdi.CombineRgn(region, region, tempRgn, WinGDI.RGN_OR) != WinGDI.ERROR;
                         }
@@ -939,12 +934,12 @@ public class WindowUtils {
             return true;
         }
 
-        private OSXMaskingContentPane installMaskingPane(Window w) {
+        private OSXMaskingContentPane installMaskingPane(final Window w) {
             OSXMaskingContentPane content;
             if (w instanceof RootPaneContainer) {
                 // TODO: replace layered pane instead?
                 final RootPaneContainer rpc = (RootPaneContainer)w;
-                Container oldContent = rpc.getContentPane();
+                final Container oldContent = rpc.getContentPane();
                 if (oldContent instanceof OSXMaskingContentPane) {
                     content = (OSXMaskingContentPane)oldContent;
                 }
@@ -955,7 +950,7 @@ public class WindowUtils {
                 }
             }
             else {
-                Component oldContent = w.getComponentCount() > 0 ? w.getComponent(0) : null;
+                final Component oldContent = w.getComponentCount() > 0 ? w.getComponent(0) : null;
                 if (oldContent instanceof OSXMaskingContentPane) {
                     content = (OSXMaskingContentPane)oldContent;
                 }
@@ -975,8 +970,8 @@ public class WindowUtils {
          * property has no effect.
          * @see <a href="http://developer.apple.com/technotes/tn2007/tn2196.html#APPLE_AWT_DRAGGABLEWINDOWBACKGROUND">Apple Technote 2007</a>
          */
-        public void setWindowTransparent(Window w, boolean transparent) {
-            boolean isTransparent = w.getBackground() != null
+        public void setWindowTransparent(final Window w, final boolean transparent) {
+            final boolean isTransparent = w.getBackground() != null
                 && w.getBackground().getAlpha() == 0;
             if (transparent != isTransparent) {
                 setBackgroundTransparent(w, transparent, "setWindowTransparent");
@@ -985,10 +980,10 @@ public class WindowUtils {
 
         /** Setting this false restores the original setting. */
         private static final String WDRAG = "apple.awt.draggableWindowBackground";
-        private void fixWindowDragging(Window w, String context) {
+        private void fixWindowDragging(final Window w, final String context) {
             if (w instanceof RootPaneContainer) {
-                JRootPane p = ((RootPaneContainer)w).getRootPane();
-                Boolean oldDraggable = (Boolean)p.getClientProperty(WDRAG);
+                final JRootPane p = ((RootPaneContainer)w).getRootPane();
+                final Boolean oldDraggable = (Boolean)p.getClientProperty(WDRAG);
                 if (oldDraggable == null) {
                     p.putClientProperty(WDRAG, Boolean.FALSE);
                     if (w.isDisplayable()) {
@@ -997,7 +992,7 @@ public class WindowUtils {
                 }
             }
         }
-        
+
         /** Note that the property
          * <code>apple.awt.draggableWindowBackground</code> must be set to its
          * final value <em>before</em> the heavyweight peer for the Window is
@@ -1008,13 +1003,13 @@ public class WindowUtils {
          */
         public void setWindowAlpha(final Window w, final float alpha) {
             if (w instanceof RootPaneContainer) {
-                JRootPane p = ((RootPaneContainer)w).getRootPane();
+                final JRootPane p = ((RootPaneContainer)w).getRootPane();
                 p.putClientProperty("Window.alpha", new Float(alpha));
                 fixWindowDragging(w, "setWindowAlpha");
             }
             whenDisplayable(w, new Runnable() {
 				public void run() {
-                    Object peer = w.getPeer();
+                    final Object peer = w.getPeer();
                     try {
                         peer.getClass().getMethod("setAlpha", new Class[]{
                                 float.class
@@ -1022,13 +1017,13 @@ public class WindowUtils {
                                     new Float(alpha)
                                 });
                     }
-                    catch (Exception e) {
+                    catch (final Exception e) {
                     }
                 }
             });
         }
 
-        protected void setWindowMask(Component w, Raster raster) {
+        protected void setWindowMask(final Component w, final Raster raster) {
             if (raster != null) {
                 setWindowMask(w, toShape(raster));
             }
@@ -1038,10 +1033,10 @@ public class WindowUtils {
             }
         }
 
-        public void setWindowMask(Component c, final Shape shape) {
+        public void setWindowMask(final Component c, final Shape shape) {
             if (c instanceof Window) {
-                Window w = (Window)c;
-                OSXMaskingContentPane content = installMaskingPane(w);
+                final Window w = (Window)c;
+                final OSXMaskingContentPane content = installMaskingPane(w);
                 content.setMask(shape);
                 setBackgroundTransparent(w, shape != MASK_NONE, "setWindowMask");
             }
@@ -1057,19 +1052,19 @@ public class WindowUtils {
     		private static final long serialVersionUID = 1L;
             private Shape shape;
 
-            public OSXMaskingContentPane(Component oldContent) {
+            public OSXMaskingContentPane(final Component oldContent) {
                 super(new BorderLayout());
                 if (oldContent != null) {
                     add(oldContent, BorderLayout.CENTER);
                 }
             }
 
-            public void setMask(Shape shape) {
+            public void setMask(final Shape shape) {
                 this.shape = shape;
                 repaint();
             }
 
-            public void paint(Graphics graphics) {
+            public void paint(final Graphics graphics) {
                 Graphics2D g = (Graphics2D)graphics.create();
                 g.setComposite(AlphaComposite.Clear);
                 g.fillRect(0, 0, getWidth(), getHeight());
@@ -1086,8 +1081,8 @@ public class WindowUtils {
             }
         }
 
-        private void setBackgroundTransparent(Window w, boolean transparent, String context) {
-            JRootPane rp = w instanceof RootPaneContainer
+        private void setBackgroundTransparent(final Window w, final boolean transparent, final String context) {
+            final JRootPane rp = w instanceof RootPaneContainer
                 ? ((RootPaneContainer)w).getRootPane() : null;
             if (transparent) {
                 if (rp != null) {
@@ -1116,37 +1111,36 @@ public class WindowUtils {
     }
     private static class X11WindowUtils extends NativeWindowUtils {
         private static Pixmap createBitmap(final Display dpy,
-                                           X11.Window win,
-                                           Raster raster) {
+                                           final X11.Window win,
+                                           final Raster raster) {
             final X11 x11 = X11.INSTANCE;
-            Rectangle bounds = raster.getBounds();
-            int width = bounds.x + bounds.width;
-            int height = bounds.y + bounds.height;
+            final Rectangle bounds = raster.getBounds();
+            final int width = bounds.x + bounds.width;
+            final int height = bounds.y + bounds.height;
             final Pixmap pm = x11.XCreatePixmap(dpy, win, width, height, 1);
             final GC gc = x11.XCreateGC(dpy, pm, new NativeLong(0), null);
-            if (gc == null) {
+            if (gc == null)
                 return null;
-            }
             x11.XSetForeground(dpy, gc, new NativeLong(0));
             x11.XFillRectangle(dpy, pm, gc, 0, 0, width, height);
             final List<Rectangle> rlist = new ArrayList<Rectangle>();
             try {
                 RasterRangesUtils.outputOccupiedRanges(raster, new RasterRangesUtils.RangesOutput() {
-                    public boolean outputRange(int x, int y, int w, int h) {
+                    public boolean outputRange(final int x, final int y, final int w, final int h) {
                         rlist.add(new Rectangle(x, y, w, h));
                         return true;
                     }
                 });
-                X11.XRectangle[] rects = (X11.XRectangle[])
+                final X11.XRectangle[] rects = (X11.XRectangle[])
                     new X11.XRectangle().toArray(rlist.size());
                 for (int i=0;i < rects.length;i++) {
-                    Rectangle r = rlist.get(i);
+                    final Rectangle r = rlist.get(i);
                     rects[i].x = (short)r.x;
                     rects[i].y = (short)r.y;
                     rects[i].width = (short)r.width;
                     rects[i].height = (short)r.height;
                     // Optimization: write directly to native memory
-                    Pointer p = rects[i].getPointer();
+                    final Pointer p = rects[i].getPointer();
                     p.setShort(0, (short)r.x);
                     p.setShort(2, (short)r.y);
                     p.setShort(4, (short)r.width);
@@ -1171,16 +1165,16 @@ public class WindowUtils {
             return getAlphaVisualIDs().length > 0;
         }
 
-        private static long getVisualID(GraphicsConfiguration config) {
+        private static long getVisualID(final GraphicsConfiguration config) {
             // Use reflection to call
             // X11GraphicsConfig.getVisual
             try {
-                Object o = config.getClass()
+                final Object o = config.getClass()
                     .getMethod("getVisual", (Class[])null)
                     .invoke(config, (Object[])null);
                 return ((Number)o).longValue();
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 e.printStackTrace();
                 return -1;
             }
@@ -1189,19 +1183,18 @@ public class WindowUtils {
         /** Return the default graphics configuration. */
         public GraphicsConfiguration getAlphaCompatibleGraphicsConfiguration() {
             if (isWindowAlphaSupported()) {
-                GraphicsEnvironment env =
+                final GraphicsEnvironment env =
                     GraphicsEnvironment.getLocalGraphicsEnvironment();
-                GraphicsDevice[] devices = env.getScreenDevices();
+                final GraphicsDevice[] devices = env.getScreenDevices();
                 for (int i = 0; i < devices.length; i++) {
-                    GraphicsConfiguration[] configs =
+                    final GraphicsConfiguration[] configs =
                         devices[i].getConfigurations();
                     for (int j = 0; j < configs.length; j++) {
-                        long visualID = getVisualID(configs[j]);
-                        long[] ids = getAlphaVisualIDs();
+                        final long visualID = getVisualID(configs[j]);
+                        final long[] ids = getAlphaVisualIDs();
                         for (int k = 0; k < ids.length; k++) {
-                            if (visualID == ids[k]) {
+                            if (visualID == ids[k])
                                 return configs[j];
-                            }
                         }
                     }
                 }
@@ -1214,32 +1207,31 @@ public class WindowUtils {
          * channel.
          */
         private synchronized long[] getAlphaVisualIDs() {
-            if (didCheck) {
+            if (didCheck)
                 return alphaVisualIDs;
-            }
             didCheck = true;
-            X11 x11 = X11.INSTANCE;
-            Display dpy = x11.XOpenDisplay(null);
+            final X11 x11 = X11.INSTANCE;
+            final Display dpy = x11.XOpenDisplay(null);
             if (dpy == null)
                 return alphaVisualIDs;
             XVisualInfo info = null;
             try {
-                int screen = x11.XDefaultScreen(dpy);
-                XVisualInfo template = new XVisualInfo();
+                final int screen = x11.XDefaultScreen(dpy);
+                final XVisualInfo template = new XVisualInfo();
                 template.screen = screen;
                 template.depth = 32;
                 template.c_class = X11.TrueColor;
-                NativeLong mask = new NativeLong(X11.VisualScreenMask
+                final NativeLong mask = new NativeLong(X11.VisualScreenMask
                                                  | X11.VisualDepthMask
                                                  | X11.VisualClassMask);
-                IntByReference pcount = new IntByReference();
+                final IntByReference pcount = new IntByReference();
                 info = x11.XGetVisualInfo(dpy, mask, template, pcount);
                 if (info != null) {
-                    List<X11.VisualID> list = new ArrayList<X11.VisualID>();
-                    XVisualInfo[] infos =
+                    final List<X11.VisualID> list = new ArrayList<X11.VisualID>();
+                    final XVisualInfo[] infos =
                         (XVisualInfo[])info.toArray(pcount.getValue());
                     for (int i = 0; i < infos.length; i++) {
-                        XRenderPictFormat format =
+                        final XRenderPictFormat format =
                             X11.Xrender.INSTANCE.XRenderFindVisualFormat(dpy,
                                                                          infos[i].visual);
                         if (format.type == X11.Xrender.PictTypeDirect
@@ -1263,22 +1255,22 @@ public class WindowUtils {
             return alphaVisualIDs;
         }
 
-        private static X11.Window getContentWindow(Window w, X11.Display dpy,
-                                                   X11.Window win, Point offset) {
-            if ((w instanceof Frame && !((Frame)w).isUndecorated())
-                || (w instanceof Dialog && !((Dialog)w).isUndecorated())) {
-                X11 x11 = X11.INSTANCE;
-                X11.WindowByReference rootp = new X11.WindowByReference();
-                X11.WindowByReference parentp = new X11.WindowByReference();
-                PointerByReference childrenp = new PointerByReference();
-                IntByReference countp = new IntByReference();
+        private static X11.Window getContentWindow(final Window w, final X11.Display dpy,
+                                                   X11.Window win, final Point offset) {
+            if (w instanceof Frame && !((Frame)w).isUndecorated()
+                || w instanceof Dialog && !((Dialog)w).isUndecorated()) {
+                final X11 x11 = X11.INSTANCE;
+                final X11.WindowByReference rootp = new X11.WindowByReference();
+                final X11.WindowByReference parentp = new X11.WindowByReference();
+                final PointerByReference childrenp = new PointerByReference();
+                final IntByReference countp = new IntByReference();
                 x11.XQueryTree(dpy, win, rootp, parentp, childrenp, countp);
-                Pointer p = childrenp.getValue();
-                int[] ids = p.getIntArray(0, countp.getValue());
-                for (int id : ids) {
+                final Pointer p = childrenp.getValue();
+                final int[] ids = p.getIntArray(0, countp.getValue());
+                for (final int id : ids) {
                     // TODO: more verification of correct window?
-                    X11.Window child = new X11.Window(id);
-                    X11.XWindowAttributes xwa = new X11.XWindowAttributes();
+                    final X11.Window child = new X11.Window(id);
+                    final X11.XWindowAttributes xwa = new X11.XWindowAttributes();
                     x11.XGetWindowAttributes(dpy, child, xwa);
                     offset.x = -xwa.x;
                     offset.y = -xwa.y;
@@ -1292,8 +1284,8 @@ public class WindowUtils {
             return win;
         }
 
-        private static X11.Window getDrawable(Component w) {
-            int id = (int)Native.getComponentID(w);
+        private static X11.Window getDrawable(final Component w) {
+            final int id = (int)Native.getComponentID(w);
             if (id == X11.None)
                 return null;
             return new X11.Window(id);
@@ -1303,25 +1295,24 @@ public class WindowUtils {
         private static final String OPACITY = "_NET_WM_WINDOW_OPACITY";
 
         public void setWindowAlpha(final Window w, final float alpha) {
-            if (!isWindowAlphaSupported()) {
+            if (!isWindowAlphaSupported())
                 throw new UnsupportedOperationException("This X11 display does not provide a 32-bit visual");
-            }
-            Runnable action = new Runnable() {
+            final Runnable action = new Runnable() {
                 public void run() {
-                    X11 x11 = X11.INSTANCE;
-                    Display dpy = x11.XOpenDisplay(null);
+                    final X11 x11 = X11.INSTANCE;
+                    final Display dpy = x11.XOpenDisplay(null);
                     if (dpy == null)
                         return;
                     try {
-                        X11.Window win = getDrawable(w);
+                        final X11.Window win = getDrawable(w);
                         if (alpha == 1f) {
                             x11.XDeleteProperty(dpy, win,
                                                 x11.XInternAtom(dpy, OPACITY,
                                                                 false));
                         }
                         else {
-                            int opacity = (int)((long)(alpha * OPAQUE) & 0xFFFFFFFF);
-                            IntByReference patom = new IntByReference(opacity);
+                            final int opacity = (int)((long)(alpha * OPAQUE) & 0xFFFFFFFF);
+                            final IntByReference patom = new IntByReference(opacity);
                             x11.XChangeProperty(dpy, win,
                                                 x11.XInternAtom(dpy, OPACITY,
                                                                 false),
@@ -1341,7 +1332,7 @@ public class WindowUtils {
         private class X11TransparentContentPane extends TransparentContentPane {
     		private static final long serialVersionUID = 1L;
 
-            public X11TransparentContentPane(Container oldContent) {
+            public X11TransparentContentPane(final Container oldContent) {
                 super(oldContent);
             }
 
@@ -1351,18 +1342,18 @@ public class WindowUtils {
             // Painting directly to the original Graphics
             // fails to properly composite unless the destination
             // is pure black.  Too bad.
-			protected void paintDirect(BufferedImage buf, Rectangle bounds) {
-                Window window = SwingUtilities.getWindowAncestor(this);
-                X11 x11 = X11.INSTANCE;
-                X11.Display dpy = x11.XOpenDisplay(null);
+			protected void paintDirect(final BufferedImage buf, final Rectangle bounds) {
+                final Window window = SwingUtilities.getWindowAncestor(this);
+                final X11 x11 = X11.INSTANCE;
+                final X11.Display dpy = x11.XOpenDisplay(null);
                 X11.Window win = getDrawable(window);
-                Point offset = new Point();
+                final Point offset = new Point();
                 win = getContentWindow(window, dpy, win, offset);
-                X11.GC gc = x11.XCreateGC(dpy, win, new NativeLong(0), null);
+                final X11.GC gc = x11.XCreateGC(dpy, win, new NativeLong(0), null);
 
-                Raster raster = buf.getData();
-                int w = bounds.width;
-                int h = bounds.height;
+                final Raster raster = buf.getData();
+                final int w = bounds.width;
+                final int h = bounds.height;
                 if (buffer == null || buffer.size() != w*h*4) {
                     buffer = new Memory(w*h*4);
                     pixels = new int[w*h];
@@ -1370,18 +1361,18 @@ public class WindowUtils {
                 for (int y=0;y<h;y++) {
                     for (int x=0;x < w;x++) {
                         raster.getPixel(x, y, pixel);
-                        int alpha = pixel[3]&0xFF;
-                        int red = pixel[2]&0xFF;
-                        int green = pixel[1]&0xFF;
-                        int blue = pixel[0]&0xFF;
+                        final int alpha = pixel[3]&0xFF;
+                        final int red = pixel[2]&0xFF;
+                        final int green = pixel[1]&0xFF;
+                        final int blue = pixel[0]&0xFF;
                         // TODO: use visual RGB masks to position bits
                         // This layout (ABGR) works empirically
-                        pixels[y*w + x] = (alpha<<24)|(blue<<16)|(green<<8)|red;
+                        pixels[y*w + x] = alpha<<24|blue<<16|green<<8|red;
                     }
                 }
-                X11.XWindowAttributes xwa = new X11.XWindowAttributes();
+                final X11.XWindowAttributes xwa = new X11.XWindowAttributes();
                 x11.XGetWindowAttributes(dpy, win, xwa);
-                X11.XImage image =
+                final X11.XImage image =
                     x11.XCreateImage(dpy, xwa.visual, 32, X11.ZPixmap,
                                      0, buffer, w, h, 32, w * 4);
                 buffer.write(0, pixels, 0, pixels.length);
@@ -1397,30 +1388,27 @@ public class WindowUtils {
 
         public void setWindowTransparent(final Window w,
                                          final boolean transparent) {
-            if (!(w instanceof RootPaneContainer)) {
+            if (!(w instanceof RootPaneContainer))
                 throw new IllegalArgumentException("Window must be a RootPaneContainer");
-            }
-            if (!isWindowAlphaSupported()) {
+            if (!isWindowAlphaSupported())
                 throw new UnsupportedOperationException("This X11 display does not provide a 32-bit visual");
-            }
             if (!w.getGraphicsConfiguration()
-                .equals(getAlphaCompatibleGraphicsConfiguration())) {
+                .equals(getAlphaCompatibleGraphicsConfiguration()))
                 throw new IllegalArgumentException("Window GraphicsConfiguration '" + w.getGraphicsConfiguration() + "' does not support transparency");
-            }
-            boolean isTransparent = w.getBackground() != null
+            final boolean isTransparent = w.getBackground() != null
                 && w.getBackground().getAlpha() == 0;
             if (transparent == isTransparent)
                 return;
             whenDisplayable(w, new Runnable() {
                 public void run() {
-                    JRootPane root = ((RootPaneContainer)w).getRootPane();
-                    JLayeredPane lp = root.getLayeredPane();
-                    Container content = root.getContentPane();
+                    final JRootPane root = ((RootPaneContainer)w).getRootPane();
+                    final JLayeredPane lp = root.getLayeredPane();
+                    final Container content = root.getContentPane();
                     if (content instanceof X11TransparentContentPane) {
                         ((X11TransparentContentPane)content).setTransparent(transparent);
                     }
                     else if (transparent) {
-                        X11TransparentContentPane x11content =
+                        final X11TransparentContentPane x11content =
                             new X11TransparentContentPane(content);
                         root.setContentPane(x11content);
                         lp.add(new RepaintTrigger(x11content),
@@ -1438,18 +1426,17 @@ public class WindowUtils {
         }
 
         private void setWindowShape(final Window w, final PixmapSource src) {
-            Runnable action = new Runnable() {
+            final Runnable action = new Runnable() {
                 public void run() {
-                    X11 x11 = X11.INSTANCE;
-                    Display dpy = x11.XOpenDisplay(null);
-                    if (dpy == null) {
+                    final X11 x11 = X11.INSTANCE;
+                    final Display dpy = x11.XOpenDisplay(null);
+                    if (dpy == null)
                         return;
-                    }
                     Pixmap pm = null;
                     try {
-                        X11.Window win = getDrawable(w);
+                        final X11.Window win = getDrawable(w);
                         pm = src.getPixmap(dpy, win);
-                        Xext ext = Xext.INSTANCE;
+                        final Xext ext = Xext.INSTANCE;
                         ext.XShapeCombineMask(dpy, win, X11.Xext.ShapeBounding,
                                               0, 0, pm == null ? Pixmap.None : pm,
                                               X11.Xext.ShapeSet);
@@ -1468,7 +1455,7 @@ public class WindowUtils {
 
         protected void setMask(final Component w, final Raster raster) {
             setWindowShape(getWindow(w), new PixmapSource() {
-                public Pixmap getPixmap(Display dpy, X11.Window win) {
+                public Pixmap getPixmap(final Display dpy, final X11.Window win) {
                     return raster != null ? createBitmap(dpy, win, raster) : null;
                 }
             });
@@ -1480,7 +1467,7 @@ public class WindowUtils {
      * operation is not supported.  The mask is treated as a bitmap and
      * ignores transparency.
      */
-    public static void setWindowMask(Window w, Shape mask) {
+    public static void setWindowMask(final Window w, final Shape mask) {
         getInstance().setWindowMask(w, mask);
     }
 
@@ -1489,7 +1476,7 @@ public class WindowUtils {
      * if the operation is not supported.  The mask is treated as a bitmap and
      * ignores transparency.
      */
-    public static void setComponentMask(Component c, Shape mask) {
+    public static void setComponentMask(final Component c, final Shape mask) {
         getInstance().setWindowMask(c, mask);
     }
 
@@ -1498,7 +1485,7 @@ public class WindowUtils {
      * operation is not supported.  The mask is treated as a bitmap and
      * ignores transparency.
      */
-    public static void setWindowMask(Window w, Icon mask) {
+    public static void setWindowMask(final Window w, final Icon mask) {
         getInstance().setWindowMask(w, mask);
     }
 
@@ -1526,10 +1513,10 @@ public class WindowUtils {
      * final value <em>before</em> the heavyweight peer for the Window is
      * created.  Once {@link Component#addNotify} has been called on the
      * component, causing creation of the heavyweight peer, changing this
-     * property has no effect. 
+     * property has no effect.
      * @see <a href="http://developer.apple.com/technotes/tn2007/tn2196.html#APPLE_AWT_DRAGGABLEWINDOWBACKGROUND">Apple Technote 2007</a>
      */
-    public static void setWindowAlpha(Window w, float alpha) {
+    public static void setWindowAlpha(final Window w, final float alpha) {
         getInstance().setWindowAlpha(w, Math.max(0f, Math.min(alpha, 1f)));
     }
 
@@ -1537,7 +1524,7 @@ public class WindowUtils {
      * Set the window to be transparent. Only explicitly painted pixels
      * will be non-transparent. All pixels will be composited with
      * whatever is under the window using their alpha values.
-     * 
+     *
      * On OSX, the property <code>apple.awt.draggableWindowBackground</code>
      * must be set to its final value <em>before</em> the heavyweight peer for
      * the Window is created.  Once {@link Component#addNotify} has been
@@ -1545,7 +1532,7 @@ public class WindowUtils {
      * changing this property has no effect.
      * @see <a href="http://developer.apple.com/technotes/tn2007/tn2196.html#APPLE_AWT_DRAGGABLEWINDOWBACKGROUND">Apple Technote 2007</a>
      */
-    public static void setWindowTransparent(Window w, boolean transparent) {
+    public static void setWindowTransparent(final Window w, final boolean transparent) {
         getInstance().setWindowTransparent(w, transparent);
     }
 }

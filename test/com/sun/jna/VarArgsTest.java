@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -25,7 +25,7 @@ public class VarArgsTest extends TestCase {
         public static class TestStructure extends Structure {
             public int magic = 0;
             protected List getFieldOrder() {
-                return Arrays.asList(new String[] { "magic" }); 
+                return Arrays.asList(new String[] { "magic" });
             }
         }
         public int addInt32VarArgs(String fmt, Number... args);
@@ -38,49 +38,49 @@ public class VarArgsTest extends TestCase {
     }
     protected void tearDown() {
         lib = null;
-    }   
+    }
     public void testIntVarArgs() {
-        int arg1 = 1;
-        int arg2 = 2;
+        final int arg1 = 1;
+        final int arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
                      lib.addInt32VarArgs("dd", new Integer(arg1), new Integer(arg2)));
     }
     public void testShortVarArgs() {
-        short arg1 = 1;
-        short arg2 = 2;
+        final short arg1 = 1;
+        final short arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
                      lib.addInt32VarArgs("dd", new Short(arg1), new Short(arg2)));
     }
     public void testLongVarArgs() {
-        short arg1 = 1;
-        short arg2 = 2;
+        final short arg1 = 1;
+        final short arg2 = 2;
         assertEquals("VarArgs not added correctly", arg1 + arg2,
                      lib.addInt32VarArgs("ll", new Long(arg1), new Long(arg2)));
     }
     public void testStringVarArgs() {
-        Object[] args = new Object[] { "Test" };
+        final Object[] args = new Object[] { "Test" };
         assertEquals("Did not return correct string", args[0],
                      lib.returnStringVarArgs("", args));
     }
-    
+
     public void testAppendNullToVarargs() {
-        Number[] args = new Number[] { new Integer(1) };
+        final Number[] args = new Number[] { new Integer(1) };
         assertEquals("No trailing NULL was appended to varargs list",
                      1, lib.addInt32VarArgs("dd", args));
     }
-    
+
     public void testModifyStructureInVarargs() {
-        TestStructure arg1 = new TestStructure();
-        TestStructure[] varargs = new TestStructure[] { new TestStructure() };
+        final TestStructure arg1 = new TestStructure();
+        final TestStructure[] varargs = new TestStructure[] { new TestStructure() };
         lib.modifyStructureVarArgs("ss", arg1, varargs[0]);
         assertEquals("Structure memory not read in fixed arg w/varargs",
-                     MAGIC32, arg1.magic); 
+                     MAGIC32, arg1.magic);
         assertEquals("Structure memory not read in varargs",
-                     MAGIC32, varargs[0].magic); 
-                     
+                     MAGIC32, varargs[0].magic);
+
     }
-    
-    public static void main(String[] args) {
+
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(VarArgsTest.class);
     }
 }

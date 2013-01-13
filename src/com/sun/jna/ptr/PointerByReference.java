@@ -8,13 +8,13 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
 import com.sun.jna.Pointer;
 
-/** Represents a reference to a pointer to native data. 
+/** Represents a reference to a pointer to native data.
  * In C notation, <code>void**</code>.
  * @author twall
  */
@@ -23,16 +23,16 @@ public class PointerByReference extends ByReference {
     public PointerByReference() {
         this(null);
     }
-    
-    public PointerByReference(Pointer value) {
+
+    public PointerByReference(final Pointer value) {
         super(Pointer.SIZE);
         setValue(value);
     }
-    
-    public void setValue(Pointer value) {
+
+    public void setValue(final Pointer value) {
         getPointer().setPointer(0, value);
     }
-    
+
     public Pointer getValue() {
         return getPointer().getPointer(0);
     }

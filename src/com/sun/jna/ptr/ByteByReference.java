@@ -8,25 +8,25 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
 public class ByteByReference extends ByReference {
-    
+
     public ByteByReference() {
         this((byte)0);
     }
-    
-    public ByteByReference(byte value) {
+
+    public ByteByReference(final byte value) {
         super(1);
         setValue(value);
     }
 
-    public void setValue(byte value) {
+    public void setValue(final byte value) {
         getPointer().setByte(0, value);
     }
-    
+
     public byte getValue() {
         return getPointer().getByte(0);
     }

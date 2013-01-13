@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.win32;
 
@@ -23,7 +23,7 @@ public interface StdCallLibrary extends Library, StdCall {
     int STDCALL_CONVENTION = Function.ALT_CONVENTION;
     /** Provides auto-lookup of stdcall-decorated names. */
     FunctionMapper FUNCTION_MAPPER = new StdCallFunctionMapper();
-    /** Interface defining a callback using the w32 stdcall calling convention. 
+    /** Interface defining a callback using the w32 stdcall calling convention.
      */
     interface StdCallCallback extends Callback, StdCall { }
 }

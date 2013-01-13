@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -22,19 +22,19 @@ import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
-/** 
+/**
  * Shell32.dll Interface.
  */
 public interface Shell32 extends ShellAPI, StdCallLibrary {
-	
-    Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class, 
+
+    Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class,
     		W32APIOptions.UNICODE_OPTIONS);
-    
+
     /**
      * This function can be used to copy, move, rename, or delete a file system object.
      * @param fileop
-     *  Address of an SHFILEOPSTRUCT structure that contains information this function 
-     *  needs to carry out the specified operation. 
+     *  Address of an SHFILEOPSTRUCT structure that contains information this function
+     *  needs to carry out the specified operation.
      * @return
      *  Returns zero if successful, or nonzero otherwise.
      */
@@ -43,25 +43,25 @@ public interface Shell32 extends ShellAPI, StdCallLibrary {
     /**
      * Takes the CSIDL of a folder and returns the path.
      * @param hwndOwner
-     *  Handle to an owner window. This parameter is typically set to NULL. If it is not NULL, 
-     *  and a dial-up connection needs to be made to access the folder, a user interface (UI) 
-     *  prompt will appear in this window. 
+     *  Handle to an owner window. This parameter is typically set to NULL. If it is not NULL,
+     *  and a dial-up connection needs to be made to access the folder, a user interface (UI)
+     *  prompt will appear in this window.
      * @param nFolder
-     *  A CSIDL value that identifies the folder whose path is to be retrieved. Only real 
-     *  folders are valid. If a virtual folder is specified, this function will fail. You can 
-     *  force creation of a folder with SHGetFolderPath by combining the folder's CSIDL with 
-     *  CSIDL_FLAG_CREATE. 
+     *  A CSIDL value that identifies the folder whose path is to be retrieved. Only real
+     *  folders are valid. If a virtual folder is specified, this function will fail. You can
+     *  force creation of a folder with SHGetFolderPath by combining the folder's CSIDL with
+     *  CSIDL_FLAG_CREATE.
      * @param hToken
-     *  An access token that can be used to represent a particular user. 
+     *  An access token that can be used to represent a particular user.
      * @param dwFlags
      *   Flags to specify which path is to be returned.
      * @param pszPath
-     *  Pointer to a null-terminated string of length MAX_PATH which will receive the path. 
-     *  If an error occurs or S_FALSE is returned, this string will be empty. 
+     *  Pointer to a null-terminated string of length MAX_PATH which will receive the path.
+     *  If an error occurs or S_FALSE is returned, this string will be empty.
      * @return
      *  Returns standard HRESULT codes.
      */
-    HRESULT SHGetFolderPath(HWND hwndOwner, int nFolder, HANDLE hToken, DWORD dwFlags, 
+    HRESULT SHGetFolderPath(HWND hwndOwner, int nFolder, HANDLE hToken, DWORD dwFlags,
     		char[] pszPath);
 
     /**
@@ -75,7 +75,7 @@ public interface Shell32 extends ShellAPI, StdCallLibrary {
 
     /**
      * Performs an operation on a specified file.
-     * 
+     *
      * @param hwnd
      *   A handle to the owner window used for displaying a UI or error messages. This value can be NULL if the
      *   operation is not associated with a window.
@@ -101,7 +101,7 @@ public interface Shell32 extends ShellAPI, StdCallLibrary {
      *     not, the "open" verb is used.
      *     In Windows 2000 and later, the default verb is used if available. If not, the "open" verb is used. If neither
      *     verb is available, the system uses the first verb listed in the registry.
-     * 
+     *
      * @param lpFile
      *   A pointer to a null-terminated string that specifies the file or object on which to execute the specified verb.
      *   To specify a Shell namespace object, pass the fully qualified parse name. Note that not all verbs are supported

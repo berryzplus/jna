@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -46,9 +46,9 @@ public class DirectByReferenceArgumentsTest extends ByReferenceArgumentsTest {
     protected void setUp() {
         lib = new DirectTestLibrary();
     }
-    
-    public static void main(java.lang.String[] argList) {
+
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(DirectByReferenceArgumentsTest.class);
     }
-    
+
 }

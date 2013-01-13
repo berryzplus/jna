@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.win32;
 
@@ -18,9 +18,9 @@ import com.sun.jna.Callback;
  * effective DLL module handle may be obtained by TODO.
  * Use this interface when your callback must reside within a DLL (hooks set
  * via <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644990(v=vs.85).aspx">SetWindowsHook</a>,
- * and certain service handlers, for example). 
+ * and certain service handlers, for example).
  */
-public interface DLLCallback extends Callback {  
+public interface DLLCallback extends Callback {
     /** Total number of DLL callbacks available for allocation. */
     int DLL_FPTRS = 16;
 }

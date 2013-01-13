@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform;
 
@@ -47,11 +47,11 @@ public abstract class FileMonitor {
     public interface FileListener {
         public void fileChanged(FileEvent e);
     }
-    
+
 	public class FileEvent extends EventObject {
         private final File file;
         private final int type;
-        public FileEvent(File file, int type) {
+        public FileEvent(final File file, final int type) {
             super(FileMonitor.this);
             this.file = file;
             this.type = type;
@@ -62,73 +62,72 @@ public abstract class FileMonitor {
             return "FileEvent: " + file + ":" + type;
         }
     }
-    
+
     private final Map<File, Integer> watched = new HashMap<File, Integer>();
     private List<FileListener> listeners = new ArrayList<FileListener>();
-    
+
     protected abstract void watch(File file, int mask, boolean recursive) throws IOException ;
     protected abstract void unwatch(File file);
     public abstract void dispose();
 
-    public void addWatch(File dir) throws IOException {
+    public void addWatch(final File dir) throws IOException {
         addWatch(dir, FILE_ANY);
     }
-    
-    public void addWatch(File dir, int mask) throws IOException {
+
+    public void addWatch(final File dir, final int mask) throws IOException {
         addWatch(dir, mask, dir.isDirectory());
     }
-    
-    public void addWatch(File dir, int mask, boolean recursive) throws IOException {
+
+    public void addWatch(final File dir, final int mask, final boolean recursive) throws IOException {
         watched.put(dir, new Integer(mask));
         watch(dir, mask, recursive);
     }
 
-    public void removeWatch(File file) {
+    public void removeWatch(final File file) {
         if (watched.remove(file) != null) {
             unwatch(file);
         }
     }
-    
-    protected void notify(FileEvent e) {
-    	for (FileListener listener : listeners) {
+
+    protected void notify(final FileEvent e) {
+    	for (final FileListener listener : listeners) {
     		listener.fileChanged(e);
     	}
     }
-    
-    public synchronized void addFileListener(FileListener listener) {
-        List<FileListener> list = new ArrayList<FileListener>(listeners);
+
+    public synchronized void addFileListener(final FileListener listener) {
+        final List<FileListener> list = new ArrayList<FileListener>(listeners);
         list.add(listener);
         listeners = list;
     }
-    
-    public synchronized void removeFileListener(FileListener x) {
-        List<FileListener> list = new ArrayList<FileListener>(listeners);
+
+    public synchronized void removeFileListener(final FileListener x) {
+        final List<FileListener> list = new ArrayList<FileListener>(listeners);
         list.remove(x);
         listeners = list;
     }
-    
+
     protected void finalize() {
-    	for (File watchedFile : watched.keySet()) {
+    	for (final File watchedFile : watched.keySet()) {
     		removeWatch(watchedFile);
     	}
-    	
+
         dispose();
     }
-    
+
     /** Canonical lazy loading of a singleton. */
     private static class Holder {
         public static final FileMonitor INSTANCE;
         static {
-            String os = System.getProperty("os.name");
+            final String os = System.getProperty("os.name");
             if (os.startsWith("Windows")) {
                 INSTANCE = new W32FileMonitor();
             }
-            else {
+            else
                 throw new Error("FileMonitor not implemented for " + os);
-            }
         }
     }
-    
+
     public static FileMonitor getInstance() {
         return Holder.INSTANCE;
     }

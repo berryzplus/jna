@@ -30,7 +30,7 @@ import java.util.TreeSet;
 
 /**
  * Methods that are useful to decompose a raster into a set of rectangles.
- * An occupied pixel has two possible meanings, depending on the raster : 
+ * An occupied pixel has two possible meanings, depending on the raster :
  * <ul>
  * <li>if the raster has an alpha layer, occupied means with alpha not null</li>
  * <li>if the raster doesn't have any alpha layer, occupied means not completely black</li>
@@ -45,7 +45,7 @@ public class RasterRangesUtils {
     };
 
     private static final Comparator<Object> COMPARATOR = new Comparator<Object>() {
-        public int compare(Object o1, Object o2) {
+        public int compare(final Object o1, final Object o2) {
             return ((Rectangle)o1).x - ((Rectangle)o2).x;
         }
     };
@@ -73,37 +73,34 @@ public class RasterRangesUtils {
      * @param out destination of the non null ranges
      * @return true if the output succeeded, false otherwise
      */
-    public static boolean outputOccupiedRanges(Raster raster, RangesOutput out) {
-        Rectangle bounds = raster.getBounds();
-        SampleModel sampleModel = raster.getSampleModel();
-        boolean hasAlpha = sampleModel.getNumBands() == 4;
+    public static boolean outputOccupiedRanges(final Raster raster, final RangesOutput out) {
+        final Rectangle bounds = raster.getBounds();
+        final SampleModel sampleModel = raster.getSampleModel();
+        final boolean hasAlpha = sampleModel.getNumBands() == 4;
 
         // Try to use the underlying data array directly for a few common raster formats
         if (raster.getParent() == null && bounds.x == 0 && bounds.y == 0) {
             // No support for subraster (as obtained with Image.getSubimage(...))
 
-            DataBuffer data = raster.getDataBuffer();
+            final DataBuffer data = raster.getDataBuffer();
             if (data.getNumBanks() == 1) {
                 // There is always a single bank for all BufferedImage types, except maybe TYPE_CUSTOM
 
                 if (sampleModel instanceof MultiPixelPackedSampleModel) {
-                    MultiPixelPackedSampleModel packedSampleModel = (MultiPixelPackedSampleModel)sampleModel;
-                    if (packedSampleModel.getPixelBitStride() == 1) {
+                    final MultiPixelPackedSampleModel packedSampleModel = (MultiPixelPackedSampleModel)sampleModel;
+                    if (packedSampleModel.getPixelBitStride() == 1)
                         // TYPE_BYTE_BINARY
                         return outputOccupiedRangesOfBinaryPixels(((DataBufferByte)data).getData(), bounds.width, bounds.height, out);
-                    }
                 } else if (sampleModel instanceof SinglePixelPackedSampleModel) {
-                    if (sampleModel.getDataType() == DataBuffer.TYPE_INT) {
-                        // TYPE_INT_ARGB, TYPE_INT_ARGB_PRE, TYPE_INT_BGR or TYPE_INT_RGB
+                    if (sampleModel.getDataType() == DataBuffer.TYPE_INT)
+                     // TYPE_INT_ARGB, TYPE_INT_ARGB_PRE, TYPE_INT_BGR or TYPE_INT_RGB
                         return outputOccupiedRanges(((DataBufferInt)data).getData(), bounds.width, bounds.height, hasAlpha ? 0xff000000 : 0xffffff, out);
-                    }
-                    // TODO could easily handle cases of TYPE_USHORT_GRAY and TYPE_BYTE_GRAY.
                 }
             }
         }
 
         // Fallback behaviour : copy pixels of raster
-        int[] pixels = raster.getPixels(0, 0, bounds.width, bounds.height, (int[])null);
+        final int[] pixels = raster.getPixels(0, 0, bounds.width, bounds.height, (int[])null);
         return outputOccupiedRanges(pixels, bounds.width, bounds.height, hasAlpha ? 0xff000000 : 0xffffff, out);
     }
 
@@ -115,18 +112,18 @@ public class RasterRangesUtils {
      * @param out
      * @return true if the output succeeded, false otherwise
      */
-    public static boolean outputOccupiedRangesOfBinaryPixels(byte[] binaryBits, int w, int h, RangesOutput out) {
-        Set<Rectangle> rects = new HashSet<Rectangle>();
+    public static boolean outputOccupiedRangesOfBinaryPixels(final byte[] binaryBits, final int w, final int h, final RangesOutput out) {
+        final Set<Rectangle> rects = new HashSet<Rectangle>();
         Set<Rectangle> prevLine = Collections.EMPTY_SET;
-        int scanlineBytes = binaryBits.length / h;
+        final int scanlineBytes = binaryBits.length / h;
         for (int row = 0; row < h; row++) {
-            Set<Rectangle> curLine = new TreeSet<Rectangle>(COMPARATOR);
-            int rowOffsetBytes = row * scanlineBytes;
+            final Set<Rectangle> curLine = new TreeSet<Rectangle>(COMPARATOR);
+            final int rowOffsetBytes = row * scanlineBytes;
             int startCol = -1;
             // Look at each batch of 8 columns in this row
             for (int byteCol = 0; byteCol < scanlineBytes; byteCol++) {
-                int firstByteCol = byteCol << 3;
-                byte byteColBits = binaryBits[rowOffsetBytes + byteCol];
+                final int firstByteCol = byteCol << 3;
+                final byte byteColBits = binaryBits[rowOffsetBytes + byteCol];
                 if (byteColBits == 0) {
                     // all 8 bits are zeroes
                     if (startCol >= 0) {
@@ -143,7 +140,7 @@ public class RasterRangesUtils {
                 } else {
                     // mixed case : some bits are ones, others are zeroes
                     for (int subCol = 0; subCol < 8; subCol++) {
-                        int col = firstByteCol | subCol;
+                        final int col = firstByteCol | subCol;
                         if ((byteColBits & subColMasks[subCol]) != 0) {
                             if (startCol < 0) {
                                 // start of new region
@@ -163,17 +160,16 @@ public class RasterRangesUtils {
                 // end of last region
                 curLine.add(new Rectangle(startCol, row, w - startCol, 1));
             }
-            Set<Rectangle> unmerged = mergeRects(prevLine, curLine);
+            final Set<Rectangle> unmerged = mergeRects(prevLine, curLine);
             rects.addAll(unmerged);
             prevLine = curLine;
         }
         // Add anything left over
         rects.addAll(prevLine);
-        for (Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
-            Rectangle r = i.next();
-            if (!out.outputRange(r.x, r.y, r.width, r.height)) {
+        for (final Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
+            final Rectangle r = i.next();
+            if (!out.outputRange(r.x, r.y, r.width, r.height))
                 return false;
-            }
         }
         return true;
     }
@@ -188,12 +184,12 @@ public class RasterRangesUtils {
      * @param out where to output all the contiguous ranges of non occupied pixels
      * @return true if the output succeeded, false otherwise
      */
-    public static boolean outputOccupiedRanges(int[] pixels, int w, int h, int occupationMask, RangesOutput out) {
-        Set<Rectangle> rects = new HashSet<Rectangle>();
+    public static boolean outputOccupiedRanges(final int[] pixels, final int w, final int h, final int occupationMask, final RangesOutput out) {
+        final Set<Rectangle> rects = new HashSet<Rectangle>();
         Set<Rectangle> prevLine = Collections.EMPTY_SET;
         for (int row = 0; row < h; row++) {
-            Set<Rectangle> curLine = new TreeSet<Rectangle>(COMPARATOR);
-            int idxOffset = row * w;
+            final Set<Rectangle> curLine = new TreeSet<Rectangle>(COMPARATOR);
+            final int idxOffset = row * w;
             int startCol = -1;
 
             for (int col = 0; col < w; col++) {
@@ -213,33 +209,31 @@ public class RasterRangesUtils {
                 // end of last region of current row
                 curLine.add(new Rectangle(startCol, row, w-startCol, 1));
             }
-            Set<Rectangle> unmerged = mergeRects(prevLine, curLine);
+            final Set<Rectangle> unmerged = mergeRects(prevLine, curLine);
             rects.addAll(unmerged);
             prevLine = curLine;
         }
         // Add anything left over
         rects.addAll(prevLine);
-        for (Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
-            Rectangle r = i.next();
-            if (!out.outputRange(r.x, r.y, r.width, r.height)) {
+        for (final Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
+            final Rectangle r = i.next();
+            if (!out.outputRange(r.x, r.y, r.width, r.height))
                 return false;
-            }
         }
         return true;
     }
 
-    private static Set<Rectangle> mergeRects(Set<Rectangle> prev, Set<Rectangle> current) {
-        Set<Rectangle> unmerged = new HashSet<Rectangle>(prev);
+    private static Set<Rectangle> mergeRects(final Set<Rectangle> prev, final Set<Rectangle> current) {
+        final Set<Rectangle> unmerged = new HashSet<Rectangle>(prev);
         if (!prev.isEmpty() && !current.isEmpty()) {
-            Rectangle[] pr = prev.toArray(new Rectangle[prev.size()]);
-            Rectangle[] cr = current.toArray(new Rectangle[current.size()]);
+            final Rectangle[] pr = prev.toArray(new Rectangle[prev.size()]);
+            final Rectangle[] cr = current.toArray(new Rectangle[current.size()]);
             int ipr = 0;
             int icr = 0;
             while (ipr < pr.length && icr < cr.length) {
                 while (cr[icr].x < pr[ipr].x) {
-                    if (++icr == cr.length) {
+                    if (++icr == cr.length)
                         return unmerged;
-                    }
                 }
                 if (cr[icr].x == pr[ipr].x && cr[icr].width == pr[ipr].width) {
                     unmerged.remove(pr[ipr]);

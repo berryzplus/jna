@@ -8,13 +8,11 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
 import com.sun.jna.Memory;
-import com.sun.jna.NativeMapped;
-import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /** Provides generic "pointer to type" functionality, often used in C
@@ -28,8 +26,8 @@ import com.sun.jna.PointerType;
  * <p>NOTE: this class would ideally be replaced by a generic.
  */
 public abstract class ByReference extends PointerType {
-    
-    protected ByReference(int dataSize) {
+
+    protected ByReference(final int dataSize) {
         setPointer(new Memory(dataSize));
     }
 }

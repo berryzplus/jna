@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -24,15 +24,15 @@ import com.sun.jna.win32.StdCallLibrary;
 @SuppressWarnings("serial")
 public interface BaseTSD extends StdCallLibrary {
     /**
-     * Signed long type for pointer precision. 
-     * Use when casting a pointer to a long to perform pointer arithmetic. 
+     * Signed long type for pointer precision.
+     * Use when casting a pointer to a long to perform pointer arithmetic.
      */
     public static class LONG_PTR extends IntegerType {
         public LONG_PTR() {
             this(0);
         }
 
-        public LONG_PTR(long value) {
+        public LONG_PTR(final long value) {
             super(Pointer.SIZE, value);
         }
 
@@ -40,29 +40,29 @@ public interface BaseTSD extends StdCallLibrary {
             return Pointer.createConstant(longValue());
         }
     }
-	
+
     /**
-     * Signed SIZE_T. 
+     * Signed SIZE_T.
      */
     public static class SSIZE_T extends LONG_PTR {
         public SSIZE_T() {
             this(0);
         }
 
-        public SSIZE_T(long value) {
+        public SSIZE_T(final long value) {
             super(value);
         }
     }
 
     /**
-     * Unsigned LONG_PTR. 
+     * Unsigned LONG_PTR.
      */
     public static class ULONG_PTR extends IntegerType {
         public ULONG_PTR() {
             this(0);
         }
 
-        public ULONG_PTR(long value) {
+        public ULONG_PTR(final long value) {
             super(Pointer.SIZE, value, true);
         }
 
@@ -78,11 +78,11 @@ public interface BaseTSD extends StdCallLibrary {
         public ULONG_PTRByReference() {
             this(new ULONG_PTR(0));
         }
-        public ULONG_PTRByReference(ULONG_PTR value) {
+        public ULONG_PTRByReference(final ULONG_PTR value) {
             super(Pointer.SIZE);
             setValue(value);
         }
-        public void setValue(ULONG_PTR value) {
+        public void setValue(final ULONG_PTR value) {
             if (Pointer.SIZE == 4) {
                 getPointer().setInt(0, value.intValue());
             }
@@ -99,28 +99,28 @@ public interface BaseTSD extends StdCallLibrary {
 
 
     /**
-     * Unsigned DWORD_PTR. 
+     * Unsigned DWORD_PTR.
      */
     public static class DWORD_PTR extends IntegerType {
         public DWORD_PTR() {
             this(0);
         }
 
-        public DWORD_PTR(long value) {
+        public DWORD_PTR(final long value) {
             super(Pointer.SIZE, value);
         }
     }
 
     /**
-     * The maximum number of bytes to which a pointer can point. 
-     * Use for a count that must span the full range of a pointer. 
+     * The maximum number of bytes to which a pointer can point.
+     * Use for a count that must span the full range of a pointer.
      */
     public static class SIZE_T extends ULONG_PTR {
         public SIZE_T() {
             this(0);
         }
 
-        public SIZE_T(long value) {
+        public SIZE_T(final long value) {
             super(value);
         }
     }

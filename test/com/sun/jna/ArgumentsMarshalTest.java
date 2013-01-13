@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -27,20 +27,20 @@ import com.sun.jna.ArgumentsMarshalTest.TestLibrary.CheckFieldAlignment;
 public class ArgumentsMarshalTest extends TestCase {
 
     public static interface TestLibrary extends Library {
-        
+
         class CheckFieldAlignment extends Structure {
-            public static class ByValue extends CheckFieldAlignment 
+            public static class ByValue extends CheckFieldAlignment
                 implements Structure.ByValue { }
             public static class ByReference extends CheckFieldAlignment
                 implements Structure.ByReference { }
-        
+
             public byte int8Field;
             public short int16Field;
             public int int32Field;
             public long int64Field;
             public float floatField;
             public double doubleField;
-            
+
             public List getFieldOrder() {
                 return Arrays.asList(new String[] { "int8Field", "int16Field", "int32Field", "int64Field", "floatField", "doubleField" });
             }
@@ -73,7 +73,7 @@ public class ArgumentsMarshalTest extends TestCase {
 
         public static class TestPointerType extends PointerType {
             public TestPointerType() { }
-            public TestPointerType(Pointer p) { super(p); }
+            public TestPointerType(final Pointer p) { super(p); }
         }
         TestPointerType returnPointerArrayElement(TestPointerType[] args, int which);
         CheckFieldAlignment returnPointerArrayElement(CheckFieldAlignment.ByReference[] args, int which);
@@ -87,7 +87,7 @@ public class ArgumentsMarshalTest extends TestCase {
         int testStructureByReferenceArrayInitialization(CheckFieldAlignment.ByReference[] p, int len);
         void modifyStructureArray(CheckFieldAlignment[] p, int length);
         void modifyStructureByReferenceArray(CheckFieldAlignment.ByReference[] p, int length);
-        
+
         int fillInt8Buffer(byte[] buf, int len, byte value);
         int fillInt16Buffer(short[] buf, int len, short value);
         int fillInt32Buffer(int[] buf, int len, int value);
@@ -95,7 +95,7 @@ public class ArgumentsMarshalTest extends TestCase {
         int fillFloatBuffer(float[] buf, int len, float value);
         int fillDoubleBuffer(double[] buf, int len, double value);
 
-        // Nonexistent functions 
+        // Nonexistent functions
         boolean returnBooleanArgument(Object arg);
 
         // Structure
@@ -113,7 +113,7 @@ public class ArgumentsMarshalTest extends TestCase {
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "length", "buffer" });
             }
-            public VariableSizedStructure(String arg) {
+            public VariableSizedStructure(final String arg) {
                 length = arg.length() + 1;
                 buffer = new byte[length];
                 System.arraycopy(arg.getBytes(), 0, buffer, 0, arg.length());
@@ -146,45 +146,45 @@ public class ArgumentsMarshalTest extends TestCase {
     protected void setUp() {
         lib = (TestLibrary)Native.loadLibrary("testlib", TestLibrary.class);
     }
-    
+
     protected void tearDown() {
         lib = null;
     }
-    
+
     public void testJavaObjectArgument() {
-        Object o = this;
+        final Object o = this;
         try {
             lib.returnStringArgument(o);
             fail("Java Object arguments should throw IllegalArgumentException");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
             assertTrue("Exception should include Object type description: " + e,
                        e.getMessage().indexOf(o.getClass().getName()) != -1);
         }
-        catch(Throwable e) {
+        catch(final Throwable e) {
             fail("Java Object arguments should throw IllegalArgumentException, not " + e);
         }
     }
 
     public void testBooleanArgument() {
-        assertTrue("True argument should be returned", 
+        assertTrue("True argument should be returned",
                    lib.returnBooleanArgument(true));
-        assertFalse("False argument should be returned", 
+        assertFalse("False argument should be returned",
                     lib.returnBooleanArgument(false));
     }
 
     public void testInt8Argument() {
         byte b = 0;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      b, lib.returnInt8Argument(b));
         b = 127;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      b, lib.returnInt8Argument(b));
         b = -128;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      b, lib.returnInt8Argument(b));
     }
-    
+
     public void testWideCharArgument() {
         char c = 0;
         assertEquals("Wrong value returned",
@@ -199,64 +199,64 @@ public class ArgumentsMarshalTest extends TestCase {
 
     public void testInt16Argument() {
         short v = 0;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      v, lib.returnInt16Argument(v));
         v = 32767;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      v, lib.returnInt16Argument(v));
         v = -32768;
-        assertEquals("Wrong value returned", 
+        assertEquals("Wrong value returned",
                      v, lib.returnInt16Argument(v));
     }
 
     public void testIntArgument() {
         int value = 0;
-        assertEquals("Should return 32-bit argument", 
+        assertEquals("Should return 32-bit argument",
                      value, lib.returnInt32Argument(value));
         value = 1;
-        assertEquals("Should return 32-bit argument", 
+        assertEquals("Should return 32-bit argument",
                      value, lib.returnInt32Argument(value));
         value = 0x7FFFFFFF;
-        assertEquals("Should return 32-bit argument", 
+        assertEquals("Should return 32-bit argument",
                      value, lib.returnInt32Argument(value));
         value = 0x80000000;
-        assertEquals("Should return 32-bit argument", 
+        assertEquals("Should return 32-bit argument",
                      value, lib.returnInt32Argument(value));
     }
 
     public void testLongArgument() {
         long value = 0L;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
         value = 1L;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
         value = 0x7FFFFFFFL;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
         value = 0x80000000L;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
         value = 0x7FFFFFFF00000000L;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
         value = 0x8000000000000000L;
-        assertEquals("Should return 64-bit argument", 
+        assertEquals("Should return 64-bit argument",
                      value, lib.returnInt64Argument(value));
     }
 
     public void testNativeLongArgument() {
         NativeLong value = new NativeLong(0);
-        assertEquals("Should return 0", 
+        assertEquals("Should return 0",
                      value, lib.returnLongArgument(value));
         value = new NativeLong(1);
-        assertEquals("Should return 1", 
+        assertEquals("Should return 1",
                      value, lib.returnLongArgument(value));
         value = new NativeLong(0x7FFFFFFF);
-        assertEquals("Should return 0x7FFFFFFF", 
+        assertEquals("Should return 0x7FFFFFFF",
                      value, lib.returnLongArgument(value));
         value = new NativeLong(0x80000000);
-        assertEquals("Should return 0x80000000", 
+        assertEquals("Should return 0x80000000",
                      value, lib.returnLongArgument(value));
     }
 
@@ -266,10 +266,10 @@ public class ArgumentsMarshalTest extends TestCase {
     public static class Custom implements NativeMapped {
         private int value;
         public Custom() { }
-        public Custom(int value) {
+        public Custom(final int value) {
             this.value = value;
         }
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
+        public Object fromNative(final Object nativeValue, final FromNativeContext context) {
             return new Custom(((Integer)nativeValue).intValue());
         }
         public Class nativeType() {
@@ -284,18 +284,18 @@ public class ArgumentsMarshalTest extends TestCase {
             Native.loadLibrary("testlib", NativeMappedLibrary.class);
     }
     public void testNativeMappedArgument() {
-        NativeMappedLibrary lib = loadNativeMappedLibrary();
+        final NativeMappedLibrary lib = loadNativeMappedLibrary();
         final int MAGIC = 0x12345678;
-        Custom arg = new Custom(MAGIC);
+        final Custom arg = new Custom(MAGIC);
         assertEquals("Argument not mapped", MAGIC, lib.returnInt32Argument(arg));
     }
-    
+
     public void testPointerArgumentReturn() {
         assertEquals("Expect null pointer",
                      null, lib.returnPointerArgument(null));
-        Structure s = new TestLibrary.CheckFieldAlignment();
+        final Structure s = new TestLibrary.CheckFieldAlignment();
         assertEquals("Expect structure pointer",
-                     s.getPointer(), 
+                     s.getPointer(),
                      lib.returnPointerArgument(s.getPointer()));
     }
 
@@ -309,16 +309,16 @@ public class ArgumentsMarshalTest extends TestCase {
         assertEquals("Expect null pointer", null, lib.returnStringArgument(null));
         assertEquals("Expect string magic", MAGIC, lib.returnStringArgument(MAGIC).toString());
     }
-    
+
     public void testInt64ArgumentAlignment() {
-        long value = lib.checkInt64ArgumentAlignment(0x10101010, 0x1111111111111111L, 
+        final long value = lib.checkInt64ArgumentAlignment(0x10101010, 0x1111111111111111L,
                                                      0x01010101, 0x2222222222222222L);
         assertEquals("Improper handling of interspersed int32/int64",
                      0x3333333344444444L, value);
     }
 
     public void testDoubleArgumentAlignment() {
-        double value = lib.checkDoubleArgumentAlignment(1f, 2d, 3f, 4d);
+        final double value = lib.checkDoubleArgumentAlignment(1f, 2d, 3f, 4d);
         assertEquals("Improper handling of interspersed float/double",
                      10d, value, 0);
     }
@@ -326,7 +326,7 @@ public class ArgumentsMarshalTest extends TestCase {
     public void testStructurePointerArgument() {
         TestLibrary.CheckFieldAlignment struct = new TestLibrary.CheckFieldAlignment();
         assertEquals("Native address of structure should be returned",
-                     struct.getPointer(), 
+                     struct.getPointer(),
                      lib.testStructurePointerArgument(struct));
         // ensure that even if the argument is ByValue, it's passed as ptr
         struct = new TestLibrary.CheckFieldAlignment.ByValue();
@@ -341,49 +341,40 @@ public class ArgumentsMarshalTest extends TestCase {
     }
 
     public void testStructureByValueArgument() {
-        TestLibrary.CheckFieldAlignment.ByValue struct = 
+        final TestLibrary.CheckFieldAlignment.ByValue struct =
             new TestLibrary.CheckFieldAlignment.ByValue();
         assertEquals("Wrong alignment in " + struct.toString(true),
                      "0", Integer.toHexString(lib.testStructureByValueArgument(struct)));
     }
-    
+
     public void testStructureByValueTypeInfo() {
         class TestStructure extends Structure implements Structure.ByValue {
-            public byte b;
-            public char c;
-            public short s;
-            public int i;
-            public long j;
-            public float f;
-            public double d;
-            public Pointer[] parray = new Pointer[2];
-            public byte[] barray = new byte[2];
             protected List getFieldOrder() {
                 return Arrays.asList(new String[] { "b", "c", "s", "i", "j", "f", "d", "parray", "barray" });
             }
         }
-        Structure s = new TestStructure();
+        final Structure s = new TestStructure();
         // Force generation of type info
         s.size();
     }
 
-    
+
     public void testWriteStructureArrayArgumentMemory() {
         final int LENGTH = 10;
-        TestLibrary.CheckFieldAlignment block = new TestLibrary.CheckFieldAlignment();
-        TestLibrary.CheckFieldAlignment[] array = 
+        final TestLibrary.CheckFieldAlignment block = new TestLibrary.CheckFieldAlignment();
+        final TestLibrary.CheckFieldAlignment[] array =
             (TestLibrary.CheckFieldAlignment[])block.toArray(LENGTH);
         for (int i=0;i < array.length;i++) {
             array[i].int32Field = i;
         }
         assertEquals("Structure array memory not properly initialized",
                      -1, lib.testStructureArrayInitialization(array, array.length));
-        
+
     }
-    
+
     public void testUninitializedStructureArrayArgument() {
         final int LENGTH = 10;
-        TestLibrary.CheckFieldAlignment[] block = 
+        final TestLibrary.CheckFieldAlignment[] block =
             new TestLibrary.CheckFieldAlignment[LENGTH];
         lib.modifyStructureArray(block, block.length);
         for (int i=0;i < block.length;i++) {
@@ -404,19 +395,19 @@ public class ArgumentsMarshalTest extends TestCase {
 	s3 = new TestLibrary.CheckFieldAlignment();
 	s1 = new TestLibrary.CheckFieldAlignment();
 	s2 = new TestLibrary.CheckFieldAlignment();
-        TestLibrary.CheckFieldAlignment[] block = { s1, s2, s3 };
+        final TestLibrary.CheckFieldAlignment[] block = { s1, s2, s3 };
         try {
             lib.modifyStructureArray(block, block.length);
             fail("Library invocation should fail");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
-    
+
     /** When passing an array of <code>struct*</code> to native, be sure to
         invoke <code>Structure.write()</code> on each of the elements. */
     public void testWriteStructureByReferenceArrayArgumentMemory() {
-        TestLibrary.CheckFieldAlignment.ByReference[] array = {
+        final TestLibrary.CheckFieldAlignment.ByReference[] array = {
             new TestLibrary.CheckFieldAlignment.ByReference(),
             new TestLibrary.CheckFieldAlignment.ByReference(),
             new TestLibrary.CheckFieldAlignment.ByReference(),
@@ -430,7 +421,7 @@ public class ArgumentsMarshalTest extends TestCase {
     }
 
     public void testReadStructureByReferenceArrayArgumentMemory() {
-        TestLibrary.CheckFieldAlignment.ByReference[] array = {
+        final TestLibrary.CheckFieldAlignment.ByReference[] array = {
             new TestLibrary.CheckFieldAlignment.ByReference(),
             new TestLibrary.CheckFieldAlignment.ByReference(),
             new TestLibrary.CheckFieldAlignment.ByReference(),
@@ -450,75 +441,75 @@ public class ArgumentsMarshalTest extends TestCase {
     }
 
     public void testByteArrayArgument() {
-        byte[] buf = new byte[1024];
+        final byte[] buf = new byte[1024];
         final byte MAGIC = (byte)0xED;
-        assertEquals("Wrong return value", buf.length, 
+        assertEquals("Wrong return value", buf.length,
                      lib.fillInt8Buffer(buf, buf.length, MAGIC));
         for (int i=0;i < buf.length;i++) {
             assertEquals("Bad value at index " + i, MAGIC, buf[i]);
         }
     }
-    
+
     public void testShortArrayArgument() {
-        short[] buf = new short[1024];
+        final short[] buf = new short[1024];
         final short MAGIC = (short)0xABED;
-        assertEquals("Wrong return value", buf.length, 
+        assertEquals("Wrong return value", buf.length,
                      lib.fillInt16Buffer(buf, buf.length, MAGIC));
         for (int i=0;i < buf.length;i++) {
             assertEquals("Bad value at index " + i, MAGIC, buf[i]);
         }
     }
-    
+
     public void testIntArrayArgument() {
-        int[] buf = new int[1024];
+        final int[] buf = new int[1024];
         final int MAGIC = 0xABEDCF23;
-        assertEquals("Wrong return value", buf.length, 
+        assertEquals("Wrong return value", buf.length,
                      lib.fillInt32Buffer(buf, buf.length, MAGIC));
         for (int i=0;i < buf.length;i++) {
             assertEquals("Bad value at index " + i, MAGIC, buf[i]);
         }
     }
-    
-    public void testLongArrayArgument() { 
-        long[] buf = new long[1024];
+
+    public void testLongArrayArgument() {
+        final long[] buf = new long[1024];
         final long MAGIC = 0x1234567887654321L;
-        assertEquals("Wrong return value", buf.length, 
+        assertEquals("Wrong return value", buf.length,
                      lib.fillInt64Buffer(buf, buf.length, MAGIC));
         for (int i=0;i < buf.length;i++) {
             assertEquals("Bad value at index " + i, MAGIC, buf[i]);
         }
     }
-    
+
     public void testInvalidArgument() {
         try {
             lib.returnBooleanArgument(this);
             fail("Unsupported Java objects should be rejected");
         }
-        catch(IllegalArgumentException e) {
+        catch(final IllegalArgumentException e) {
         }
     }
-    
+
     public void testStringArrayArgument() {
-        String[] args = { "one", "two", "three" };
+        final String[] args = { "one", "two", "three" };
         assertEquals("Wrong value returned", args[0], lib.returnStringArrayElement(args, 0));
-        assertNull("Native String array should be null terminated", 
+        assertNull("Native String array should be null terminated",
                    lib.returnStringArrayElement(args, args.length));
     }
-    
+
     public void testWideStringArrayArgument() {
-        WString[] args = { new WString("one"), new WString("two"), new WString("three") };
+        final WString[] args = { new WString("one"), new WString("two"), new WString("three") };
         assertEquals("Wrong value returned", args[0], lib.returnWideStringArrayElement(args, 0));
         assertNull("Native WString array should be null terminated",
                    lib.returnWideStringArrayElement(args, args.length));
     }
-    
+
     public void testPointerArrayArgument() {
-        Pointer[] args = { 
+        final Pointer[] args = {
             new NativeString(getName()).getPointer(),
             null,
             new NativeString(getName()+"2").getPointer(),
         };
-        Pointer[] originals = new Pointer[args.length];
+        final Pointer[] originals = new Pointer[args.length];
         System.arraycopy(args, 0, originals, 0, args.length);
 
         assertEquals("Wrong value returned", args[0], lib.returnPointerArrayElement(args, 0));
@@ -533,7 +524,7 @@ public class ArgumentsMarshalTest extends TestCase {
     }
 
     public void testNativeMappedArrayArgument() {
-        TestLibrary.TestPointerType[] args = {
+        final TestLibrary.TestPointerType[] args = {
             new TestLibrary.TestPointerType(new NativeString(getName()).getPointer()),
             null,
             new TestLibrary.TestPointerType(new NativeString(getName()+"2").getPointer()),
@@ -544,7 +535,7 @@ public class ArgumentsMarshalTest extends TestCase {
     };
 
     public void testStructureByReferenceArrayArgument() {
-        CheckFieldAlignment.ByReference[] args = { 
+        final CheckFieldAlignment.ByReference[] args = {
             new CheckFieldAlignment.ByReference(),
             null,
             new CheckFieldAlignment.ByReference(),
@@ -556,37 +547,37 @@ public class ArgumentsMarshalTest extends TestCase {
     }
 
     public void testModifiedCharArrayArgument() {
-        String[] args = { "one", "two", "three" };
+        final String[] args = { "one", "two", "three" };
         assertEquals("Wrong native array count", args.length, lib.returnRotatedArgumentCount(args));
         assertEquals("Modified array argument not re-read",
                      Arrays.asList(new String[] { "two", "three", "one" }),
                      Arrays.asList(args));
     }
-    
+
     public void testReadFunctionPointerAsCallback() {
-        TestLibrary.CbStruct s = new TestLibrary.CbStruct();
+        final TestLibrary.CbStruct s = new TestLibrary.CbStruct();
         assertNull("Function pointer field should be null", s.cb);
         lib.setCallbackInStruct(s);
         assertNotNull("Callback field not set", s.cb);
     }
 
     public void testCallProxiedFunctionPointer() {
-        TestLibrary.CbStruct s = new TestLibrary.CbStruct();
+        final TestLibrary.CbStruct s = new TestLibrary.CbStruct();
         lib.setCallbackInStruct(s);
         assertEquals("Proxy to native function pointer failed: " + s.cb,
                      3, s.cb.callback(1, 2));
     }
 
     public void testVariableSizedStructureArgument() {
-        String EXPECTED = getName();
-        TestLibrary.VariableSizedStructure s =
+        final String EXPECTED = getName();
+        final TestLibrary.VariableSizedStructure s =
             new TestLibrary.VariableSizedStructure(EXPECTED);
         assertEquals("Wrong string returned from variable sized struct",
                      EXPECTED, lib.returnStringFromVariableSizedStructure(s));
     }
 
     public void testDisableAutoSynch() {
-        TestLibrary.MinTestStructure s = new TestLibrary.MinTestStructure();
+        final TestLibrary.MinTestStructure s = new TestLibrary.MinTestStructure();
         final int VALUE = 42;
         s.field = VALUE;
         s.setAutoWrite(false);
@@ -600,15 +591,15 @@ public class ArgumentsMarshalTest extends TestCase {
         assertEquals("Auto read should be disabled", EXPECTED, s.field);
     }
 
-    public void testUnionByValueCallbackArgument() throws Exception{ 
-        TestLibrary.TestUnion arg = new TestLibrary.TestUnion();
+    public void testUnionByValueCallbackArgument() throws Exception{
+        final TestLibrary.TestUnion arg = new TestLibrary.TestUnion();
         arg.setType(String.class);
         final String VALUE = getName();
         arg.f1 = VALUE;
         final boolean[] called = { false };
         final String[] cbvalue = { null };
-        TestLibrary.TestUnion result = lib.testUnionByValueCallbackArgument(new TestLibrary.UnionCallback() {
-            public TestLibrary.TestUnion invoke(TestLibrary.TestUnion v) {
+        final TestLibrary.TestUnion result = lib.testUnionByValueCallbackArgument(new TestLibrary.UnionCallback() {
+            public TestLibrary.TestUnion invoke(final TestLibrary.TestUnion v) {
                 called[0] = true;
                 v.setType(String.class);
                 v.read();
@@ -621,8 +612,8 @@ public class ArgumentsMarshalTest extends TestCase {
         assertEquals("Union value not propagated", VALUE, result.getTypedValue(String.class));
     }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(ArgumentsMarshalTest.class);
     }
-    
+
 }

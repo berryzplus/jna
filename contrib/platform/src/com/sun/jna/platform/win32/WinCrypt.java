@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -28,7 +28,7 @@ import com.sun.jna.win32.StdCallLibrary;
  * @author dblock[at]dblock.org
  */
 public interface WinCrypt extends StdCallLibrary {
-	
+
     /**
      * The CryptoAPI CRYPTOAPI_BLOB structure is used for an arbitrary array of bytes.
      */
@@ -36,32 +36,32 @@ public interface WinCrypt extends StdCallLibrary {
         public DATA_BLOB() {
             super();
         }
-		
-        public DATA_BLOB(Pointer memory) {
+
+        public DATA_BLOB(final Pointer memory) {
             super(memory);
             read();
         }
 
-        public DATA_BLOB(byte [] data) {
+        public DATA_BLOB(final byte [] data) {
             pbData = new Memory(data.length);
             pbData.write(0, data, 0, data.length);
             cbData = data.length;
             allocateMemory();
         }
-		
-        public DATA_BLOB(String s) {
+
+        public DATA_BLOB(final String s) {
             this(Native.toByteArray(s));
         }
-		
+
         /**
-         * The count of bytes in the buffer pointed to by pbData. 
+         * The count of bytes in the buffer pointed to by pbData.
          */
         public int cbData;
         /**
-         * A pointer to a block of data bytes. 
+         * A pointer to a block of data bytes.
          */
         public Pointer pbData;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "cbData", "pbData" });
         }
@@ -73,23 +73,23 @@ public interface WinCrypt extends StdCallLibrary {
         public byte[] getData() {
             return pbData == null ? null : pbData.getByteArray(0, cbData);
         }
-    } 
-	
+    }
+
     /**
-     * The CRYPTPROTECT_PROMPTSTRUCT structure provides the text of a prompt and 
+     * The CRYPTPROTECT_PROMPTSTRUCT structure provides the text of a prompt and
      * information about when and where that prompt is to be displayed when using
-     * the CryptProtectData and CryptUnprotectData functions. 
+     * the CryptProtectData and CryptUnprotectData functions.
      */
     public static class CRYPTPROTECT_PROMPTSTRUCT extends Structure {
         public CRYPTPROTECT_PROMPTSTRUCT() {
             super();
         }
 
-        public CRYPTPROTECT_PROMPTSTRUCT(Pointer memory) {
+        public CRYPTPROTECT_PROMPTSTRUCT(final Pointer memory) {
             super(memory);
             read();
         }
-		
+
         /**
          * Size of this structure in bytes.
          */
@@ -99,19 +99,19 @@ public interface WinCrypt extends StdCallLibrary {
          */
         public int dwPromptFlags;
         /**
-         * Window handle to the parent window. 
+         * Window handle to the parent window.
          */
         public HWND hwndApp;
         /**
-         * A string containing the text of a prompt to be displayed. 
+         * A string containing the text of a prompt to be displayed.
          */
         public String szPrompt;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "cbSize", "dwPromptFlags", "hwndApp", "szPrompt" });
         }
     }
-	
+
     //
     // CryptProtect PromptStruct dwPromtFlags
     //
@@ -127,7 +127,7 @@ public interface WinCrypt extends StdCallLibrary {
     /**
      * Reserved, don't use.
      */
-    int CRYPTPROTECT_PROMPT_RESERVED = 0x04; 
+    int CRYPTPROTECT_PROMPT_RESERVED = 0x04;
     /**
      * Default to strong variant UI protection (user supplied password currently).
      */
@@ -141,18 +141,18 @@ public interface WinCrypt extends StdCallLibrary {
     // CryptProtectData and CryptUnprotectData dwFlags
     //
     /**
-     * For remote-access situations where ui is not an option, if UI was specified 
-     * on protect or unprotect operation, the call will fail and GetLastError() will 
+     * For remote-access situations where ui is not an option, if UI was specified
+     * on protect or unprotect operation, the call will fail and GetLastError() will
      * indicate ERROR_PASSWORD_RESTRICTION.
      */
     int CRYPTPROTECT_UI_FORBIDDEN = 0x1;
     /**
-     * Per machine protected data -- any user on machine where CryptProtectData 
+     * Per machine protected data -- any user on machine where CryptProtectData
      * took place may CryptUnprotectData.
      */
     int CRYPTPROTECT_LOCAL_MACHINE = 0x4;
     /**
-     * Force credential synchronize during CryptProtectData() 
+     * Force credential synchronize during CryptProtectData()
      * Synchronize is only operation that occurs during this operation.
      */
     int CRYPTPROTECT_CRED_SYNC = 0x8;

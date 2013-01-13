@@ -8,7 +8,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -44,44 +44,44 @@ public class ByReferenceArgumentsTest extends TestCase {
     protected void setUp() {
         lib = (TestLibrary)Native.loadLibrary("testlib", TestLibrary.class);
     }
-    
+
     protected void tearDown() {
         lib = null;
     }
 
     public void testByteByReference() {
-        ByteByReference bref = new ByteByReference();
+        final ByteByReference bref = new ByteByReference();
         lib.incrementInt8ByReference(bref);
         assertEquals("Byte argument not modified", 1, bref.getValue());
     }
     public void testShortByReference() {
-        ShortByReference sref = new ShortByReference();
+        final ShortByReference sref = new ShortByReference();
         lib.incrementInt16ByReference(sref);
         assertEquals("Short argument not modified", 1, sref.getValue());
     }
     public void testIntByReference() {
-        IntByReference iref = new IntByReference();
+        final IntByReference iref = new IntByReference();
         lib.incrementInt32ByReference(iref);
         assertEquals("Int argument not modified", 1, iref.getValue());
     }
     public void testNativeLongByReference() {
-        NativeLongByReference iref = new NativeLongByReference();
+        final NativeLongByReference iref = new NativeLongByReference();
         lib.incrementNativeLongByReference(iref);
         assertEquals("Native long argument not modified",
                      new NativeLong(1), iref.getValue());
     }
     public void testLongByReference() {
-        LongByReference lref = new LongByReference();
+        final LongByReference lref = new LongByReference();
         lib.incrementInt64ByReference(lref);
         assertEquals("Long argument not modified", 1, lref.getValue());
     }
     public void testFloatByReference() {
-        FloatByReference fref = new FloatByReference(1f);
+        final FloatByReference fref = new FloatByReference(1f);
         lib.complementFloatByReference(fref);
         assertEquals("Float argument not modified", -1f, fref.getValue(), 0.0);
     }
     public void testDoubleByReference() {
-        DoubleByReference dref = new DoubleByReference(1d);
+        final DoubleByReference dref = new DoubleByReference(1d);
         lib.complementDoubleByReference(dref);
         assertEquals("Int argument not modified", -1d, dref.getValue(), 0.0);
     }
@@ -93,9 +93,9 @@ public class ByReferenceArgumentsTest extends TestCase {
         lib.setPointerByReferenceNull(pref);
         assertNull("Default pointer should be NULL after call", pref.getValue());
     }
-    
-    public static void main(java.lang.String[] argList) {
+
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(ByReferenceArgumentsTest.class);
     }
-    
+
 }

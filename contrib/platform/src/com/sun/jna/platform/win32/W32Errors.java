@@ -1,14 +1,14 @@
 /* Copyright (c) 2010,2011 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -19,7 +19,7 @@ import com.sun.jna.platform.win32.WinNT.HRESULT;
  * Utility class for some common error functions.
  */
 public abstract class W32Errors implements WinError {
-	
+
 	/**
 	 * Generic test for success on any status value (non-negative numbers
 	 * indicate success).
@@ -27,7 +27,7 @@ public abstract class W32Errors implements WinError {
 	 * @param hr the hr
 	 * @return true, if successful
 	 */
-	public static final boolean SUCCEEDED(int hr) {
+	public static final boolean SUCCEEDED(final int hr) {
 		return hr >= 0;
 	}
 
@@ -37,7 +37,7 @@ public abstract class W32Errors implements WinError {
 	 * @param hr the hr
 	 * @return true, if successful
 	 */
-	public static final boolean FAILED(int hr) {
+	public static final boolean FAILED(final int hr) {
 		return hr < 0;
 	}
 
@@ -47,7 +47,7 @@ public abstract class W32Errors implements WinError {
 	 * @param hr the hr
 	 * @return true, if successful
 	 */
-	public static final boolean SUCCEEDED(HRESULT hr) {
+	public static final boolean SUCCEEDED(final HRESULT hr) {
 		if (hr != null)
 			return hr.intValue() >= 0;
 		else
@@ -60,7 +60,7 @@ public abstract class W32Errors implements WinError {
 	 * @param hr the hr
 	 * @return true, if successful
 	 */
-	public static final boolean FAILED(HRESULT hr) {
+	public static final boolean FAILED(final HRESULT hr) {
 		if (hr != null)
 			return hr.intValue() >= 0;
 		else
@@ -73,7 +73,7 @@ public abstract class W32Errors implements WinError {
 	 * @param hr the hr
 	 * @return the int
 	 */
-	public static final int HRESULT_CODE(int hr) {
+	public static final int HRESULT_CODE(final int hr) {
 		return hr & 0xFFFF;
 	}
 
@@ -83,7 +83,7 @@ public abstract class W32Errors implements WinError {
 	 * @param sc the sc
 	 * @return the int
 	 */
-	public static final int SCODE_CODE(int sc) {
+	public static final int SCODE_CODE(final int sc) {
 		return sc & 0xFFFF;
 	}
 
@@ -135,8 +135,8 @@ public abstract class W32Errors implements WinError {
 	 * @param code the code
 	 * @return the int
 	 */
-	public static int MAKE_HRESULT(short sev, short fac, short code) {
-		return ((sev << 31) | (fac << 16) | code);
+	public static int MAKE_HRESULT(final short sev, final short fac, final short code) {
+		return sev << 31 | fac << 16 | code;
 	}
 
 	/**
@@ -147,35 +147,35 @@ public abstract class W32Errors implements WinError {
 	 * @param code the code
 	 * @return the int
 	 */
-	public static final int MAKE_SCODE(short sev, short fac, short code) {
-		return ((sev << 31) | (fac << 16) | code);
+	public static final int MAKE_SCODE(final short sev, final short fac, final short code) {
+		return sev << 31 | fac << 16 | code;
 	}
 
 	/**
 	 * Map a WIN32 error value into a HRESULT Note: This assumes that WIN32
 	 * errors fall in the range -32k to=32k.
-	 * 
+	 *
 	 * @param x
 	 *            original w32 error code
 	 * @return the converted value
 	 */
-	public static final HRESULT HRESULT_FROM_WIN32(int x) {
+	public static final HRESULT HRESULT_FROM_WIN32(final int x) {
 		int f = FACILITY_WIN32;
-		return new HRESULT(x <= 0 ? x : ((x) & 0x0000FFFF) | (f <<= 16)
+		return new HRESULT(x <= 0 ? x : x & 0x0000FFFF | (f <<= 16)
 				| 0x80000000);
 	}
 
 	/**
 	 * FACILITY_USERMODE_FILTER_MANAGER
-	 * 
+	 *
 	 * Translation macro for converting: NTSTATUS --> HRESULT.
 	 *
 	 * @param x the x
 	 * @return the int
 	 */
-	public static final int FILTER_HRESULT_FROM_FLT_NTSTATUS(int x) {
+	public static final int FILTER_HRESULT_FROM_FLT_NTSTATUS(final int x) {
 		int f = FACILITY_USERMODE_FILTER_MANAGER;
-		return (((x) & 0x8000FFFF) | (f <<= 16));
+		return x & 0x8000FFFF | (f <<= 16);
 	}
 
 }

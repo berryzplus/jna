@@ -15,58 +15,58 @@ import junit.framework.TestCase;
 
 public class MsiTest extends TestCase {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(MsiTest.class);
     }
 
     public void testMsiEnumComponents() {
-        char[] componentBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
-        String component = new String(componentBuffer).trim();
+        final char[] componentBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
+        final String component = new String(componentBuffer).trim();
         assertTrue(component.length() > 0);
     }
 
     public void testMsiGetProductCodeW() {
-        char[] componentBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
-        String component = new String(componentBuffer).trim();
+        final char[] componentBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
+        final String component = new String(componentBuffer).trim();
 
-        char[] productBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiGetProductCode(component, productBuffer));
+        final char[] productBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiGetProductCode(component, productBuffer));
 
-        String product = new String(productBuffer).trim();
+        final String product = new String(productBuffer).trim();
         assertTrue(product.length() > 0);
     }
 
     public void testMsiLocateComponentW() {
-        char[] componentBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
-        String component = new String(componentBuffer).trim();
+        final char[] componentBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
+        final String component = new String(componentBuffer).trim();
 
-        char[] pathBuffer = new char[WinDef.MAX_PATH];
-        IntByReference pathBufferSize = new IntByReference(pathBuffer.length);
+        final char[] pathBuffer = new char[WinDef.MAX_PATH];
+        final IntByReference pathBufferSize = new IntByReference(pathBuffer.length);
         Msi.INSTANCE.MsiLocateComponent(component, pathBuffer, pathBufferSize);
 
-        String path = new String(pathBuffer, 0, pathBufferSize.getValue()).trim();
+        final String path = new String(pathBuffer, 0, pathBufferSize.getValue()).trim();
         assertTrue(path.length() > 0);
     }
 
     public void testMsiGetComponentPathW() {
-        char[] componentBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
-        String component = new String(componentBuffer).trim();
+        final char[] componentBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiEnumComponents(new WinDef.DWORD(0), componentBuffer));
+        final String component = new String(componentBuffer).trim();
 
-        char[] productBuffer = new char[40];
-        assertTrue(W32Errors.ERROR_SUCCESS == Msi.INSTANCE.MsiGetProductCode(component, productBuffer));
+        final char[] productBuffer = new char[40];
+        assertTrue(WinError.ERROR_SUCCESS == Msi.INSTANCE.MsiGetProductCode(component, productBuffer));
 
-        String product = new String(productBuffer).trim();
+        final String product = new String(productBuffer).trim();
         assertTrue(product.length() > 0);
 
-        char[] pathBuffer = new char[WinDef.MAX_PATH];
-        IntByReference pathBufferSize = new IntByReference(pathBuffer.length);
+        final char[] pathBuffer = new char[WinDef.MAX_PATH];
+        final IntByReference pathBufferSize = new IntByReference(pathBuffer.length);
         Msi.INSTANCE.MsiGetComponentPath(product, component, pathBuffer, pathBufferSize);
 
-        String path = new String(pathBuffer, 0, pathBufferSize.getValue()).trim();
+        final String path = new String(pathBuffer, 0, pathBufferSize.getValue()).trim();
         assertTrue(path.length() > 0);
     }
 }

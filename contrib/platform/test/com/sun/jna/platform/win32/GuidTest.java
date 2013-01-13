@@ -16,7 +16,7 @@ public class GuidTest extends TestCase {
 	 * @param args
 	 *            the arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		junit.textui.TestRunner.run(GuidTest.class);
 	}
 
@@ -31,9 +31,9 @@ public class GuidTest extends TestCase {
 	 * expected values in each byte.
 	 */
 	public void testGUIDFromString() {
-		String sourceGuidStr = "{A5DCBF10-6530-11D2-901F-00C04FB951ED}";
+		final String sourceGuidStr = "{A5DCBF10-6530-11D2-901F-00C04FB951ED}";
 		// test loading via static method
-		GUID targetGuid = GUID.fromString(sourceGuidStr);
+		final GUID targetGuid = GUID.fromString(sourceGuidStr);
 
 		assertEquals(targetGuid.toGuidString(), sourceGuidStr);
 	}
@@ -43,9 +43,9 @@ public class GuidTest extends TestCase {
 	 * returned has the expected values in each byte.
 	 */
 	public void testGUIDFromString2() {
-		String sourceGuidStr = "{A5DCBF10-6530-11D2-901F-00C04FB951ED}";
+		final String sourceGuidStr = "{A5DCBF10-6530-11D2-901F-00C04FB951ED}";
 		// test loading via constructor
-		GUID targetGuid = new GUID(sourceGuidStr);
+		final GUID targetGuid = new GUID(sourceGuidStr);
 
 		assertEquals(targetGuid.toGuidString(), sourceGuidStr);
 	}
@@ -55,15 +55,15 @@ public class GuidTest extends TestCase {
 	 * expected values in each byte.
 	 */
 	public void testGUIDFromBinary() {
-		byte[] sourceGuidBArr = new byte[] { (byte) 0xA5, (byte) 0xDC,
+		final byte[] sourceGuidBArr = new byte[] { (byte) 0xA5, (byte) 0xDC,
 				(byte) 0xBF, (byte) 0x10, (byte) 0x65, (byte) 0x30,
 				(byte) 0x11, (byte) 0xD2, (byte) 0x90, (byte) 0x1F,
 				(byte) 0x00, (byte) 0xC0, (byte) 0x4F, (byte) 0xB9,
 				(byte) 0x51, (byte) 0xED };
 
 		// test loading via static method
-		GUID targetGuid = GUID.fromBinary(sourceGuidBArr);
-		byte[] targetGuidBArr = targetGuid.toByteArray();
+		final GUID targetGuid = GUID.fromBinary(sourceGuidBArr);
+		final byte[] targetGuidBArr = targetGuid.toByteArray();
 
 		for (int i = 0; i < sourceGuidBArr.length; i++) {
 			assertEquals(targetGuidBArr[i], sourceGuidBArr[i]);
@@ -75,15 +75,15 @@ public class GuidTest extends TestCase {
 	 * guid returned has the expected values in each byte.
 	 */
 	public void testGUIDFromBinary2() {
-		byte[] sourceGuidBArr = new byte[] { (byte) 0xA5, (byte) 0xDC,
+		final byte[] sourceGuidBArr = new byte[] { (byte) 0xA5, (byte) 0xDC,
 				(byte) 0xBF, (byte) 0x10, (byte) 0x65, (byte) 0x30,
 				(byte) 0x11, (byte) 0xD2, (byte) 0x90, (byte) 0x1F,
 				(byte) 0x00, (byte) 0xC0, (byte) 0x4F, (byte) 0xB9,
 				(byte) 0x51, (byte) 0xED };
 
 		// test loading via constructor
-		GUID targetGuid = new GUID(sourceGuidBArr);
-		byte[] targetGuidBArr = targetGuid.toByteArray();
+		final GUID targetGuid = new GUID(sourceGuidBArr);
+		final byte[] targetGuidBArr = targetGuid.toByteArray();
 
 		for (int i = 0; i < sourceGuidBArr.length; i++) {
 			assertEquals(targetGuidBArr[i], sourceGuidBArr[i]);
@@ -95,8 +95,8 @@ public class GuidTest extends TestCase {
 	 * jna and compares it.
 	 */
 	public void testBehaviourWithOle32() {
-		GUID ole32Guid = Ole32Util.getGUIDFromString("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
-		GUID jnaGuid = new GUID("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
+		final GUID ole32Guid = Ole32Util.getGUIDFromString("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
+		final GUID jnaGuid = new GUID("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
 
 		assertEquals(ole32Guid, jnaGuid);
 	}
@@ -106,12 +106,12 @@ public class GuidTest extends TestCase {
 	 * methods.
 	 */
 	public void testBehaviourWithOle32_2() {
-		GUID ole32Guid = Ole32Util
+		final GUID ole32Guid = Ole32Util
 				.getGUIDFromString("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
-		GUID jnaGuid = new GUID("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
+		final GUID jnaGuid = new GUID("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
 
-		String ole32Guidstr = Ole32Util.getStringFromGUID(ole32Guid);
-		String jnaGuidStr = jnaGuid.toGuidString();
+		final String ole32Guidstr = Ole32Util.getStringFromGUID(ole32Guid);
+		final String jnaGuidStr = jnaGuid.toGuidString();
 
 		assertEquals(ole32Guidstr, jnaGuidStr);
 	}
@@ -120,9 +120,9 @@ public class GuidTest extends TestCase {
 	 * Tests the new guid with the build-in function coming with windows.
 	 */
 	public void testNewGuid() {
-		GUID newGuid = GUID.newGuid();
-		String guidString = newGuid.toGuidString();
-		GUID guidFromString = Ole32Util.getGUIDFromString(guidString);
+		final GUID newGuid = GUID.newGuid();
+		final String guidString = newGuid.toGuidString();
+		final GUID guidFromString = Ole32Util.getGUIDFromString(guidString);
 
 		assertEquals(guidFromString.toGuidString(), guidString);
 	}

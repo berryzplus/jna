@@ -35,20 +35,20 @@ import java.util.Set;
  * Implements a combination of WeakHashMap and IdentityHashMap.
  * Useful for caches that need to key off of a == comparison
  * instead of a .equals.
- * 
+ *
  * <b>
  * This class is not a general-purpose Map implementation! While
  * this class implements the Map interface, it intentionally violates
  * Map's general contract, which mandates the use of the equals method
  * when comparing objects. This class is designed for use only in the
  * rare cases wherein reference-equality semantics are required.
- * 
+ *
  * Note that this implementation is not synchronized.
  * </b>
  */
 public class WeakIdentityHashMap implements Map {
     private final ReferenceQueue queue = new ReferenceQueue();
-    private Map backingStore = new HashMap();
+    private final Map backingStore = new HashMap();
 
 
     public WeakIdentityHashMap() {
@@ -60,31 +60,31 @@ public class WeakIdentityHashMap implements Map {
         reap();
     }
 
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         reap();
         return backingStore.containsKey(new IdentityWeakReference(key));
     }
 
-    public boolean containsValue(Object value)  {
+    public boolean containsValue(final Object value)  {
         reap();
         return backingStore.containsValue(value);
     }
 
     public Set entrySet() {
         reap();
-        Set ret = new HashSet();
-        for (Iterator i=backingStore.entrySet().iterator();i.hasNext();) {
-            Map.Entry ref = (Map.Entry)i.next();
+        final Set ret = new HashSet();
+        for (final Iterator i=backingStore.entrySet().iterator();i.hasNext();) {
+            final Map.Entry ref = (Map.Entry)i.next();
             final Object key = ((IdentityWeakReference)ref.getKey()).get();
             final Object value = ref.getValue();
-            Map.Entry entry = new Map.Entry() {
+            final Map.Entry entry = new Map.Entry() {
                 public Object getKey() {
                     return key;
                 }
                 public Object getValue() {
                     return value;
                 }
-                public Object setValue(Object value) {
+                public Object setValue(final Object value) {
                     throw new UnsupportedOperationException();
                 }
             };
@@ -94,23 +94,23 @@ public class WeakIdentityHashMap implements Map {
     }
     public Set keySet() {
         reap();
-        Set ret = new HashSet();
-        for (Iterator i=backingStore.keySet().iterator();i.hasNext();) {
-            IdentityWeakReference ref = (IdentityWeakReference)i.next();
+        final Set ret = new HashSet();
+        for (final Iterator i=backingStore.keySet().iterator();i.hasNext();) {
+            final IdentityWeakReference ref = (IdentityWeakReference)i.next();
             ret.add(ref.get());
         }
         return Collections.unmodifiableSet(ret);
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return backingStore.equals(((WeakIdentityHashMap)o).backingStore);
     }
 
-    public Object get(Object key) {
+    public Object get(final Object key) {
         reap();
         return backingStore.get(new IdentityWeakReference(key));
     }
-    public Object put(Object key, Object value) {
+    public Object put(final Object key, final Object value) {
         reap();
         return backingStore.put(new IdentityWeakReference(key), value);
     }
@@ -123,10 +123,10 @@ public class WeakIdentityHashMap implements Map {
         reap();
         return backingStore.isEmpty();
     }
-    public void putAll(Map t) {
+    public void putAll(final Map t) {
         throw new UnsupportedOperationException();
     }
-    public Object remove(Object key) {
+    public Object remove(final Object key) {
         reap();
         return backingStore.remove(new IdentityWeakReference(key));
     }
@@ -143,7 +143,7 @@ public class WeakIdentityHashMap implements Map {
         Object zombie = queue.poll();
 
         while (zombie != null) {
-            IdentityWeakReference victim = (IdentityWeakReference)zombie;
+            final IdentityWeakReference victim = (IdentityWeakReference)zombie;
             backingStore.remove(victim);
             zombie = queue.poll();
         }
@@ -151,9 +151,9 @@ public class WeakIdentityHashMap implements Map {
 
     class IdentityWeakReference extends WeakReference {
         int hash;
-        
+
         //@SuppressWarnings("unchecked")
-        IdentityWeakReference(Object obj) {
+        IdentityWeakReference(final Object obj) {
             super(obj, queue);
             hash = System.identityHashCode(obj);
         }
@@ -162,20 +162,17 @@ public class WeakIdentityHashMap implements Map {
             return hash;
         }
 
-        public boolean equals(Object o) {
-            if (this == o) {
+        public boolean equals(final Object o) {
+            if (this == o)
                 return true;
-            }
-            IdentityWeakReference ref = (IdentityWeakReference)o;
-            if (this.get() == ref.get()) {
+            final IdentityWeakReference ref = (IdentityWeakReference)o;
+            if (this.get() == ref.get())
                 return true;
-            }
             return false;
         }
     }
 }
 
-   
-    
-    
-    
+
+
+

@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -30,12 +30,12 @@ import com.sun.jna.win32.StdCallLibrary;
 public interface ShellAPI extends StdCallLibrary {
 
     int STRUCTURE_ALIGNMENT = Platform.is64Bit() ? Structure.ALIGN_DEFAULT : Structure.ALIGN_NONE;
-	
+
     int FO_MOVE = 0x0001;
     int FO_COPY = 0x0002;
     int FO_DELETE = 0x0003;
     int FO_RENAME = 0x0004;
-    
+
     int FOF_MULTIDESTFILES = 0x0001;
     int FOF_CONFIRMMOUSE = 0x0002;
     int FOF_SILENT = 0x0004; // don't display progress UI (confirm prompts may be displayed still)
@@ -52,19 +52,19 @@ public interface ShellAPI extends StdCallLibrary {
     int FOF_NO_CONNECTED_ELEMENTS = 0x2000; // don't operate on connected elements ("xxx_files" folders that go with .htm files)
     int FOF_WANTNUKEWARNING = 0x4000; // during delete operation, warn if nuking instead of recycling (partially overrides FOF_NOCONFIRMATION)
     int FOF_NORECURSEREPARSE = 0x8000; // deprecated; the operations engine always does the right thing on FolderLink objects (symlinks, reparse points, folder shortcuts)
-    int FOF_NO_UI = (FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR); // don't display any UI at all
-	  
+    int FOF_NO_UI = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR; // don't display any UI at all
+
     int PO_DELETE = 0x0013; // printer is being deleted
     int PO_RENAME = 0x0014; // printer is being renamed
     int PO_PORTCHANGE = 0x0020; // port this printer connected to is being changed
     int PO_REN_PORT = 0x0034; // PO_RENAME and PO_PORTCHANGE at same time.
 
     /**
-     * Contains information that the SHFileOperation function uses to perform file operations. 
+     * Contains information that the SHFileOperation function uses to perform file operations.
      */
     public static class SHFILEOPSTRUCT extends Structure {
         /**
-         * A window handle to the dialog box to display information about 
+         * A window handle to the dialog box to display information about
          * the status of the file operation.
          */
         public HANDLE hwnd;
@@ -73,7 +73,7 @@ public interface ShellAPI extends StdCallLibrary {
          */
         public int wFunc;
         /**
-         * A pointer to one or more source file names, double null-terminated. 
+         * A pointer to one or more source file names, double null-terminated.
          */
         public WString pFrom;
         /**
@@ -85,29 +85,29 @@ public interface ShellAPI extends StdCallLibrary {
          */
         public short fFlags;
         /**
-         * When the function returns, this member contains TRUE if any file operations 
-         * were aborted before they were completed; otherwise, FALSE. An operation can 
-         * be manually aborted by the user through UI or it can be silently aborted by 
+         * When the function returns, this member contains TRUE if any file operations
+         * were aborted before they were completed; otherwise, FALSE. An operation can
+         * be manually aborted by the user through UI or it can be silently aborted by
          * the system if the FOF_NOERRORUI or FOF_NOCONFIRMATION flags were set.
          */
         public boolean fAnyOperationsAborted;
         /**
-         * When the function returns, this member contains a handle to a name mapping 
-         * object that contains the old and new names of the renamed files. This member 
-         * is used only if the fFlags member includes the FOF_WANTMAPPINGHANDLE flag. 
+         * When the function returns, this member contains a handle to a name mapping
+         * object that contains the old and new names of the renamed files. This member
+         * is used only if the fFlags member includes the FOF_WANTMAPPINGHANDLE flag.
          */
         public Pointer pNameMappings;
         /**
-         * A pointer to the title of a progress dialog box. This is a null-terminated string. 
+         * A pointer to the title of a progress dialog box. This is a null-terminated string.
          */
         public WString lpszProgressTitle;
-        
+
         protected List getFieldOrder() {
             return Arrays.asList(new String[] { "hwnd", "wFunc", "pFrom", "pTo", "fFlags", "fAnyOperationsAborted", "pNameMappings", "lpszProgressTitle" });
         }
 
         /** Use this to encode <code>pFrom/pTo</code> paths. */
-        public String encodePaths(String[] paths) {
+        public String encodePaths(final String[] paths) {
             String encoded = "";
             for (int i=0; i < paths.length;i++) {
                 encoded += paths[i];

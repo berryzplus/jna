@@ -8,18 +8,9 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
-
-import com.sun.jna.ArgumentsMarshalTest.TestLibrary.CheckFieldAlignment.ByReference;
 
 /** Exercise a range of native methods.
  *
@@ -29,7 +20,7 @@ public class DirectArgumentsMarshalTest extends ArgumentsMarshalTest {
 
     public static class DirectTestLibrary implements TestLibrary {
         /** Dummy.  Automatically fail when passed an object. */
-        public String returnStringArgument(Object arg) {throw new IllegalArgumentException(arg.getClass().getName()); }
+        public String returnStringArgument(final Object arg) {throw new IllegalArgumentException(arg.getClass().getName()); }
         public native boolean returnBooleanArgument(boolean arg);
         public native byte returnInt8Argument(byte arg);
         public native char returnWideCharArgument(char arg);
@@ -42,30 +33,30 @@ public class DirectArgumentsMarshalTest extends ArgumentsMarshalTest {
         public native String returnStringArgument(String s);
         public native WString returnWStringArgument(WString s);
         public native Pointer returnPointerArgument(Pointer p);
-        public String returnStringArrayElement(String[] args, int which) {throw new UnsupportedOperationException();}
-        public WString returnWideStringArrayElement(WString[] args, int which) {throw new UnsupportedOperationException();}
-        public Pointer returnPointerArrayElement(Pointer[] args, int which) {throw new UnsupportedOperationException();}
-        public TestPointerType returnPointerArrayElement(TestPointerType[] args, int which) {throw new UnsupportedOperationException();}
-        public CheckFieldAlignment returnPointerArrayElement(CheckFieldAlignment.ByReference[] args, int which) {throw new UnsupportedOperationException();}
-        public int returnRotatedArgumentCount(String[] args) {throw new UnsupportedOperationException();}
+        public String returnStringArrayElement(final String[] args, final int which) {throw new UnsupportedOperationException();}
+        public WString returnWideStringArrayElement(final WString[] args, final int which) {throw new UnsupportedOperationException();}
+        public Pointer returnPointerArrayElement(final Pointer[] args, final int which) {throw new UnsupportedOperationException();}
+        public TestPointerType returnPointerArrayElement(final TestPointerType[] args, final int which) {throw new UnsupportedOperationException();}
+        public CheckFieldAlignment returnPointerArrayElement(final CheckFieldAlignment.ByReference[] args, final int which) {throw new UnsupportedOperationException();}
+        public int returnRotatedArgumentCount(final String[] args) {throw new UnsupportedOperationException();}
 
         public native long checkInt64ArgumentAlignment(int i, long j, int i2, long j2);
         public native double checkDoubleArgumentAlignment(float i, double j, float i2, double j2);
         public native Pointer testStructurePointerArgument(CheckFieldAlignment p);
         public native int testStructureByValueArgument(CheckFieldAlignment.ByValue p);
-        public int testStructureArrayInitialization(CheckFieldAlignment[] p, int len) {
+        public int testStructureArrayInitialization(final CheckFieldAlignment[] p, final int len) {
             throw new UnsupportedOperationException();
         }
-        public int testStructureByReferenceArrayInitialization(CheckFieldAlignment.ByReference[] p, int len) {
+        public int testStructureByReferenceArrayInitialization(final CheckFieldAlignment.ByReference[] p, final int len) {
             throw new UnsupportedOperationException();
         }
-        public void modifyStructureArray(CheckFieldAlignment[] p, int length) {
-            throw new UnsupportedOperationException(); 
+        public void modifyStructureArray(final CheckFieldAlignment[] p, final int length) {
+            throw new UnsupportedOperationException();
         }
-        public void modifyStructureByReferenceArray(CheckFieldAlignment.ByReference[] p, int length) {
-            throw new UnsupportedOperationException(); 
+        public void modifyStructureByReferenceArray(final CheckFieldAlignment.ByReference[] p, final int length) {
+            throw new UnsupportedOperationException();
         }
-            
+
         public native int fillInt8Buffer(byte[] buf, int len, byte value);
         public native int fillInt16Buffer(short[] buf, int len, short value);
         public native int fillInt32Buffer(int[] buf, int len, int value);
@@ -74,7 +65,7 @@ public class DirectArgumentsMarshalTest extends ArgumentsMarshalTest {
         public native int fillDoubleBuffer(double[] buf, int len, double value);
 
         // dummy to avoid causing Native.register to fail
-        public boolean returnBooleanArgument(Object arg) {throw new IllegalArgumentException();}
+        public boolean returnBooleanArgument(final Object arg) {throw new IllegalArgumentException();}
 
         public native Pointer testStructurePointerArgument(MinTestStructure s);
         public native String returnStringFromVariableSizedStructure(VariableSizedStructure s);
@@ -90,7 +81,7 @@ public class DirectArgumentsMarshalTest extends ArgumentsMarshalTest {
     protected void setUp() {
         lib = new DirectTestLibrary();
     }
-    
+
     public static class DirectNativeMappedLibrary implements NativeMappedLibrary {
         public native int returnInt32Argument(Custom arg);
         static {
@@ -133,8 +124,8 @@ public class DirectArgumentsMarshalTest extends ArgumentsMarshalTest {
     public void testReadStructureByReferenceArrayArgumentMemory() { }
     public void testModifiedCharArrayArgument() { }
 
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(DirectArgumentsMarshalTest.class);
     }
-    
+
 }

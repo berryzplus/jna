@@ -13,8 +13,6 @@
 package com.sun.jna;
 
 import junit.framework.*;
-import com.sun.jna.*;
-import com.sun.jna.ptr.PointerByReference;
 import java.lang.ref.*;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,33 +22,18 @@ import java.net.URLClassLoader;
 //@SuppressWarnings("unused")
 public class DirectTest extends TestCase {
 
-    private static final String BUILDDIR = 
+    private static final String BUILDDIR =
         System.getProperty("jna.builddir",
-                           "build" + (Platform.is64Bit() ? "-d64" : "")); 
+                           "build" + (Platform.is64Bit() ? "-d64" : ""));
 
-    private static class JNI {
-        static {
-            String path = BUILDDIR + "/native/" + System.mapLibraryName("testlib");;
-            if (!new File(path).isAbsolute()) {
-                path = System.getProperty("user.dir") + "/" + path;
-            }
-            if (path.endsWith(".jnilib")) {
-                path = path.replace(".jnilib", ".dylib");
-            }
-            System.load(path);
-        }
-        
-        private static native double cos(double x);
-    }
-
-    public static void main(java.lang.String[] argList) {
+    public static void main(final java.lang.String[] argList) {
         junit.textui.TestRunner.run(DirectTest.class);
     }
 
     static class MathLibrary {
 
         public static native double cos(double x);
-        
+
         static {
             Native.register(Platform.MATH_LIBRARY_NAME);
         }
@@ -65,7 +48,7 @@ public class DirectTest extends TestCase {
             public size_t() {
                 super(Native.POINTER_SIZE);
             }
-            public size_t(long value) {
+            public size_t(final long value) {
                 super(Native.POINTER_SIZE, value);
             }
         }
@@ -78,7 +61,7 @@ public class DirectTest extends TestCase {
         public static native int strlen(String s1);
         public static native int strlen(Pointer p);
         public static native int strlen(byte[] b);
-        
+
         static {
             Native.register(Platform.C_LIBRARY_NAME);
         }
@@ -119,12 +102,12 @@ public class DirectTest extends TestCase {
                       new File(BUILDDIR + "/test-classes").toURI().toURL(),
                   }, null);
         }
-        protected Class findClass(String name) throws ClassNotFoundException {
-            String boot = System.getProperty("jna.boot.library.path");
+        protected Class findClass(final String name) throws ClassNotFoundException {
+            final String boot = System.getProperty("jna.boot.library.path");
             if (boot != null) {
                 System.setProperty("jna.boot.library.path", "");
             }
-            Class cls = super.findClass(name);
+            final Class cls = super.findClass(name);
             if (boot != null) {
                 System.setProperty("jna.boot.library.path", boot);
             }
@@ -134,11 +117,11 @@ public class DirectTest extends TestCase {
 
     public void testRegisterMethods() throws Exception {
         // Use a dedicated class loader to ensure the class can be gc'd
-        String name = "com.sun.jna.DirectTest$MathLibrary";
+        final String name = "com.sun.jna.DirectTest$MathLibrary";
         ClassLoader loader = new TestLoader();
         Class cls = Class.forName(name, true, loader);
         assertNotNull("Failed loading class", cls);
-        WeakReference ref = new WeakReference(cls);
+        final WeakReference ref = new WeakReference(cls);
         loader = null;
         cls = null;
         System.gc();

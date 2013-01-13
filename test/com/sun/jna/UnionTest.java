@@ -1,14 +1,14 @@
 /* Copyright (c) 2007 Timothy Wall, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna;
 
@@ -23,22 +23,22 @@ public class UnionTest extends TestCase {
     public static class TestStructure extends Structure {
         public String value;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "value" }); 
+            return Arrays.asList(new String[] { "value" });
         }
     }
-    
+
     public static class BigTestStructure extends Structure {
         public long field1;
         public long field2;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "field1", "field2" }); 
+            return Arrays.asList(new String[] { "field1", "field2" });
         }
     }
-    
+
     public static class IntStructure extends Structure {
         public int value;
         protected List getFieldOrder() {
-            return Arrays.asList(new String[] { "value" }); 
+            return Arrays.asList(new String[] { "value" });
         }
     }
 
@@ -59,7 +59,7 @@ public class UnionTest extends TestCase {
         public WString wstring;
         public Pointer pointer;
     }
-    
+
     public static class StructUnion extends Union {
         public int intField;
         public TestStructure testStruct;
@@ -68,34 +68,34 @@ public class UnionTest extends TestCase {
     }
 
     public void testCalculateSize() {
-        Union u = new SizedUnion();
+        final Union u = new SizedUnion();
         assertEquals("Union should be size of largest field",
                      new BigTestStructure().size(), u.size());
     }
 
     public void testFieldOffsets() {
-        StructUnion u = new StructUnion();
+        final StructUnion u = new StructUnion();
         u.setType(u.testStruct.getClass());
         u.write();
-        assertEquals("Wrong struct member base address", 
+        assertEquals("Wrong struct member base address",
                      u.getPointer(), u.testStruct.getPointer());
         u.setType(u.intStruct.getClass());
         u.write();
-        assertEquals("Wrong struct member base address (2)", 
+        assertEquals("Wrong struct member base address (2)",
                      u.getPointer(), u.intStruct.getPointer());
     }
 
     public void testWriteUnion() {
-        SizedUnion u = new SizedUnion();
-        final int VALUE = 0x12345678; 
+        final SizedUnion u = new SizedUnion();
+        final int VALUE = 0x12345678;
         u.intField = VALUE;
         u.setType(int.class);
         u.write();
         assertEquals("Wrong value written", VALUE, u.getPointer().getInt(0));
     }
-    
+
     public void testReadUnion() {
-        SizedUnion u = new SizedUnion();
+        final SizedUnion u = new SizedUnion();
         final int VALUE = 0x12345678;
         u.getPointer().setInt(0, VALUE);
         u.read();
@@ -109,26 +109,26 @@ public class UnionTest extends TestCase {
         assertNull("Unselected String should be null", u.string);
         assertNull("Unselected WString should be null", u.wstring);
     }
-    
+
     public void testWriteTypedUnion() {
         final int VALUE = 0x12345678;
         // write an instance of a direct union class to memory
         StructUnion u = new StructUnion();
-        IntStructure intStruct = new IntStructure();
+        final IntStructure intStruct = new IntStructure();
         intStruct.value = VALUE;
         u.setTypedValue(intStruct);
         u.write();
         assertEquals("Wrong value written", VALUE, u.getPointer().getInt(0));
         // write an instance of a sub class of an union class to memory
         u = new StructUnion();
-        SubIntStructure subIntStructure = new SubIntStructure();
+        final SubIntStructure subIntStructure = new SubIntStructure();
         subIntStructure.value = VALUE;
         u.setTypedValue(subIntStructure);
         u.write();
         assertEquals("Wrong value written", VALUE, u.getPointer().getInt(0));
         // write an instance of an interface
         u = new StructUnion();
-        Func1 func1 = new Func1() {
+        final Func1 func1 = new Func1() {
             public void callback() {
                 System.out.println("hi");
             }
@@ -137,14 +137,14 @@ public class UnionTest extends TestCase {
     }
 
     public void testReadTypedUnion() {
-        StructUnion u = new StructUnion();
+        final StructUnion u = new StructUnion();
         final int VALUE = 0x12345678;
         u.getPointer().setInt(0, VALUE);
         assertEquals("int structure not read properly", VALUE, ((IntStructure) u.getTypedValue(IntStructure.class)).value);
     }
 
     public void testReadTypeInfo() {
-        SizedUnion u = new SizedUnion();
+        final SizedUnion u = new SizedUnion();
         if (Native.POINTER_SIZE == 4) {
             assertEquals("Type size should be that of longest field if no field active",
                          Structure.getTypeInfo(BigTestStructure.class).getInt(0),
@@ -167,14 +167,11 @@ public class UnionTest extends TestCase {
                          u.getTypeInfo().getLong(0));
         }
     }
-    
+
     public void testArraysInUnion() {
         class TestUnion extends Union {
-            public byte[] bytes = new byte[16];
-            public short[] shorts = new short[8];
-            public int[] ints = new int[4];
         }
-        Union u = new TestUnion();
+        final Union u = new TestUnion();
         u.setType(byte[].class);
         u.setType(short[].class);
         u.setType(int[].class);
@@ -182,19 +179,17 @@ public class UnionTest extends TestCase {
 
     public void testDuplicateFieldTypes() {
         class TestUnion extends Union {
-            public int field1;
-            public int field2; 
+            public int field2;
         }
-        TestUnion u = new TestUnion();
+        final TestUnion u = new TestUnion();
         u.setType("field1");
-        u.field1 = 42;
         u.write();
         u.setType("field2");
         u.read();
         assertEquals("Wrong field value after write/read", 42, u.field2);
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(UnionTest.class);
     }
 }

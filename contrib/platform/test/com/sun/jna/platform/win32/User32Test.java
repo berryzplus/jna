@@ -1,14 +1,14 @@
 /* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.platform.win32;
 
@@ -24,18 +24,18 @@ import static com.sun.jna.platform.win32.User32.*;
  */
 public class User32Test extends TestCase {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(User32Test.class);
     }
 
     public void testGetSystemMetrics() {
-        int cursorWidth = INSTANCE.GetSystemMetrics(WinUser.SM_CXCURSOR);
+        final int cursorWidth = INSTANCE.GetSystemMetrics(WinUser.SM_CXCURSOR);
         assertTrue(cursorWidth > 0);
     }
 
     public void testRegisterHotKey() {
-        int vk = KeyEvent.VK_D;
-        int id = 1;
+        final int vk = KeyEvent.VK_D;
+        final int id = 1;
 
         assertTrue("RegisterHotKey failed", INSTANCE.RegisterHotKey(null, id, WinUser.MOD_CONTROL | WinUser.MOD_ALT, vk));
 
@@ -57,10 +57,10 @@ public class User32Test extends TestCase {
             robot.keyRelease(vk);
             msg = waitForMessage(500);
             assertNull(msg);
-        } catch (AWTException e) {
+        } catch (final AWTException e) {
             e.printStackTrace();
             fail();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
             fail();
         } finally {
@@ -71,23 +71,23 @@ public class User32Test extends TestCase {
         }
     }
 
-    private WinUser.MSG waitForMessage(int timeout) {
-        WinUser.MSG msg = new WinUser.MSG();
+    private WinUser.MSG waitForMessage(final int timeout) {
+        final WinUser.MSG msg = new WinUser.MSG();
 
         try {
-            long time = System.currentTimeMillis();
+            final long time = System.currentTimeMillis();
             while (true) {
                 while (INSTANCE.PeekMessage(msg, null, 0, 0, 1)) {
-                    if (msg.message == WinUser.WM_HOTKEY) {
+                    if (msg.message == WinUser.WM_HOTKEY)
                         return msg;
-                    }
                 }
-                if (System.currentTimeMillis() - time > timeout)
+                if (System.currentTimeMillis() - time > timeout) {
                     break;
+                }
 
                 Thread.sleep(50);
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -95,7 +95,7 @@ public class User32Test extends TestCase {
     }
 
     public void testGetLastInputInfo() throws Exception {
-        LASTINPUTINFO plii = new LASTINPUTINFO();
+        final LASTINPUTINFO plii = new LASTINPUTINFO();
         assertEquals(plii.size(), plii.cbSize);
 
         assertTrue(User32.INSTANCE.GetLastInputInfo(plii));

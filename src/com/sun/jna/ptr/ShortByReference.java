@@ -8,27 +8,27 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.  
+ * Lesser General Public License for more details.
  */
 package com.sun.jna.ptr;
 
 public class ShortByReference extends ByReference {
-    
+
     public ShortByReference() {
         this((short)0);
     }
-    
-    public ShortByReference(short value) {
+
+    public ShortByReference(final short value) {
         super(2);
         setValue(value);
     }
-    
-    public void setValue(short value) {
+
+    public void setValue(final short value) {
         getPointer().setShort(0, value);
     }
-    
+
     public short getValue() {
         return getPointer().getShort(0);
     }
-    
+
 }
