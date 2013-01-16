@@ -5,7 +5,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="src" output="build.eclipse/test-classes" path="test"/>
-	<classpathentry kind="src" path="contrib/platform/src"/>
-	<classpathentry kind="src" output="build.eclipse/test-classes" path="contrib/platform/test"/>
 	<classpathentry kind="output" path="build.eclipse/classes"/>
 </classpath>

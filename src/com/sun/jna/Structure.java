@@ -149,6 +149,7 @@ public abstract class Structure {
     private final Map nativeStrings = new HashMap();
     private TypeMapper typeMapper;
     // This field is accessed by native code
+    @SuppressWarnings("unused")
     private long typeInfo;
 
     private boolean autoRead = true;
