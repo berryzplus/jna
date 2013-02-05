@@ -70,9 +70,9 @@
   <property name="impl.version" value="${jna.version} (b${jna.build})"/>
 
   <!-- Set up restrictions for w32ce, based on JavaME/CDC -->
-  <property name="compatibility" value="1.4"/>
+  <property name="compatibility" value="1.5"/>
   <property name="platform.compatibility" value="1.5"/>
-  <condition property="test.compatibility" value="1.4">
+  <condition property="test.compatibility" value="1.5">
     <equals arg1="${os.prefix}" arg2="w32ce-arm"/>
   </condition>
   <condition property="tests.exclude-patterns" value="**/VarArgsTest.java,**/AnnotatedLibraryTest.java,**/WebStartTest.java,**/PointerBufferTest.java,**/HeadlessLoadLibraryTest.java,**/StructureBufferFieldTest.java,**/PerformanceTest.java,**/*BufferArgumentsMarshalTest.java" else="**/wince/*.java">
