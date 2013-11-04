@@ -365,15 +365,10 @@ public final class Native {
      * @param interfaceClass
      * @param options Map of library options
      */
-    public static Object loadLibrary(final String name,
-                                     final Class interfaceClass,
-                                     final Map options) {
-        final Library.Handler handler =
-            new Library.Handler(name, interfaceClass, options);
+    public static Object loadLibrary(String name, Class interfaceClass, Map options) {
+        final Library.Handler handler = new Library.Handler(name, interfaceClass, options);
         final ClassLoader loader = interfaceClass.getClassLoader();
-        final Library proxy = (Library)
-            Proxy.newProxyInstance(loader, new Class[] {interfaceClass},
-                                   handler);
+        final Library proxy = (Library) Proxy.newProxyInstance(loader, new Class[] {interfaceClass}, handler);
         cacheOptions(interfaceClass, options, proxy);
         return proxy;
     }
@@ -1529,8 +1524,7 @@ public final class Native {
             version = DEFAULT_BUILD;
         }
         System.out.println("Version: " + version);
-        System.out.println(" Native: " + getNativeVersion() + " ("
-                           + getAPIChecksum() + ")");
+        System.out.println(" Native: " + getNativeVersion() + " (" + getAPIChecksum() + ")");
         System.exit(0);
     }
 

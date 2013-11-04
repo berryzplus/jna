@@ -1,3 +1,194 @@
+2013-03-17  Anthony Green  <green@moxielogic.com>
+
+	* README: Update for 3.0.13.
+	* configure.ac: Ditto.
+	* configure: Rebuilt.
+	* doc/*: Update version.
+
+2013-03-17  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* src/closures.c (is_emutramp_enabled
+	[!FFI_MMAP_EXEC_EMUTRAMP_PAX]): Move default definition outside
+	enclosing #if scope.
+
+2013-03-17  Anthony Green  <green@moxielogic.com>
+
+	* configure.ac: Only modify toolexecdir in certain cases.
+	* configure: Rebuilt.
+
+2013-03-16  Gilles Talis  <gilles.talis@gmail.com>
+
+	* src/powerpc/ffi.c (ffi_prep_args_SYSV): Don't use
+	fparg_count,etc on __NO_FPRS__ targets.
+
+2013-03-16  Alan Hourihane  <alanh@fairlite.co.uk>
+
+	* src/m68k/sysv.S (epilogue): Don't use extb instruction on
+	m680000 machines.
+
+2013-03-16  Alex Gaynor <alex.gaynor@gmail.com>
+
+	* src/x86/ffi.c (ffi_prep_cif_machdep): Always align stack.
+
+2013-03-13  Markos Chandras <markos.chandras@imgtec.com>
+
+	* configure.ac: Add support for Imagination Technologies Meta.
+	* Makefile.am: Likewise.
+	* README: Add Imagination Technologies Meta details.
+	* src/metag/ffi.c: New.
+	* src/metag/ffitarget.h: Likewise.
+	* src/metag/sysv.S: Likewise.
+
+2013-02-24  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* doc/libffi.texi (Structures): Fix missing category argument of
+	@deftp.
+
+2013-02-11  Anthony Green <green@moxielogic.com>
+
+	* configure.ac: Update release number to 3.0.12.
+	* configure: Rebuilt.
+	* README: Update release info.
+
+2013-02-10  Anthony Green <green@moxielogic.com>
+
+	* README: Add Moxie.
+	* src/moxie/ffi.c: Created.
+	* src/moxie/eabi.S: Created.
+	* src/moxie/ffitarget.h: Created.
+	* Makefile.am (nodist_libffi_la_SOURCES): Add Moxie.
+	* Makefile.in: Rebuilt.
+	* configure.ac: Add Moxie.
+	* configure: Rebuilt.
+	* testsuite/libffi.call/huge_struct.c: Disable format string
+	warnings for moxie*-*-elf tests.
+
+2013-02-10  Anthony Green <green@moxielogic.com>
+
+	* Makefile.am (LTLDFLAGS): Fix reference.
+	* Makefile.in: Rebuilt.
+
+2013-02-10  Anthony Green <green@moxielogic.com>
+
+	* README: Update supported platforms.  Update test results link.
+
+2013-02-09  Anthony Green <green@moxielogic.com>
+
+	* testsuite/libffi.call/negint.c: Remove forced -O2.
+	* testsuite/libffi.call/many2.c (foo): Remove GCCism.
+	* testsuite/libffi.call/ffitest.h: Add default PRIuPTR definition.
+
+	* src/sparc/v8.S (ffi_closure_v8): Import ancient ulonglong
+	closure return type fix developed by Martin v. Löwis for cpython
+	fork.
+
+2013-02-08  Andreas Tobler  <andreast@fgznet.ch>
+
+	* src/powerpc/ffi.c (ffi_prep_cif_machdep): Fix small struct
+	support.
+	* src/powerpc/sysv.S: Ditto.
+
+2013-02-08  Anthony Green <green@moxielogic.com>
+
+	* testsuite/libffi.call/cls_longdouble.c: Remove xfail for
+	arm*-*-*.
+
+2013-02-08  Anthony Green <green@moxielogic.com>
+
+	* src/sparc/ffi.c (ffi_prep_closure_loc): Fix cache flushing for GCC.
+
+2013-02-08  Matthias Klose  <doko@ubuntu.com>
+
+	* man/ffi_prep_cif.3: Clean up for debian linter.
+
+2013-02-08  Peter Bergner  <bergner@vnet.ibm.com>
+
+	* src/powerpc/ffi.c (ffi_prep_args_SYSV): Account for FP args pushed
+	on the stack.
+
+2013-02-08  Anthony Green <green@moxielogic.com>
+
+	* Makefile.am (EXTRA_DIST): Add missing files.
+	* testsuite/Makefile.am (EXTRA_DIST): Ditto.
+	* Makefile.in: Rebuilt.
+
+2013-02-08  Anthony Green <green@moxielogic.com>
+
+	* configure.ac: Move sparc asm config checks to within functions
+	for compatibility with sun tools.
+	* configure: Rebuilt.
+	* src/sparc/ffi.c (ffi_prep_closure_loc): Flush cache on v9
+	systems.
+	* src/sparc/v8.S (ffi_flush_icache): Implement a sparc v9 cache
+	flusher.
+
+2013-02-08  Nathan Rossi <nathan.rossi@xilinx.com>
+
+	* src/microblaze/ffi.c (ffi_closure_call_SYSV): Fix handling of
+	small big-endian structures.
+	(ffi_prep_args): Ditto.
+
+2013-02-07  Anthony Green <green@moxielogic.com>
+
+	* src/sparc/v8.S (ffi_call_v8): Fix typo from last patch
+	(effectively hiding ffi_call_v8).
+
+2013-02-07  Anthony Green <green@moxielogic.com>
+
+	* configure.ac: Update bug reporting address.
+	* configure.in: Rebuild.
+
+	* src/sparc/v8.S (ffi_flush_icache): Out-of-line cache flusher for
+	Sun compiler.
+	* src/sparc/ffi.c (ffi_call): Remove warning.
+	Call ffi_flush_icache for non-GCC builds.
+	(ffi_prep_closure_loc): Use ffi_flush_icache.
+
+	* Makefile.am (EXTRA_DIST): Add libtool-ldflags.
+	* Makefile.in: Rebuilt.
+	* libtool-ldflags: New file.
+
+2013-02-07  Daniel Schepler <dschepler@gmail.com>
+
+	* configure.ac: Correctly identify x32 systems as 64-bit.
+	* m4/libtool.m4: Remove libtool expr error.
+	* aclocal.m4, configure: Rebuilt.
+
+2013-02-07  Anthony Green <green@moxielogic.com>
+
+	* configure.ac: Fix GCC usage test.
+	* configure: Rebuilt.
+	* README: Mention LLVM/GCC x86_64 issue.
+	* testsuite/Makefile.in: Rebuilt.
+
+2013-02-07  Anthony Green <green@moxielogic.com>
+
+	* testsuite/libffi.call/cls_double_va.c (main): Replace // style
+	comments with /* */ for xlc compiler.
+	* testsuite/libffi.call/stret_large.c (main): Ditto.
+	* testsuite/libffi.call/stret_large2.c (main): Ditto.
+	* testsuite/libffi.call/nested_struct1.c (main): Ditto.
+	* testsuite/libffi.call/huge_struct.c (main): Ditto.
+	* testsuite/libffi.call/float_va.c (main): Ditto.
+	* testsuite/libffi.call/cls_struct_va1.c (main): Ditto.
+	* testsuite/libffi.call/cls_pointer_stack.c (main): Ditto.
+	* testsuite/libffi.call/cls_pointer.c (main): Ditto.
+	* testsuite/libffi.call/cls_longdouble_va.c (main): Ditto.
+
+2013-02-06  Anthony Green <green@moxielogic.com>
+
+	* man/ffi_prep_cif.3: Clean up for debian lintian checker.
+
+2013-02-06  Anthony Green <green@moxielogic.com>
+
+	* Makefile.am (pkgconfigdir): Add missing pkgconfig install bits.
+	* Makefile.in: Rebuild.
+
+2013-02-02  Mark H Weaver <mhw@netris.org>
+
+	* src/x86/ffi64.c (ffi_call): Sign-extend integer arguments passed
+	via general purpose registers.
+
 2013-01-21  Nathan Rossi <nathan.rossi@xilinx.com>
 
 	* README: Add MicroBlaze details.

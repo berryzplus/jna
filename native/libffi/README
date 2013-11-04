@@ -1,8 +1,8 @@
 Status
 ======
 
-libffi-3.0.12 was released on XXXXXXX.  Check the libffi web page for
-updates: <URL:http://sourceware.org/libffi/>.
+libffi-3.0.13 was released on March 17, 2013.  Check the libffi web
+page for updates: <URL:http://sourceware.org/libffi/>.
 
 
 What is libffi?
@@ -43,7 +43,7 @@ Libffi has been ported to many different platforms.
 For specific configuration details and testing status, please
 refer to the wiki page here:
 
- http://www.moxielogic.org/wiki/index.php?title=Libffi_3.0.11
+ http://www.moxielogic.org/wiki/index.php?title=Libffi_3.0.13
 
 At the time of release, the following basic configurations have been
 tested:
@@ -61,19 +61,23 @@ tested:
 | HPPA            | HPUX             | GCC                     |
 | IA-64           | Linux            | GCC                     |
 | M68K            | FreeMiNT         | GCC                     |
+| M68K            | Linux	     | GCC                     |
 | M68K            | RTEMS            | GCC                     |
+| Meta            | Linux            | GCC                     |
 | MicroBlaze      | Linux            | GCC                     |
 | MIPS            | IRIX             | GCC                     |
 | MIPS            | Linux            | GCC                     |
 | MIPS            | RTEMS            | GCC                     |
 | MIPS64          | Linux            | GCC                     |
-| PowerPC 32-bit  | AIX 6.1.0.0      | IBM XL C/C++, V11.1     |
-| PowerPC 32-bit  | AIX 7.1.1.0      | IBM XL C/C++, V11.1     |
+| Moxie		  | Bare metal	     | GCC
+| PowerPC 32-bit  | AIX              | IBM XL C                |
+| PowerPC 64-bit  | AIX              | IBM XL C                |
 | PowerPC         | AMIGA            | GCC                     |
 | PowerPC         | Linux            | GCC                     |
 | PowerPC         | Mac OSX          | GCC                     |
 | PowerPC         | FreeBSD          | GCC                     |
-| PowerPC64       | Linux            | GCC                     |
+| PowerPC 64-bit  | FreeBSD          | GCC                     |
+| PowerPC 64-bit  | Linux            | GCC                     |
 | S390            | Linux            | GCC                     |
 | S390X           | Linux            | GCC                     |
 | SPARC           | Linux            | GCC                     |
@@ -84,6 +88,7 @@ tested:
 | SPARC64         | Solaris          | Oracle Solaris Studio C |
 | TILE-Gx/TILEPro | Linux            | GCC                     |
 | X86             | FreeBSD          | GCC                     |
+| X86             | GNU HURD         | GCC                     |
 | X86             | Interix          | GCC                     |
 | X86             | kFreeBSD         | GCC                     |
 | X86             | Linux            | GCC                     |
@@ -145,7 +150,7 @@ For iOS builds, the 'libffi.xcodeproj' Xcode project is available.
 Configure has many other options. Use "configure --help" to see them all.
 
 Once configure has finished, type "make". Note that you must be using
-GNU make.  You can ftp GNU make from prep.ai.mit.edu:/pub/gnu.
+GNU make.  You can ftp GNU make from ftp.gnu.org:/pub/gnu/make .
 
 To ensure that libffi is working as advertised, type "make check".
 This will require that you have DejaGNU installed.
@@ -158,15 +163,27 @@ History
 
 See the ChangeLog files for details.
 
-3.0.12 XXX-XX-XX
+3.0.13 Mar-17-13
+	Add Meta support.
+	Add missing Moxie bits.
+	Fix stack alignment bug on 32-bit x86.
+	Build fix for m68000 targets.
+	Build fix for soft-float Power targets.
+	Fix the install dir location for some platforms when building
+	  with GCC (OS X, Solaris).
+	Fix Cygwin regression.
+
+3.0.12 Feb-11-13
+        Add Moxie support.
 	Add AArch64 support.
 	Add Blackfin support.
 	Add TILE-Gx/TILEPro support.
-	Add Microblaze support.
+	Add MicroBlaze support.
 	Add Xtensa support.
 	Add support for PaX enabled kernels with MPROTECT.
 	Add support for native vendor compilers on
 	  Solaris and AIX.
+	Work around LLVM/GCC interoperability issue on x86_64.
 
 3.0.11 Apr-11-12
         Lots of build fixes.
@@ -349,6 +366,7 @@ m68k		Andreas Schwab
 microblaze	Nathan Rossi
 mips		Anthony Green, Casey Marshall
 mips64		David Daney
+moxie		Anthony Green
 pa		Randolph Chung, Dave Anglin, Andreas Tobler
 powerpc		Geoffrey Keating, Andreas Tobler, 
 			 David Edelsohn, John Hornkvist

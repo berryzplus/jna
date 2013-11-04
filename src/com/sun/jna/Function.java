@@ -38,7 +38,8 @@ import java.util.Map;
  * @see Pointer
  */
 public class Function extends Pointer {
-    /** Any argument which implements this interface will have the
+
+	/** Any argument which implements this interface will have the
      * {@link #read} method called immediately after function invocation.
      */
     public interface PostCallRead {

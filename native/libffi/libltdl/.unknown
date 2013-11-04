@@ -1,0 +1,14 @@
+-v
+-V
+-qversion
+-ldl
+-lsvld
+-ldld
+-ldld
+-v
+-V
+-qversion
+-ldl
+-lsvld
+-ldld
+-ldld

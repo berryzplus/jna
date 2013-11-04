@@ -1,0 +1,12 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/INCLUDE/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/INCLUDE/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/INCLUDE/value=C\:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Include;C\:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Include\\gl;C\:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\Include;C\:\\Program Files\\Java\\jdk1.7.0_45\\include;C\:\\Program Files\\Java\\jdk1.7.0_45\\include\\win32;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/LIB/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/LIB/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/LIB/value=C\:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\Lib\\amd64;C\:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Lib\\x64;C\:\\Program Files\\Java\\jdk1.7.0_45\\lib
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/PATH/value=C\:\\Program Files\\Java\\jdk1.7.0_45\\jre\\lib\\amd64;C\:\\Program Files\\Java\\jdk1.7.0_45\\bin;C\:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Bin\\x64;C\:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\Bin\\amd64;C\:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools;C\:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\IDE;C\:\\WINDOWS\\system32;C\:\\WINDOWS;C\:\\WINDOWS\\System32\\Wbem;C\:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0;F\:\\Program Files (x86)\\Windows Kits\\8.0\\Windows Performance Toolkit\\;C\:\\Program Files (x86)\\Intel\\OpenCL SDK\\3.0\\bin\\x64;F\:\\eclipse3.7\\eclipse;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/append=true
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.677842622/appendContributed=true
